@@ -1,0 +1,13 @@
+# Private or local-only office files
+*.xlsx
+*.xls
+*.xlsm
+*.csv
+_private/
+
+# Local and operating-system files
+Thumbs.db
+desktop.ini
+.DS_Store
+~$*
+*.lnk

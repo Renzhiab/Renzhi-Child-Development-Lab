@@ -1,0 +1,2693 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>任智发展实验室 · Renzhi Child Development Lab</title>
+<style>
+/* ===== 全局 ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html {
+  scroll-behavior: smooth; font-size: 17.6px; scrollbar-gutter: stable;
+  background: #FFFFFF; color-scheme: light;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+  background: #FFFFFF !important; color: #1D1D1F; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+#page-home, #page-news, #page-results, #page-team, #page-join,
+.section, .section-soft { background-color: #FFFFFF; }
+:root {
+  --text: #1D1D1F; --text-light: #6E7671; --bg-soft: #F4F6F4;
+  --blue: #2E6B4F; --purple: #1F4D39;
+  --border: rgba(0,0,0,0.08);
+  /* 版块宽度：中间向两边约占画面 70% */
+  --wrap: min(70vw, 1240px);
+  /* 导航栏比版块更宽，居中 */
+  --nav-wrap: min(88vw, 1560px);
+}
+
+/* ===== 顶部导航栏 ===== */
+.navbar-wrap {
+  position: sticky; top: 0; z-index: 100;
+  width: 100%; margin: 0;
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--border);
+}
+.navbar {
+  width: var(--nav-wrap); max-width: none;
+  margin: 0 auto;
+  background: transparent;
+  display: flex; align-items: center; justify-content: space-between;
+  position: relative;
+  padding: 13px 0;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+}
+.navbar-wrap.nav-floating {
+  width: var(--nav-wrap);
+  margin: 0 auto;
+  background: transparent;
+  border-bottom: none;
+  top: 16px;
+}
+.navbar-wrap.nav-floating .navbar {
+  width: 100%;
+  padding: 13px 30px;
+  border-radius: 18px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.07);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+.nav-left { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 0.9rem; }
+.nav-logo-img { width: 46px; height: 46px; object-fit: contain; flex-shrink: 0; }
+.nav-title-zh { font-size: 1.3rem; font-weight: 700; color: var(--text); letter-spacing: 0.5px; line-height: 1.25; }
+.nav-title-en { font-size: 0.74rem; color: var(--text-light); font-weight: 500; letter-spacing: 0.5px; display: block; }
+.nav-tabs { display: flex; gap: 6px; align-items: center; margin: 0 auto; }
+.nav-item { position: relative; }
+.nav-tab {
+  padding: 12px 24px; border-radius: 12px; font-weight: 600;
+  font-size: 1.02rem; cursor: pointer; border: none;
+  background: transparent; color: var(--text);
+  transition: all 0.2s ease; font-family: inherit;
+  display: flex; flex-direction: column; align-items: center; line-height: 1.2;
+  white-space: nowrap; flex-shrink: 0;
+}
+.nav-tab:hover { background: rgba(0,0,0,0.05); }
+.nav-item.active > .nav-tab { background: var(--blue); color: white; }
+
+/* 下拉列表（整体居中、条目居中对齐） */
+.nav-sub {
+  position: absolute; top: calc(100% + 8px); left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0,0,0,0.08); border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.14);
+  padding: 8px; min-width: 168px;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.08s ease, transform 0.08s ease, visibility 0s linear 0.08s;
+  z-index: 120;
+}
+.nav-sub::before {
+  content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px;
+}
+.nav-item.has-sub:hover .nav-sub,
+.nav-item.has-sub:focus-within .nav-sub,
+.nav-item.has-sub.sub-open .nav-sub {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+  transition: opacity 0s, transform 0.06s ease, visibility 0s;
+}
+.nav-sub button {
+  display: block; width: 100%; text-align: center;
+  padding: 10px 18px; border: none; background: transparent;
+  font-family: inherit; font-size: 0.88rem; font-weight: 600;
+  color: var(--text); border-radius: 8px; cursor: pointer;
+  transition: background 0.15s ease; white-space: nowrap;
+}
+.nav-sub button:hover { background: var(--bg-soft); color: var(--text); }
+.lang-btn {
+  position: absolute; right: 26px; top: 50%; transform: translateY(-50%);
+  border: 1.5px solid var(--blue); background: transparent;
+  color: var(--text); padding: 7px 16px; border-radius: 999px;
+  font-size: 0.8rem; font-weight: 600; cursor: pointer;
+  font-family: inherit; transition: all 0.2s ease; white-space: nowrap;
+}
+.lang-btn:hover { background: var(--blue); color: white; }
+
+/* ===== 页内导航（整体居中） ===== */
+.anchor-nav {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 10px; margin-top: 28px; max-width: 760px;
+}
+.anchor-nav a {
+  font-size: 0.86rem; font-weight: 600; color: var(--text);
+  text-decoration: none; background: white;
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 9px 22px; border-radius: 999px;
+  transition: all 0.22s ease; white-space: nowrap;
+}
+.anchor-nav a:hover {
+  background: var(--blue); color: white;
+  border-color: var(--blue); transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px rgba(46,107,79,0.5);
+}
+
+/* ===== 页面切换 ===== */
+.page { display: none; animation: fadeIn 0.5s ease; }
+.page.active { display: block; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== 首页-Hero（全宽、内容居中、纯白底） ===== */
+.hero {
+  width: 100%; margin: 0;
+  padding: clamp(56px, 6vw, 80px) 24px clamp(20px, 2.4vw, 30px);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: 2px;
+  background: #FFFFFF;
+}
+#home-hero[hidden] { display: none; }
+.hero-logo { width: clamp(110px, 12vw, 160px); height: auto; flex-shrink: 0; margin-bottom: 6px; }
+
+/* ===== 内页 Hero（首页 hero 的缩小版：logo 变小且靠右） ===== */
+.hero-sub {
+  width: var(--wrap); margin: 0 auto;
+  padding: clamp(30px, 3.6vw, 48px) 0 clamp(14px, 1.6vw, 22px);
+  display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between;
+  gap: clamp(16px, 2vw, 26px);
+  text-align: left; background: #FFFFFF;
+}
+.hero-sub-logo { width: clamp(58px, 6vw, 84px); height: auto; flex-shrink: 0; }
+.hero-sub h1 {
+  font-size: clamp(1.5rem, 3vw, 2.15rem);
+  font-weight: 700; line-height: 1.2; letter-spacing: 0.04em;
+  color: var(--text); margin-bottom: 4px;
+}
+.hero-sub .en-title {
+  font-size: clamp(0.68rem, 1.1vw, 0.8rem);
+  color: var(--text-light); font-weight: 500;
+  letter-spacing: 2.2px; text-transform: uppercase;
+}
+@media (max-width: 800px) {
+  .hero-sub { padding-top: 26px; }
+}
+.hero-text { min-width: 0; max-width: 860px; width: 100%; text-align: center; }
+.hero-text h1 {
+  font-size: clamp(2rem, 4.6vw, 3.1rem);
+  font-weight: 700; line-height: 1.15; letter-spacing: 0.04em;
+  color: #1F4D39; margin-bottom: 8px;
+}
+.hero-text .en-title {
+  font-size: clamp(0.72rem, 1.3vw, 0.88rem);
+  color: var(--text-light);
+  font-weight: 500; letter-spacing: 2.5px;
+  text-transform: uppercase; margin-bottom: 6px;
+}
+.hero-text p { font-size: clamp(0.85rem, 1.35vw, 1rem); color: #515154; line-height: 1.85; margin: 24px auto 0; white-space: normal; text-align: center; }
+.hero-pills { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 26px; }
+.hero-pills span {
+  font-size: 0.8rem; font-weight: 600; color: #515154;
+  background: rgba(46,107,79,0.08); border: 1px solid rgba(46,107,79,0.16);
+  padding: 7px 16px; border-radius: 999px;
+}
+@media (max-width: 800px) {
+  .hero { padding-top: 64px; }
+}
+
+/* ===== 通用 ===== */
+.section { width: var(--wrap); margin: 0 auto; padding: 72px 0; scroll-margin-top: 160px; }
+#home-about { padding-top: 46px; scroll-margin-top: 130px; }
+.section-soft { width: var(--wrap); margin: 0 auto; padding: 72px 0; scroll-margin-top: 160px; }
+.section-soft > .inner { max-width: 100%; margin: 0 auto; }
+.section-title {
+  font-size: clamp(1.6rem, 3.4vw, 2.2rem);
+  font-weight: 700; letter-spacing: 0.01em; margin-bottom: 26px; color: var(--text);
+}
+@media (max-width: 800px) {
+  .section { padding: 48px 0; }
+  .section-soft { padding: 48px 0; }
+}
+
+/* ===== 滚动上滑动画（PPT 式） ===== */
+.reveal {
+  opacity: 0; transform: translateY(48px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.in {
+  opacity: 1; transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ===== 网格 4 列 ===== */
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+@media (max-width: 1100px) { .grid-4 { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 800px)  { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px)  { .grid-4 { grid-template-columns: 1fr; } }
+
+/* ===== 实验室简介（左图右文，照片按原比例不裁剪） ===== */
+.about-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr); gap: 52px; align-items: center; }
+@media (max-width: 800px) { .about-grid { grid-template-columns: 1fr; gap: 28px; } }
+.about-image { border-radius: 22px; overflow: hidden; box-shadow: 0 20px 40px -16px rgba(0,0,0,0.12); }
+.about-image img { width: 100%; height: auto; display: block; }
+.about-text h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 20px; letter-spacing: -0.02em; }
+.about-text p { font-size: 0.98rem; color: #515154; line-height: 1.85; margin-bottom: 14px; }
+
+/* ===== 最新动态-分类标签（固定栏：全部动态 / 学术动态 / 生活动态） ===== */
+.news-tabs {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 10px; margin: -8px 0 32px;
+  padding: 12px 0;
+  background: #FFFFFF;
+}
+.news-tab {
+  font-family: inherit; font-size: 0.88rem; font-weight: 600;
+  color: var(--text); background: white;
+  border: 1px solid rgba(0,0,0,0.12);
+  padding: 9px 24px; border-radius: 999px; cursor: pointer;
+  transition: all 0.22s ease;
+}
+.news-tab:hover { border-color: rgba(0,0,0,0.28); color: var(--text); transform: translateY(-2px); }
+.news-tab.active { background: var(--blue); border-color: var(--blue); color: white; box-shadow: 0 10px 22px -12px rgba(46,107,79,0.65); }
+
+/* ===== 最新动态（公众号式卡片：大图在上、文字在图下） ===== */
+.news-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+@media (max-width: 1100px) { .news-cards { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px)  { .news-cards { grid-template-columns: 1fr; } }
+.news-card {
+  display: flex; flex-direction: column; cursor: pointer;
+  background: white; border: 1px solid var(--border); border-radius: 16px;
+  padding: 10px 10px 16px;
+  transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.3s ease;
+}
+.news-card:hover { transform: translateY(-6px); box-shadow: 0 22px 44px -20px rgba(0,0,0,0.18); }.news-date-row {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 8px; margin-bottom: 12px;
+}
+.news-date {
+  font-size: 0.8rem; font-weight: 700; color: var(--text-light); letter-spacing: 0.5px;
+}
+.news-cat-chip {
+  font-size: 0.68rem; font-weight: 600; color: #515154;
+  background: rgba(0,0,0,0.05); padding: 3px 10px; border-radius: 999px;
+  white-space: nowrap;
+}
+.news-thumb {
+  position: relative; aspect-ratio: 16/10; border-radius: 0;
+  overflow: hidden; margin-bottom: 14px;
+}
+.news-thumb .fallback {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.4rem;
+  background: #EDF3EF;
+}
+.news-thumb img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: contain; background: #FFFFFF; padding: 8px;
+}
+.news-card h4 {
+  font-size: 0.98rem; font-weight: 700; line-height: 1.6;
+  letter-spacing: 0; margin: 0 6px; min-height: 4.8em;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.news-card .news-meta {
+  margin: 10px 6px 0; display: flex; align-items: center; gap: 8px;
+  font-size: 0.76rem; color: var(--text-light);
+  align-self: flex-start;
+}
+.news-date-text { color: #9A9E9B; font-size: 0.78rem; }
+
+/* ===== 完整动态页（图文报道列表） ===== */
+.news-full-list { display: flex; flex-direction: column; gap: 0; }
+.news-full-item {
+  display: grid; grid-template-columns: 300px 1fr; gap: 32px;
+  padding: 36px 0; border-bottom: 1px solid var(--border);
+  scroll-margin-top: 160px; cursor: pointer;
+}
+.news-full-item:first-child { padding-top: 0; }
+.news-full-item.flash { animation: flashBg 1.6s ease; }
+@keyframes flashBg {
+  0%, 40% { background: rgba(46,107,79,0.09); }
+  100% { background: transparent; }
+}
+.news-full-thumb {
+  aspect-ratio: 16/10; border-radius: 0; overflow: hidden;
+  background: #EDF3EF; display: flex; align-items: center; justify-content: center;
+  font-size: 2.6rem; position: relative;
+}
+.news-full-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.news-full-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.news-full-date { font-size: 0.82rem; color: var(--text-light); font-weight: 600; }
+.news-full-tag {
+  font-size: 0.72rem; font-weight: 700; color: #515154;
+  background: rgba(0,0,0,0.05); padding: 2px 10px; border-radius: 999px;
+}
+.news-full-item h3 { font-size: 1.25rem; font-weight: 700; line-height: 1.5; margin-bottom: 12px; }
+.news-full-item p { font-size: 0.95rem; color: #515154; line-height: 1.85; }
+.news-full-link {
+  display: inline-block; margin-top: 14px; color: var(--text);
+  font-size: 0.85rem; font-weight: 700; text-decoration: none;
+}
+.news-full-link:hover { text-decoration: underline; }
+.news-full-more {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-top: 14px; color: var(--text); font-weight: 600; font-size: 0.85rem;
+}
+/* 新闻详情（学校官网式） */
+.news-detail-nav { display: flex; gap: 12px; margin-bottom: 32px; }
+.news-back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: inherit; font-size: 0.88rem; font-weight: 600;
+  color: var(--text); background: white;
+  border: 1px solid rgba(0,0,0,0.12); border-radius: 999px;
+  padding: 9px 20px; cursor: pointer; transition: all 0.2s ease;
+}
+.news-back-btn:hover { border-color: rgba(0,0,0,0.28); color: var(--text); transform: translateY(-2px); }
+.news-back-btn.ghost { color: var(--text-light); }
+.news-article { max-width: 760px; margin: 0 auto; }
+.news-article-meta {
+  display: flex; justify-content: center; align-items: center; gap: 12px;
+  font-size: 0.85rem; color: var(--text-light); margin-bottom: 18px;
+}
+.news-article-title {
+  font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700;
+  line-height: 1.45; text-align: center; color: var(--text); margin-bottom: 32px;
+}
+.news-article-hero {
+  aspect-ratio: 16/9; border-radius: 0; overflow: hidden;
+  background: #EDF3EF; display: flex; align-items: center; justify-content: center;
+  font-size: 4rem; position: relative; margin-bottom: 36px;
+}
+.news-article-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.news-article-body p {
+  font-size: 1rem; color: #43473F; line-height: 2.05;
+  margin-bottom: 18px; text-align: justify;
+}
+.news-article .news-full-link { display: block; text-align: center; margin-top: 28px; font-size: 0.92rem; }
+@media (max-width: 800px) {
+  .news-full-item { grid-template-columns: 1fr; gap: 16px; }
+}
+
+/* ===== 首页-研究方向（左文右图卡片 · 悬停轻晃 · 滚动高亮） ===== */
+.research-alternating { display: flex; flex-direction: column; gap: 22px; }
+.research-row {
+  display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(210px, 0.65fr);
+  gap: 30px; align-items: center;
+  background: transparent; border: none; border-radius: 22px;
+  padding: 28px 0;
+  transition: transform 0.3s ease;
+}
+.research-row:nth-child(even) { grid-template-columns: minmax(210px, 0.65fr) minmax(0, 1.55fr); }
+.research-row:nth-child(even) .research-info { order: 2; }
+.research-row:nth-child(even) .research-visual { order: 1; }
+.research-row:hover {
+  animation: researchWiggle 0.55s ease forwards;
+}
+@keyframes researchWiggle {
+  0%   { transform: translateY(0) scale(1) rotate(0deg); }
+  30%  { transform: translateY(-5px) scale(1.012) rotate(0.5deg); }
+  60%  { transform: translateY(-4px) scale(1.01) rotate(-0.5deg); }
+  100% { transform: translateY(-4px) scale(1.01) rotate(0deg); }
+}
+.research-num {
+  font-size: 0.78rem; font-weight: 800; color: var(--text-light);
+  letter-spacing: 2px; margin-bottom: 12px;
+}
+.research-info h3 { font-size: 1.45rem; font-weight: 700; margin-bottom: 12px; line-height: 1.5; color: var(--text); }
+.research-info p { font-size: 0.92rem; color: #515154; line-height: 1.85; }
+.research-visual {
+  aspect-ratio: 4 / 3; border-radius: 18px; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; text-align: center;
+  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.research-visual .rv-img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.research-row:hover .research-visual { transform: scale(1.05) rotate(-1.5deg); }
+.research-visual .rv-emoji { font-size: 3.1rem; line-height: 1; }
+.research-visual .rv-cap {
+  display: none;
+}
+@media (max-width: 800px) {
+  .research-row, .research-row:nth-child(even) { grid-template-columns: 1fr; padding: 20px 0; gap: 20px; }
+  .research-row:nth-child(even) .research-info { order: 1; }
+  .research-row:nth-child(even) .research-visual { order: 2; }
+}
+
+/* ===== 首页-精选成果 ===== */
+.highlight-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+@media (max-width: 800px) { .highlight-cards { grid-template-columns: 1fr; } }
+.highlight-card {
+  background: white; border: 1px solid var(--border); border-radius: 16px;
+  padding: 10px 10px 18px;
+  display: flex; flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.3s ease;
+}
+.highlight-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 44px -20px rgba(0,0,0,0.18);
+}
+.highlight-thumb {
+  position: relative; aspect-ratio: 16/9; overflow: hidden; margin-bottom: 14px;
+}
+.highlight-thumb img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; transition: transform 0.5s ease;
+}
+.highlight-card:hover .highlight-thumb img { transform: scale(1.06); }
+.highlight-card h4 { font-size: 1.05rem; font-weight: 700; margin: 2px 8px 6px; color: var(--text); text-align: center; }
+.highlight-card .highlight-source {
+  font-size: 0.8rem; color: var(--text-light); line-height: 1.65;
+  margin: 0 8px; text-align: center;
+}
+.highlight-source a { color: var(--blue); text-decoration: none; }
+.highlight-source a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.more-wrap { text-align: center; margin-top: 48px; }
+.more-btn {
+  display: inline-block; background: #1D1D1F; color: white;
+  padding: 14px 36px; border-radius: 999px;
+  font-weight: 600; font-size: 0.9rem;
+  cursor: pointer; border: none; font-family: inherit;
+  transition: all 0.25s ease; letter-spacing: 0.2px;
+}
+.more-btn:hover { background: var(--blue); transform: translateY(-2px); }
+
+/* ===== 教师寄语（引用卡片） ===== */
+.msg-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 44px; align-items: stretch; }
+@media (max-width: 800px) { .msg-grid { grid-template-columns: 1fr; } }
+.msg-card {
+  background: transparent; border: none; border-radius: 20px;
+  padding: 24px 8px 18px; position: relative;
+  display: flex; flex-direction: column;
+}
+.msg-card::before {
+  content: "\201C"; position: absolute; top: 0; left: 0;
+  font-size: 3.2rem; line-height: 1; color: rgba(46,107,79,0.28);
+  font-family: Georgia, 'Times New Roman', serif;
+}
+.msg-card p { margin: 28px 0 24px; font-size: 0.97rem; line-height: 1.95; color: #43473F; flex: 1; }
+.msg-who { display: flex; align-items: flex-end; gap: 13px; margin-top: auto; }
+.msg-avatar {
+  width: 52px; height: 68px; border-radius: 12px; overflow: hidden;
+  background: var(--bg-soft); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.msg-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.msg-name { font-weight: 700; font-size: 0.95rem; line-height: 1.3; }
+.msg-role { font-size: 0.76rem; color: var(--text-light); }
+
+/* ===== 首页-团队成员拼贴（左文案 + 右照片格） ===== */
+.team-mosaic { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 215px; gap: 14px; }
+.mosaic-intro {
+  grid-column: span 2; background: transparent; border-radius: 20px;
+  padding: 20px 8px; display: flex; flex-direction: column; justify-content: center;
+}
+.mosaic-intro h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 14px; color: var(--text); }
+.mosaic-intro p { font-size: 0.92rem; color: #515154; line-height: 1.85; }
+.mosaic-tile {
+  position: relative; border-radius: 20px; overflow: hidden; cursor: pointer;
+  background: linear-gradient(160deg, #35795B 0%, #1F4D39 100%);
+  display: flex; align-items: flex-end;
+  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.35s ease;
+}
+.mosaic-tile:hover { transform: translateY(-6px); box-shadow: 0 26px 48px -20px rgba(0,0,0,0.42); }
+.mosaic-tile::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 42%, rgba(10,25,18,0.66) 100%);
+}
+.mosaic-tile .tile-face {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 4rem; color: rgba(255,255,255,0.92);
+}
+.mosaic-tile .tile-face img { width: 100%; height: 100%; object-fit: cover; }
+.mosaic-tile .tile-info { position: relative; z-index: 2; padding: 18px 20px; color: white; }
+.mosaic-tile .tile-info b { display: block; font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+.mosaic-tile .tile-info span { font-size: 0.78rem; opacity: 0.85; }
+.mosaic-tile.tile-blank {
+  background: #1D1D1F;
+}
+.mosaic-tile.tile-blank .tile-face { opacity: 0.55; }
+.mosaic-all {
+  background: white; border: 1.5px dashed rgba(0,0,0,0.16); border-radius: 20px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; cursor: pointer; font-weight: 700; font-size: 0.92rem; color: var(--text);
+  transition: all 0.25s ease; font-family: inherit;
+}
+.mosaic-all:hover { border-color: var(--blue); transform: translateY(-4px); }
+.mosaic-all .arrow { font-size: 1.3rem; }
+@media (max-width: 1100px) { .team-mosaic { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 200px; } }
+@media (max-width: 560px)  { .team-mosaic { grid-template-columns: 1fr; grid-auto-rows: 190px; } .mosaic-intro { grid-column: span 1; padding: 28px 24px; } }
+
+/* ===== 首页-实验室风采（轮播大图 + 名字） ===== */
+.gallery-show { position: relative; border-radius: 18px; overflow: hidden; aspect-ratio: 16/9; background: var(--bg-soft); }
+@media (max-width: 800px) { .gallery-show { aspect-ratio: 4/3; } }
+.gallery-slide {
+  position: absolute; inset: 0; opacity: 0; transition: opacity 0.8s ease;
+  display: flex; align-items: center; justify-content: center;
+}
+.gallery-slide.on { opacity: 1; }
+.gallery-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gallery-caption {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
+  padding: 48px 28px 20px; color: #fff; font-size: 1.05rem; font-weight: 700;
+  background: linear-gradient(180deg, transparent, rgba(10,16,13,0.72));
+  text-shadow: 0 1px 8px rgba(0,0,0,0.4);
+}
+.gallery-dots { position: absolute; bottom: 18px; right: 22px; z-index: 4; display: flex; gap: 7px; }
+.gallery-dot {
+  width: 9px; height: 9px; border-radius: 50%; border: none; padding: 0;
+  background: rgba(255,255,255,0.45); cursor: pointer; transition: all 0.25s;
+}
+.gallery-dot.on { background: #fff; width: 22px; border-radius: 999px; }
+.gallery-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 4;
+  width: 42px; height: 42px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.85); color: #1D1D1F; font-size: 1.25rem;
+  cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center;
+}
+.gallery-nav:hover { background: #fff; }
+.gallery-nav.prev { left: 16px; }
+.gallery-nav.next { right: 16px; }
+
+/* ===== 首页-加入我们简版（4 张统一 · 有层次） ===== */
+.join-mini-card {
+  background: transparent; border-radius: 22px; padding: 16px 12px;
+  border: none;
+  text-align: center; position: relative; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center;
+  transition: all 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.join-mini-card:hover {
+  transform: translateY(-8px);
+}
+.join-mini-card .icon {
+  font-size: 1.7rem; width: 62px; height: 62px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 20px; background: rgba(46,107,79,0.08);
+  margin-bottom: 16px; transition: transform 0.3s ease;
+}
+.join-mini-card:hover .icon { transform: scale(1.08) rotate(-4deg); }
+.join-mini-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+.join-mini-card p { font-size: 0.8rem; color: var(--text-light); line-height: 1.6; }
+.join-mini-card .card-index {
+  position: absolute; top: 14px; right: 18px;
+  font-size: 0.78rem; font-weight: 800; color: rgba(46,107,79,0.28);
+  letter-spacing: 1px;
+}
+
+/* ===== 研究成果页 ===== */
+.result-section { margin-bottom: 72px; scroll-margin-top: 180px; }
+.result-section h3 {
+  font-size: 1.3rem; font-weight: 700; margin-bottom: 24px;
+  display: flex; align-items: center; gap: 10px;
+}
+.result-section h3::before {
+  content: ""; width: 4px; height: 20px;
+  background: linear-gradient(180deg, var(--blue), var(--purple));
+  border-radius: 2px;
+}
+.feature-item {
+  background: white; border-radius: 20px; padding: 36px 34px;
+  border: 1px solid var(--border); margin-bottom: 24px;
+}
+.feature-kicker {
+  display: inline-block; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 2px; color: #515154;
+  background: rgba(0,0,0,0.05); padding: 5px 14px;
+  border-radius: 999px; margin-bottom: 16px;
+}
+.feature-title {
+  font-size: clamp(1.1rem, 1.8vw, 1.32rem); font-weight: 700;
+  line-height: 1.65; color: var(--text); margin-bottom: 22px;
+}
+.feature-img {
+  display: block; width: 100%; max-width: 920px; margin: 0 auto 24px;
+  border-radius: 12px; border: 1px solid var(--border);
+}
+.feature-questions {
+  list-style: none; margin: 0 0 26px; padding: 22px 26px;
+  background: #F5F8F5; border-left: 4px solid var(--blue);
+  border-radius: 0 14px 14px 0;
+}
+.feature-questions li {
+  position: relative; padding-left: 22px; margin-bottom: 12px;
+  font-size: 0.95rem; line-height: 1.8; color: #2C3B33; font-weight: 500;
+}
+.feature-questions li:last-child { margin-bottom: 0; }
+.feature-questions li::before {
+  content: ""; position: absolute; left: 2px; top: 0.72em;
+  width: 7px; height: 7px; border-radius: 50%; background: var(--blue);
+}
+.feature-body p {
+  font-size: 0.95rem; color: #43473F; line-height: 1.95;
+  margin-bottom: 18px; text-align: justify;
+}
+.feature-figure { margin: 4px 0 26px; }
+.feature-figure figcaption {
+  font-size: 0.76rem; color: var(--text-light);
+  text-align: center; margin-top: 9px;
+}
+.feature-note {
+  font-size: 0.88rem; line-height: 1.85; color: #515154;
+  background: var(--bg-soft); border-radius: 14px;
+  padding: 20px 22px; margin-bottom: 24px;
+}
+.feature-item .feature-cite {
+  font-size: 0.88rem; color: #515154; line-height: 1.7;
+  padding-bottom: 20px; margin-bottom: 20px;
+  border-bottom: 1px solid var(--border); font-style: italic;
+}
+.feature-item .feature-cite .doi-link {
+  display: block; margin-top: 12px; font-style: normal;
+  font-size: 0.82rem; word-break: break-all; font-weight: 600;
+}
+.feature-images { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+@media (max-width: 700px) { .feature-images { grid-template-columns: 1fr; } }
+.feature-image-box {
+  aspect-ratio: 16/10; background: var(--bg-soft); border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-light); font-size: 0.82rem;
+  border: 2px dashed rgba(0,0,0,0.1); overflow: hidden;
+}
+/* 重要成果：单页精简版面（无弹窗） */
+.feature-card {
+  background: white; border: 1px solid var(--border); border-radius: 20px;
+  padding: 36px 34px; margin-bottom: 24px;
+}
+.feature-card .feature-title { margin-bottom: 18px; }
+.feature-brief { font-size: 0.95rem; color: #43473F; line-height: 1.95; margin-bottom: 16px; text-align: justify; }
+.feature-findings {
+  margin: 22px 0 24px; padding: 20px 24px;
+  background: #F5F8F5; border-left: 4px solid var(--blue);
+  border-radius: 0 14px 14px 0;
+}
+.feature-findings h5 {
+  font-size: 0.92rem; font-weight: 700; color: var(--text);
+  margin-bottom: 10px;
+}
+.feature-findings ul { list-style: none; }
+.feature-findings li {
+  position: relative; padding-left: 20px; margin-bottom: 9px;
+  font-size: 0.91rem; line-height: 1.8; color: #43473F;
+}
+.feature-findings li:last-child { margin-bottom: 0; }
+.feature-findings li::before {
+  content: ""; position: absolute; left: 2px; top: 0.7em;
+  width: 7px; height: 7px; border-radius: 50%; background: var(--blue);
+}
+.feature-card .feature-cite {
+  font-size: 0.88rem; color: #515154; line-height: 1.7;
+  padding-top: 18px; border-top: 1px solid var(--border); font-style: italic;
+}
+.feature-card .feature-cite .doi-link {
+  display: block; margin-top: 12px; font-style: normal;
+  font-size: 0.82rem; word-break: break-all; font-weight: 600;
+}
+.project-item .cite b { color: var(--text); }
+.project-year {
+  display: inline-block; min-width: 56px; text-align: center;
+  font-size: 0.78rem; font-weight: 800; color: #515154;
+  background: rgba(0,0,0,0.05); padding: 3px 10px;
+  border-radius: 8px; margin-right: 10px; vertical-align: 1px;
+}
+/* ===== 研究成果-发表成果（顶部一排方块年份 tab，点击切换） ===== */
+.papers-meta {
+  font-size: 0.84rem; color: var(--text-light); line-height: 1.75;
+  margin: -8px 0 18px;
+}
+.year-tabs {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-bottom: 26px;
+}
+.year-tab {
+  min-width: 78px; padding: 14px 10px;
+  font-family: inherit; font-size: 1.02rem; font-weight: 800;
+  letter-spacing: 0.5px; color: var(--text);
+  background: white; border: 1.5px solid rgba(0,0,0,0.12);
+  border-radius: 12px; cursor: pointer; text-align: center;
+  transition: all 0.2s ease;
+}
+.year-tab:hover { border-color: rgba(0,0,0,0.28); color: var(--text); transform: translateY(-2px); }
+.year-tab.active {
+  background: var(--blue); border-color: var(--blue); color: white;
+  box-shadow: 0 12px 24px -12px rgba(46,107,79,0.6);
+}
+.year-panel { display: none; }
+.year-panel.active { display: block; animation: fadeIn 0.35s ease; }
+.paper-item {
+  padding: 9px 0 9px 18px;
+  border-left: 2px solid rgba(46,107,79,0.25);
+  margin-bottom: 2px;
+  transition: border-color 0.25s ease;
+}
+.paper-item:hover { border-left-color: rgba(0,0,0,0.5); }
+.paper-item .cite { font-size: 0.9rem; color: #424245; line-height: 1.7; }
+.doi-link {
+  display: inline-block; color: var(--text); text-decoration: underline;
+  font-size: 0.78rem; margin-left: 8px; font-weight: 600;
+}
+.doi-link:hover { text-decoration: underline; }
+.project-card {
+  background: white; border-radius: 18px; padding: 28px 26px;
+  border: 1px solid var(--border); transition: all 0.3s ease;
+}
+.project-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.1); }
+.project-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 10px; line-height: 1.5; }
+.project-card p { font-size: 0.86rem; color: #515154; line-height: 1.7; }
+.toolbox-item {
+  background: white; border-radius: 18px; padding: 26px 24px;
+  border: 1px solid var(--border); transition: all 0.3s ease;
+}
+#results-toolbox-content { grid-template-columns: minmax(0, 820px); }
+.toolbox-item:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.1); }
+.toolbox-item .tool-type {
+  display: inline-block;
+  background: rgba(0,0,0,0.05); color: #515154;
+  font-weight: 700; font-size: 0.7rem;
+  padding: 3px 10px; border-radius: 999px; margin-bottom: 12px;
+}
+.toolbox-item h4 { font-size: 0.98rem; font-weight: 700; margin-bottom: 8px; }
+.toolbox-item p { font-size: 0.85rem; color: #515154; line-height: 1.65; }
+.toolbox-item .auth-note {
+  font-size: 0.75rem; color: #24553E;
+  background: #EEF6F1; padding: 4px 10px;
+  border-radius: 6px; display: inline-block; margin-top: 10px;
+}
+
+/* ===== 团队成员 ===== */
+.group-header {
+  display: flex; align-items: center; gap: 12px;
+  margin: 48px 0 20px; font-size: 1.15rem; font-weight: 700;
+  scroll-margin-top: 180px;
+}
+.group-header::before {
+  content: ""; width: 4px; height: 20px;
+  background: linear-gradient(180deg, var(--blue), var(--purple));
+  border-radius: 2px;
+}
+.group-header:first-of-type { margin-top: 0; }
+/* ===== 团队成员卡片（竖版照片 · 姓名+身份叠底） ===== */
+.member-card {
+  position: relative; border-radius: 16px; overflow: hidden;
+  aspect-ratio: 3 / 4; cursor: pointer; background: var(--bg-soft);
+  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.35s ease;
+}
+.member-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 26px 48px -20px rgba(20,19,14,0.4);
+}
+.member-photo { position: absolute; inset: 0; }
+.member-photo img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform 0.5s ease;
+}
+.member-card:hover .member-photo img { transform: scale(1.07); }
+.member-photo .member-emoji {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  font-size: 3rem; background: var(--bg-soft);
+}
+.member-card::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, transparent 45%, rgba(12,16,14,0.18) 62%, rgba(12,16,14,0.82) 100%);
+}
+.member-info {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+  padding: 18px 18px 16px; color: #fff;
+}
+.member-name { font-weight: 700; font-size: 1.05rem; margin-bottom: 3px; }
+.member-tag { font-size: 0.78rem; font-style: italic; opacity: 0.9; background: none; padding: 0; }
+
+/* ===== 挂绳翻牌成员卡（在读学生/RA/往届） ===== */
+.hang-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 52px 28px; padding-top: 40px;
+}
+@media (max-width: 1100px) { .hang-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 800px)  { .hang-grid { grid-template-columns: repeat(2, 1fr); gap: 44px 20px; } }
+@media (max-width: 480px)  { .hang-grid { grid-template-columns: 1fr; max-width: 300px; margin: 0 auto; } }
+.hang-item { position: relative; perspective: 1300px; }
+.hang-item::before {
+  content: ""; position: absolute; top: -24px; left: -14px; right: -14px;
+  height: 2px; background: #C9C4B8; border-radius: 1px; z-index: 1;
+}
+.hang-string {
+  position: absolute; top: -24px; left: 50%; width: 2px; height: 22px;
+  background: #B5B0A4; transform: translateX(-50%); z-index: 2;
+}
+.hang-string::after {
+  content: ""; position: absolute; bottom: -5px; left: 50%;
+  transform: translateX(-50%);
+  width: 15px; height: 11px; background: #8E8A80; border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+}
+.hang-item:nth-child(4n+1) .flip-card { transform: rotate(-1.6deg); }
+.hang-item:nth-child(4n+2) .flip-card { transform: rotate(1.1deg); }
+.hang-item:nth-child(4n+3) .flip-card { transform: rotate(-0.7deg); }
+.hang-item:nth-child(4n+4) .flip-card { transform: rotate(1.5deg); }
+.flip-card {
+  position: relative; transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transform: rotateY(0deg);
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+  cursor: pointer; will-change: transform;
+}
+.hang-item.flipped .flip-card { transform: rotateY(180deg) !important; }
+.hang-item:not(.flipped):hover .flip-card { transform: rotate(0deg) translateY(-6px); }
+.flip-face {
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  pointer-events: none; transform-style: flat;
+}
+.hang-item:not(.flipped) .flip-front,
+.hang-item.flipped .flip-back { pointer-events: auto; }
+.flip-front {
+  position: relative; z-index: 2;
+  transform: rotateY(0deg) translateZ(1px);
+  -webkit-transform: rotateY(0deg) translateZ(1px);
+}
+.hang-item.flipped .flip-front {
+  visibility: hidden;
+  transition: visibility 0s linear 0.35s;
+}
+.hang-item.flipped .member-card {
+  transform: rotateY(0deg) translateZ(1px) !important;
+  box-shadow: none;
+}
+.hang-item.flipped .member-card:hover .member-photo img { transform: none; }
+.flip-back {
+  position: absolute; inset: 0;
+  transform: rotateY(180deg) translateZ(1px);
+  -webkit-transform: rotateY(180deg) translateZ(1px);
+  background: white; border: 1px solid var(--border); border-radius: 16px;
+  padding: 22px 20px; display: flex; flex-direction: column;
+  box-shadow: 0 18px 36px -22px rgba(20,19,14,0.3);
+  z-index: 1; overflow: hidden; visibility: hidden;
+}
+.hang-item.flipped .flip-back { visibility: visible; }
+.flip-back-name { font-size: 1.12rem; font-weight: 700; color: var(--text); }
+.flip-back-role { font-size: 0.76rem; color: var(--text-light); margin-top: 3px; }
+.flip-back-bio {
+  font-size: 0.82rem; line-height: 1.7; color: #515154;
+  flex: 1; overflow: hidden; margin: 10px 0 14px;
+  display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical;
+}
+.hang-detail {
+  align-self: center; font-size: 0.8rem; font-weight: 700;
+  background: var(--blue); color: #FFFFFF; border: none; border-radius: 999px;
+  padding: 11px 22px; min-width: 132px; cursor: pointer; transition: background 0.2s, transform 0.2s;
+  position: relative; z-index: 3; pointer-events: auto;
+  box-shadow: 0 8px 18px -10px rgba(46,107,79,0.7);
+}
+.hang-detail:hover { background: #24553E; transform: translateY(-1px); }
+
+/* ===== 萌宠图鉴（重叠圆形头像轮播） ===== */
+.pet-carousel {
+  overflow: hidden; position: relative; padding: 28px 0 18px;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.pet-track {
+  display: flex; width: max-content;
+  animation: petScroll 26s linear infinite;
+}
+.pet-carousel:hover .pet-track { animation-play-state: paused; }
+@keyframes petScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.pet-card {
+  width: 128px; flex-shrink: 0; text-align: center;
+  margin-left: -18px; position: relative; cursor: default;
+  transition: transform 0.3s ease;
+}
+.pet-card:first-child { margin-left: 0; }
+.pet-card:hover { transform: translateY(-8px) scale(1.08); z-index: 5; }
+.pet-avatar {
+  width: 96px; height: 96px; border-radius: 50%; margin: 0 auto 10px;
+  background: var(--bg-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.4rem; border: 3px solid white;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08); overflow: hidden;
+}
+.pet-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.pet-name { font-weight: 700; font-size: 0.92rem; margin-bottom: 2px; }
+.pet-owner { font-size: 0.74rem; color: var(--text-light); }
+.pet-placeholder { opacity: 0.45; }
+
+/* ===== 详情面板 ===== */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000; display: flex;
+  align-items: center; justify-content: center; padding: 24px;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.16s ease, visibility 0s linear 0.16s;
+}
+.modal-overlay.open {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transition: opacity 0.16s ease, visibility 0s;
+}
+.modal {
+  background: white; border-radius: 28px;
+  width: 100%; max-width: 1080px; max-height: 90vh;
+  overflow: hidden; position: relative;
+  display: grid; grid-template-columns: 1fr 1fr;
+  animation: modalScale 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  box-shadow: 0 48px 96px -24px rgba(0,0,0,0.4);
+}
+@keyframes modalScale {
+  from { transform: scale(0.94); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.modal-left {
+  background: linear-gradient(135deg, #1D1D1F 0%, #424245 100%);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; min-height: 480px;
+}
+.modal-left video, .modal-left > img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.modal-left .avatar-large { font-size: 8rem; color: white; }
+/* 弹窗左侧竖版照片轮播 */
+.modal-gallery { position: relative; width: 100%; height: 100%; min-height: 480px; overflow: hidden; }
+.modal-gallery-track {
+  display: flex; height: 100%;
+  transition: transform 0.45s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.modal-gallery-slide {
+  flex: 0 0 100%; min-width: 100%; height: 100%; min-height: 480px;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-gallery-slide img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.mg-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 38px; height: 38px; border-radius: 50%;
+  background: rgba(255,255,255,0.85); border: none; cursor: pointer;
+  font-size: 1.3rem; color: #1D1D1F; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s ease; z-index: 5; line-height: 1;
+}
+.mg-nav:hover { background: white; transform: translateY(-50%) scale(1.08); }
+.mg-nav.prev { left: 12px; }
+.mg-nav.next { right: 12px; }
+.mg-dots {
+  position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 7px; z-index: 5;
+}
+.mg-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s ease;
+}
+.mg-dot.on { background: white; width: 20px; border-radius: 999px; }
+.modal-right { padding: 56px 48px; overflow-y: auto; max-height: 90vh; }
+.modal-close {
+  position: absolute; top: 20px; right: 20px;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,0.92); border: none;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; color: var(--text); z-index: 10;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+.modal-name { font-size: clamp(2.1rem, 3.6vw, 2.9rem); font-weight: 700; margin-bottom: 10px; }
+.modal-role {
+  display: inline-block;
+  background: rgba(0,0,0,0.05); color: #515154;
+  font-weight: 600; font-size: 0.75rem;
+  padding: 4px 12px; border-radius: 999px; margin-bottom: 28px;
+}
+.modal-field {
+  margin-bottom: 22px; padding-bottom: 22px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-field:last-child { border-bottom: none; }
+.modal-label {
+  font-size: 0.72rem; font-weight: 700;
+  color: var(--text-light); letter-spacing: 1px;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.modal-value { font-size: 0.95rem; color: var(--text); line-height: 1.7; white-space: pre-line; }
+.modal-value a { color: var(--text); text-decoration: underline; }
+.modal-pet {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--bg-soft); border-radius: 14px; padding: 14px 16px;
+}
+.modal-pet-avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: white; border: 2px solid white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; overflow: hidden; flex-shrink: 0;
+}
+.modal-pet-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ===== 动态 / 精选成果弹窗 ===== */
+.news-modal-fallback {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 6rem;
+  background: #EDF3EF;
+}
+.modal-left > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+.modal-name { margin-bottom: 14px; }
+.modal-list { padding-left: 18px; margin-top: 4px; }
+.modal-list li { margin-bottom: 9px; line-height: 1.7; }
+.news-modal-link {
+  display: inline-block; margin-top: 6px;
+  background: var(--blue); color: white;
+  padding: 12px 28px; border-radius: 999px;
+  font-weight: 600; font-size: 0.88rem; text-decoration: none;
+  transition: all 0.25s ease;
+}
+.news-modal-link:hover { background: #1F4D39; transform: translateY(-2px); }
+.modal-hint {
+  font-size: 0.78rem; color: var(--text-light);
+  margin-top: 26px; display: flex; align-items: center; gap: 6px;
+}
+
+/* ===== 加入我们完整页 ===== */
+.join-section-title {
+  font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700;
+  color: var(--text); margin-bottom: 28px;
+}
+
+/* —— 品牌动态字 —— */
+.brand-draw { text-align: center; margin: 8px 0 60px; }
+.brand-svg { width: min(600px, 90vw); height: auto; display: block; margin: 0 auto; }
+.brand-zh {
+  font-size: 58px; font-weight: 700; letter-spacing: 10px;
+  font-family: inherit;
+  fill: transparent; stroke: #1F4D39; stroke-width: 1;
+  stroke-dasharray: 1200; stroke-dashoffset: 1200;
+}
+.brand-draw.play .brand-zh {
+  animation: brandLoop 6.5s ease-in-out infinite;
+}
+@keyframes brandLoop {
+  0%   { stroke-dashoffset: 1200; fill: transparent; }
+  22%  { stroke-dashoffset: 0;    fill: transparent; }
+  34%  { fill: #1F4D39; }
+  82%  { stroke-dashoffset: 0;    fill: #1F4D39; }
+  96%  { stroke-dashoffset: 1200; fill: transparent; }
+  100% { stroke-dashoffset: 1200; fill: transparent; }
+}
+.brand-en {
+  font-size: 0.86rem; letter-spacing: 0.42em; color: var(--text-light);
+  margin-top: 12px; opacity: 0; transform: translateY(10px);
+  text-indent: 0.42em;
+}
+.brand-draw.play .brand-en { animation: brandFadeLoop 6.5s ease-in-out infinite; }
+@keyframes brandFadeLoop {
+  0%   { opacity: 0; transform: translateY(10px); }
+  26%  { opacity: 1; transform: translateY(0); }
+  84%  { opacity: 1; transform: translateY(0); }
+  94%  { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 0; transform: translateY(10px); }
+}
+.brand-line { width: min(320px, 62vw); height: 6px; margin: 20px auto 0; display: block; }
+.brand-line line {
+  stroke: var(--blue); stroke-width: 3; stroke-linecap: round;
+  stroke-dasharray: 320; stroke-dashoffset: 320;
+}
+.brand-draw.play .brand-line line { animation: brandLineLoop 6.5s ease-in-out infinite; }
+@keyframes brandLineLoop {
+  0%   { stroke-dashoffset: 320; }
+  30%  { stroke-dashoffset: 0; }
+  82%  { stroke-dashoffset: 0; }
+  94%  { stroke-dashoffset: 320; }
+  100% { stroke-dashoffset: 320; }
+}
+
+/* —— 加入清单（一行 4 张，与首页一致） + 联系我们 —— */
+.join-lead { font-size: 1rem; color: #515154; line-height: 1.85; margin-bottom: 30px; }
+.join-checklist { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.join-check {
+  background: white; border: 1px solid var(--border); border-radius: 18px;
+  padding: 26px 22px; transition: all 0.3s ease; text-align: center;
+}
+.join-check:hover { transform: translateY(-4px); box-shadow: 0 22px 44px -22px rgba(0,0,0,0.22); }
+.join-check .icon {
+  width: 56px; height: 56px; border-radius: 17px;
+  background: rgba(46,107,79,0.09); font-size: 1.55rem;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 15px;
+}
+.join-check h3 { font-size: 1.02rem; font-weight: 700; margin-bottom: 9px; }
+.join-check p { font-size: 0.86rem; color: #515154; line-height: 1.72; text-align: left; }
+.join-check a { color: var(--text); font-weight: 600; text-decoration: underline; }
+.join-check .join-link {
+  display: inline-block; margin-top: 14px; color: var(--blue);
+  font-size: 0.84rem; font-weight: 700; text-underline-offset: 3px;
+}
+.join-qr { display: block; width: 120px; height: 120px; object-fit: contain; margin: 12px auto 0; border-radius: 8px; border: 1px solid var(--border); }
+
+/* —— 联系我们（直接给邮箱，无表单） —— */
+.join-contact {
+  border-radius: 18px;
+  background: #FFFFFF; border: 1px solid var(--border);
+  color: var(--text); text-align: left;
+  padding: clamp(30px, 4vw, 42px) clamp(26px, 4vw, 48px);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: clamp(24px, 4vw, 48px);
+}
+.join-contact-text { flex: 1; min-width: 0; }
+.join-contact-logo {
+  width: clamp(90px, 12vw, 140px); flex-shrink: 0;
+}
+.join-contact-logo img { width: 100%; height: auto; display: block; }
+.join-contact h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 10px; }
+.join-contact p {
+  font-size: 0.92rem; line-height: 1.85; color: #515154;
+  margin-bottom: 18px; max-width: 640px;
+}
+.join-contact .contact-mail {
+  display: inline-block; color: var(--text); font-weight: 700; font-size: 1.05rem;
+  text-decoration: underline; text-underline-offset: 5px; letter-spacing: 0.3px;
+  transition: opacity 0.2s ease;
+}
+.join-contact .contact-mail:hover { opacity: 0.6; }
+.join-contact .contact-note { font-size: 0.8rem; color: #9A9E9B; margin-top: 16px; }
+@media (max-width: 640px) {
+  .join-contact { flex-direction: column; text-align: center; }
+  .join-contact p { margin-left: auto; margin-right: auto; }
+}
+@media (max-width: 900px) {
+  .join-checklist { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .join-checklist { grid-template-columns: 1fr; }
+}
+
+/* ===== 页脚 ===== */
+.footer {
+  background: var(--bg-soft); color: var(--text-light);
+  text-align: center; padding: 40px 24px; font-size: 0.82rem;
+  margin-top: 48px;
+}
+.footer strong { color: var(--text); font-weight: 600; }
+.footer-ack {
+  margin: 40px auto 0; line-height: 1.8; text-align: center;
+  white-space: nowrap; color: var(--text-light); font-size: 0.78rem;
+}
+@media (max-width: 800px) { .footer-ack { white-space: normal; } }
+
+/* ===== 移动端 ===== */
+@media (max-width: 1180px) {
+  .navbar { flex-wrap: wrap; gap: 6px 10px; }
+  .lang-btn { position: static; transform: none; }
+}
+@media (max-width: 800px) {
+  :root { --wrap: calc(100vw - 32px); }
+  .navbar-wrap { top: 0; margin-top: 0; }
+  .navbar-wrap.nav-floating { width: calc(100vw - 24px); top: 8px; }
+  .navbar { width: calc(100vw - 24px); padding: 8px 0; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .navbar-wrap.nav-floating .navbar { width: 100%; padding: 8px 12px; }
+  .lang-btn { position: static; transform: none; }
+  .nav-logo-img { width: 40px; height: 40px; }
+  .nav-title-zh { font-size: 1.05rem; letter-spacing: 0.5px; }
+  .nav-tabs { margin-left: 8px; gap: 2px; }
+  .nav-tabs { width: 100%; justify-content: center; }
+  .nav-tab { padding: 6px 8px; font-size: 0.74rem; }
+  .nav-sub { display: none; }
+  .section { padding: 44px 0; }
+  .hero-text p { white-space: normal; }
+  .anchor-nav { gap: 8px; }
+  .anchor-nav a { padding: 7px 16px; font-size: 0.8rem; }
+  .news-tab { padding: 7px 16px; font-size: 0.8rem; }
+  .modal { grid-template-columns: 1fr; max-height: 92vh; overflow-y: auto; }
+  .modal-left { min-height: 300px; max-height: 340px; }
+  .modal-right { padding: 36px 28px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     首页
+     ============================================================ -->
+<div class="hero" id="home-hero">
+  <img src="website-assets/01-brand/logo.png" alt="任智发展实验室 Logo" class="hero-logo" onerror="this.style.display='none'">
+  <div class="hero-text">
+    <h1>任智发展实验室</h1>
+    <div class="en-title">Renzhi Child Development Lab</div>
+    <p>我们关注家庭、同伴、老师甚至 AI 如何塑造儿童青少年的情绪、社交、道德、价值观与心理健康。</p>
+  </div>
+</div>
+
+<!-- ============================================================
+     顶部导航栏：首页 Hero 下方，滚动后固定在顶部
+     ============================================================ -->
+<div class="navbar-wrap nav-floating">
+  <nav class="navbar" aria-label="主导航">
+    <div class="nav-left">
+      <img src="website-assets/01-brand/logo_full.png" alt="任智发展实验室 Logo" class="nav-logo-img" onerror="this.onerror=null;this.src='website-assets/01-brand/logo.png'">
+      <div>
+        <div class="nav-title-zh">任智发展实验室</div>
+        <span class="nav-title-en">Renzhi Child Development Lab</span>
+      </div>
+    </div>
+    <div class="nav-tabs">
+      <div class="nav-item has-sub active" data-nav="home">
+        <button class="nav-tab" data-page="home">首页</button>
+        <div class="nav-sub">
+          <button data-page="home" data-anchor="home-about">实验室简介</button>
+          <button data-page="home" data-anchor="home-news">最新动态</button>
+          <button data-page="home" data-anchor="home-research">研究方向</button>
+          <button data-page="home" data-anchor="home-highlights">精选成果</button>
+          <button data-page="home" data-anchor="home-people">团队成员</button>
+          <button data-page="home" data-anchor="home-join">加入我们</button>
+        </div>
+      </div>
+      <div class="nav-item has-sub" data-nav="results">
+        <button class="nav-tab" data-page="results">研究成果</button>
+        <div class="nav-sub">
+          <button data-page="results" data-anchor="results-features">重要成果</button>
+          <button data-page="results" data-anchor="results-papers">发表成果</button>
+          <button data-page="results" data-anchor="results-projects">在研项目</button>
+          <button data-page="results" data-anchor="results-toolbox">实验室工具箱</button>
+        </div>
+      </div>
+      <div class="nav-item has-sub" data-nav="news">
+        <button class="nav-tab" data-page="news">实验室动态</button>
+        <div class="nav-sub">
+          <button data-page="news" data-news-cat="全部">全部动态</button>
+          <button data-page="news" data-news-cat="学术动态">学术动态</button>
+          <button data-page="news" data-news-cat="生活动态">生活动态</button>
+          <button data-page="news" data-news-cat="通知公告">通知公告</button>
+        </div>
+      </div>
+      <div class="nav-item has-sub" data-nav="team">
+        <button class="nav-tab" data-page="team">团队成员</button>
+        <div class="nav-sub">
+          <button data-page="team" data-anchor="team-teachers">指导教师</button>
+          <button data-page="team" data-anchor="team-students">在读学生</button>
+          <button data-page="team" data-anchor="team-ra">研究助理</button>
+          <button data-page="team" data-anchor="team-alumni">往届成员</button>
+        </div>
+      </div>
+      <div class="nav-item" data-nav="join"><button class="nav-tab" data-page="join">加入我们</button></div>
+    </div>
+    <button class="lang-btn" id="langBtn">中文 | EN</button>
+  </nav>
+</div>
+
+<div class="page active" id="page-home">
+
+  <!-- 实验室简介 -->
+  <section class="section" id="home-about" style="padding-top:56px;">
+    <div class="about-grid">
+      <div class="about-image">
+        <img src="website-assets/03-members/lab_photo.png" alt="实验室合影" onerror="this.parentElement.innerHTML='<div style=\'height:260px;display:flex;align-items:center;justify-content:center;background:#F4F6F4;color:#6E7671;\'>实验室合影 · 待补充</div>'">
+      </div>
+      <div class="about-text">
+        <h2>实验室简介</h2>
+        <p>任智发展实验室，华东师范大学心理与认知科学学院与教育学部联合团队，由刘俊升教授、任慧广副教授共同指导。</p>
+        <p>我们致力于研究家庭、同伴、教师、AI 等对儿童青少年社会情绪能力、社交、道德、价值观、心理健康的影响。实验室采用追踪研究、实验干预、计算建模等方法，致力于探索和理解严苛的社会化反馈、AI 情感联结、道德完美主义、校园欺凌等现实议题，如何在儿童与青少年身上留下痕迹。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 最新动态 -->
+  <div class="section-soft" id="home-news">
+    <div class="inner">
+      <h2 class="section-title">最新动态</h2>
+      <div class="news-cards" id="home-news-cards"></div>
+      <div class="more-wrap">
+        <button class="more-btn" onclick="switchPage('news')">查看更多实验室动态</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 研究方向 -->
+  <section class="section" id="home-research">
+    <h2 class="section-title">研究方向</h2>
+    <div class="research-alternating" id="home-research-content"></div>
+  </section>
+
+  <!-- 精选成果 -->
+  <section class="section" id="home-highlights">
+    <h2 class="section-title">精选成果</h2>
+    <div class="highlight-cards" id="home-highlights-content"></div>
+    <div class="more-wrap">
+      <button class="more-btn" onclick="switchPage('results')">查看完整研究成果</button>
+    </div>
+  </section>
+
+  <!-- 团队成员 -->
+  <section class="section" id="home-people">
+    <h2 class="section-title">团队成员</h2>
+    <div class="team-mosaic" id="home-team-mosaic"></div>
+  </section>
+
+  <!-- 实验室风采 -->
+  <div class="section-soft" id="home-gallery">
+    <div class="inner">
+      <h2 class="section-title">实验室风采</h2>
+      <div class="gallery-show" id="home-gallery-content"></div>
+    </div>
+  </div>
+
+  <!-- 加入我们 -->
+  <section class="section" id="home-join">
+    <h2 class="section-title">加入我们</h2>
+    <div class="grid-4" id="home-join-content"></div>
+    <div class="more-wrap">
+      <button class="more-btn" onclick="switchPage('join')">查看完整信息</button>
+    </div>
+  </section>
+
+</div>
+
+
+<!-- ============================================================
+     往期动态
+     ============================================================ -->
+<div class="page" id="page-news">
+  <section class="section" style="padding-top:24px;">
+    <h2 class="section-title">实验室动态</h2>
+    <div class="news-tabs" id="page-news-tabs">
+      <button class="news-tab active" data-cat="全部">全部动态</button>
+      <button class="news-tab" data-cat="学术动态">学术动态</button>
+      <button class="news-tab" data-cat="生活动态">生活动态</button>
+      <button class="news-tab" data-cat="通知公告">通知公告</button>
+    </div>
+    <div class="news-full-list" id="page-news-list"></div>
+  </section>
+</div>
+
+
+<!-- ============================================================
+     研究成果
+     ============================================================ -->
+<div class="page" id="page-results">
+  <section class="section" style="padding-top:24px;">
+    <h2 class="section-title">研究成果</h2>
+
+    <div class="result-section" id="results-features">
+      <h3>重要成果</h3>
+      <div id="results-features-content"></div>
+    </div>
+
+    <div class="result-section" id="results-papers">
+      <h3>发表成果</h3>
+      <div id="results-papers-content"></div>
+    </div>
+
+    <div class="result-section" id="results-projects">
+      <h3>在研项目</h3>
+      <div id="results-projects-content"></div>
+    </div>
+
+    <div class="result-section" id="results-toolbox">
+      <h3>实验室工具箱</h3>
+      <div class="grid-4" id="results-toolbox-content"></div>
+    </div>
+  </section>
+</div>
+
+
+<!-- ============================================================
+     团队成员
+     ============================================================ -->
+<div class="page" id="page-team">
+  <section class="section" style="padding-top:24px;">
+    <h2 class="section-title">团队成员</h2>
+
+    <div class="msg-grid" id="team-messages"></div>
+
+    <div class="group-header" id="team-teachers">指导教师</div>
+    <div class="hang-grid" id="team-teachers-grid"></div>
+
+    <div class="group-header" id="team-students">在读学生</div>
+    <div class="hang-grid" id="team-students-grid"></div>
+
+    <div class="group-header" id="team-ra">研究助理（RA）</div>
+    <div class="hang-grid" id="team-ra-grid"></div>
+
+    <div class="group-header" id="team-alumni">往届成员</div>
+    <div class="hang-grid" id="team-alumni-grid"></div>
+
+    <div class="group-header" id="team-pets">萌宠图鉴</div>
+    <div class="pet-carousel" id="team-pets-grid"></div>
+  </section>
+</div>
+
+
+<!-- ============================================================
+     加入我们
+     ============================================================ -->
+<div class="page" id="page-join">
+  <section class="section">
+
+    <!-- 品牌动态字（描边 → 填充 → 英文 → 底线） -->
+    <div class="brand-draw" id="brandDraw">
+      <svg class="brand-svg" viewBox="0 0 680 100" aria-label="任智发展实验室">
+        <text x="340" y="68" text-anchor="middle" class="brand-zh">任智发展实验室</text>
+      </svg>
+      <div class="brand-en">Renzhi Child Development Lab</div>
+      <svg class="brand-line" viewBox="0 0 320 6" preserveAspectRatio="none">
+        <line x1="4" y1="3" x2="316" y2="3" />
+      </svg>
+    </div>
+
+    <h2 class="join-section-title">加入我们</h2>
+    <p class="join-lead">如果你对儿童青少年社会化过程研究感兴趣，欢迎通过以下方式加入或关注任智发展实验室：</p>
+    <div class="join-checklist" id="join-checklist"></div>
+
+    <!-- 联系我们（直接给邮箱） -->
+    <h2 class="join-section-title" style="margin-top:72px;">联系我们</h2>
+    <div class="join-contact">
+      <div class="join-contact-text">
+        <h3>欢迎来信</h3>
+        <p>有意加入实验室、申请研究助理、咨询研究生招生或洽谈学术合作，请直接发送邮件至以下邮箱，我们会在 2–3 个工作日内回复：</p>
+        <a class="contact-mail" href="mailto:hgren@dep.ecnu.edu.cn">hgren@dep.ecnu.edu.cn</a>
+        <div class="contact-note">网站本身不收集、保存任何信息</div>
+      </div>
+      <div class="join-contact-logo">
+        <img src="website-assets/01-brand/logo.png" alt="任智发展实验室 Logo" onerror="this.parentElement.style.display='none'">
+      </div>
+    </div>
+
+    <div class="footer-ack" data-ui="ack">致谢：衷心感谢华东师范大学夏聪、何曦木、陈比娴对网站设计的贡献。</div>
+
+  </section>
+</div>
+
+
+<!-- ============================================================
+     详情面板
+     ============================================================ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-left" id="modalLeft"></div>
+    <div class="modal-right" id="modalRight"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <span data-ui="footerName">任智发展实验室 · 华东师范大学</span>
+</footer>
+
+<script src="updates/03-data/news-data.js"></script>
+<script>
+/* ============================================================
+   ★★★ 内容数据区 —— 你只需要改这里 ★★★
+   ============================================================ */
+const LAB = {
+
+  /* 【首页-最新动态】由 updates/01-drafts 中的稿件生成到 updates/03-data/news-data.js */
+  news: (window.LAB_NEWS || []).slice(),
+
+  /* 【首页-研究方向】 */
+  research: [
+    { icon: "⚖️", img: "website-assets/02-research/areas/area1.png", title: "严苛的社会化反馈模式对儿童发展的影响", titleEn: "Impact of harsh socialization feedback on child development",
+      desc: "我们的文化似乎强调严苛的社会化方式和反馈能更好地达成社会化目标，让被社会化对象更道德、更努力、表现更好、能力更强。然而，它是否起到了期望的社会化效果？其对儿童的决策、行为、认知和社会情感发展有怎样的影响？",
+      descEn: "Our culture often assumes that harsh socialization and feedback better achieve socialization goals \u2014 making people more moral, more diligent, better performing, and more capable. But does it actually deliver the intended effects? How does it shape children\u2019s decision-making, behavior, cognition, and socio-emotional development?" },
+    { icon: "🤖", img: "website-assets/02-research/areas/area2.png", title: "青少年和大学生与 AI 的情感联结与社会化过程", titleEn: "Emotional attachment to AI and socialization among adolescents and university students",
+      desc: "近年来，AI 使用逐渐普遍且呈现低龄化。什么样的青少年和大学生会选择与 AI 建立深度的情感联结？这种联结是如何建立的？对个体的现实生活和社会性发展又会产生怎样的影响？",
+      descEn: "AI use has become increasingly common and is reaching younger users. Which adolescents and university students develop deep emotional bonds with AI? How do these bonds form? And what effects do they have on real life and social development?" },
+    { icon: "🎭", img: "website-assets/02-research/areas/area3.png", title: "从幼儿到青少年的道德社会化过程及其影响", titleEn: "Moral socialization from early childhood to adolescence and its impacts",
+      desc: "在较为推崇道德圣人和完美道德标准的社会中，一味强调道德的完美主义有时候可能起到反效果。这种道德完美主义的社会化方式，在不同的发展阶段和社会情境中，是否都能如社会所愿地促进儿童的道德和社会性发展呢？",
+      descEn: "In societies that revere moral sainthood and perfect moral standards, an exclusive emphasis on moral perfectionism can sometimes backfire. Does this perfectionist approach to moral socialization promote children\u2019s moral and social development as intended across different developmental stages and social contexts?" },
+    { icon: "🛡️", img: "website-assets/02-research/areas/area4.png", title: "校园欺凌和受害儿童的父母社会化过程以及干预", titleEn: "Parental socialization and intervention for children involved in school bullying and victimization",
+      desc: "欺凌过程的发展动态是怎样的？为什么有些小朋友会欺负他人或被欺负？欺凌事件发生时，为什么小朋友会在旁观、见义勇为甚至助纣为虐中做出不同的选择？面对欺凌事件，家长和老师又该怎样做出社会化和应对？",
+      descEn: "How do bullying dynamics unfold over time? Why do some children bully or get bullied? When bullying occurs, why do children choose different paths \u2014 standing by, defending, or even joining in? How should parents and teachers socialize and respond to bullying?" },
+    { icon: "🧮", img: "website-assets/02-research/areas/area5.png", title: "儿童青少年班级集体信念形成与感知的计算模型", titleEn: "Computational modeling of the formation and perception of classroom collective beliefs",
+      desc: "班级集体信念形成机制是怎样的？班级集体信念又是如何被每一位成员所感知的？从计算建模的视角，我们如何理解这一复杂的过程？",
+      descEn: "How do classroom collective beliefs form? How are they perceived by individual members? And how can we understand this complex process from a computational modeling perspective?" }
+  ],
+
+  /* 【首页-教师寄语】 */
+  messages: [
+    { text: "希望实验室的每一位同学都能找到自己真正好奇的问题，踏实做研究，也好好生活。遇到困难随时来找我聊。",
+      textEn: "I hope every student in the lab finds the questions they are truly curious about \u2014 doing solid research while living a good life. Come talk to me anytime you run into difficulties.",
+      name: "任慧广", nameEn: "Huiguang Ren", role: "PI · 副教授", roleEn: "PI · Associate Professor", photo: "website-assets/03-members/portraits/renhuiguang_v1.jpg" },
+    { text: "儿童青少年的社会性发展有太多值得探究的课题。保持好奇，认真观察，享受研究本身带来的乐趣。",
+      textEn: "There are so many fascinating questions in the social development of children and adolescents. Stay curious, observe carefully, and enjoy the fun that research itself brings.",
+      name: "刘俊升", nameEn: "Junsheng Liu", role: "PI · 教授", roleEn: "PI · Professor", photo: "website-assets/03-members/portraits/liujunsheng_v1.jpg" }
+  ],
+
+  /* 【首页-精选成果】 */
+  highlights: [
+    {
+      img: "website-assets/02-research/highlights/ai.png",
+      title: "人–AI 情感与关系性互动的三层框架及测量工具",
+      titleEn: "A three-layer framework for emotional and relational engagement with AI",
+      source: "来源：Chen et al. (2026)，International Journal of Human-Computer Interaction",
+      sourceEn: "Source: Chen et al. (2026), International Journal of Human-Computer Interaction",
+      sourceUrl: "https://doi.org/10.1080/10447318.2026.2725999"
+    },
+    {
+      img: "website-assets/02-research/highlights/defending.png",
+      title: "校园欺凌保护者的策略类型及其社会情绪适应",
+      titleEn: "Defending strategies and youth social-emotional adjustment",
+      source: "来源：Jin et al. (2026)，Journal of School Psychology",
+      sourceEn: "Source: Jin et al. (2026), Journal of School Psychology",
+      sourceUrl: "https://doi.org/10.1016/j.jsp.2025.101524"
+    }
+  ],
+
+  /* 【首页-实验室风采】 */
+  gallery: [
+    { caption: "2025年毕业合照", captionEn: "2025 Graduation Photo", img: "website-assets/04-gallery/grad2025.jpg" },
+    { caption: "2025年感恩节礼物互换活动", captionEn: "2025 Thanksgiving Gift Exchange", img: "website-assets/04-gallery/thanksgiving2025.jpg" },
+    { caption: "2026年巴塞罗那APS会议", captionEn: "2026 APS Conference, Barcelona", img: "website-assets/04-gallery/aps2026.jpg" },
+    { caption: "2026年春学期组会", captionEn: "Spring 2026 Lab Meeting", img: "website-assets/04-gallery/meeting_spring2026.jpg" },
+    { caption: "2026年秋第一次组会", captionEn: "Fall 2026 First Lab Meeting", img: "website-assets/04-gallery/meeting_fall2026.jpg" },
+    { caption: "2026年韩国仁川ISSBD会议", captionEn: "2026 ISSBD Conference, Incheon, Korea", img: "website-assets/04-gallery/issbd2026.jpg" }
+  ],
+
+  /* 【首页-加入我们简版】 */
+  joinMini: [
+    { icon: "🔬", title: "招收研究助理（RA）", titleEn: "Recruiting Research Assistants (RAs)" },
+    { icon: "🎓", title: "研究生招生", titleEn: "Graduate Admissions" },
+    { icon: "📱", title: "关注公众号", titleEn: "Follow Our WeChat" },
+    { icon: "🤝", title: "学术合作与交流", titleEn: "Academic Collaboration & Exchange" }
+  ],
+
+  /* 【加入我们页完整版】（与首页“加入我们”一致：四张卡一行） */
+  joinFull: [
+    { icon: "🔬", title: "招收研究助理（RA）", titleEn: "Recruiting Research Assistants (RAs)",
+      desc: "实验室长期招募对发展心理学、教育心理学感兴趣的本科生担任研究助理，参与数据收集、文献整理、实验设计等工作。表现优异者有机会参与论文写作。",
+      descEn: "We continuously recruit undergraduates interested in developmental or educational psychology as research assistants, involved in data collection, literature review, and experiment design. Outstanding RAs may have the opportunity to co-author papers.",
+      link: "https://mp.weixin.qq.com/s/cRYNwb1IjvfAfur34h0vVw" },
+    { icon: "🎓", title: "研究生招生", titleEn: "Graduate Admissions",
+      desc: "任慧广老师自 2025 年开始招收硕士生（学习心理与发展学术硕士、心理健康教育专业硕士），并有机会共同培养博士生。欢迎有兴趣的同学邮件联系。",
+      descEn: "Professor Huiguang Ren has been recruiting master\u2019s students since 2025 (MA in Learning and Development; Professional MA in Mental Health Education), with opportunities for co-supervised doctoral training. Interested students are welcome to get in touch by email." },
+    { icon: "📱", title: "关注公众号", titleEn: "Follow Our WeChat",
+      desc: "欢迎关注实验室微信公众号，及时获取实验室动态、招生信息与学术活动通知。",
+      descEn: "Follow our official WeChat account for the latest lab news, admissions information, and academic event announcements.",
+      qr: "website-assets/01-brand/gongzhonghao.jpg" },
+    { icon: "🤝", title: "学术合作与交流", titleEn: "Academic Collaboration & Exchange",
+      desc: "实验室欢迎国内外研究者就儿童青少年社会化、家庭教养、校园欺凌、AI 情感联结等主题开展合作研究、联合申请课题或共同发表论文。",
+      descEn: "We welcome collaborations with researchers worldwide on children\u2019s and adolescents\u2019 socialization, parenting, school bullying, emotional attachment to AI, and related topics \u2014 including joint projects and co-authored publications." }
+  ],
+
+  /* 【研究成果-重要成果】 */
+  features: [
+    {
+      title: "人–AI 情感与关系性互动的三层框架及测量工具",
+      titleEn: "A three-layer framework and measurement toolkit for emotional and relational engagement with AI",
+      img: "website-assets/02-research/highlights/ai.png",
+      summary: "随着生成式人工智能进入学习、工作和日常交流，年轻人开始向 AI 寻求建议、表达情绪并分享个人经历。研究团队在上海 69 所高校中随机抽取 26 所高校，基于 1,406 名大学生的有效问卷，提出行为—认知—情感三层框架，并开发多维 AI 使用量表（MAIUS）、AI 互动感知独特性量表（PUAIIS）与 AI 情感依恋量表（AIEAS）。研究区分了工具性使用、个人协助、自我表露，以及个体如何评价和依恋人机互动。",
+      summaryEn: "As generative AI becomes part of everyday academic, work, and social life, young adults increasingly turn to it for emotional disclosure and companionship. Using a regionally representative sample of 1,406 college students from 26 universities in Shanghai, the team developed and validated a three-scale toolkit capturing behavioral use, cognitive perceptions, and affective attachment in human–AI interaction.",
+      findings: [
+        "行为参与、关系性认知与情感联结相互关联，但属于可以清楚区分的三个层面。",
+        "自我表露和对 AI 互动独特性的感知，比单纯的使用频率更接近 AI 情感依恋。",
+        "更高的情感与关系性参与同时与较高焦虑、抑郁和较低社会支持相关，提示其可能具有补偿性作用。"
+      ],
+      findingsEn: [
+        "Behavioral use, relational cognition, and emotional attachment are related but distinct layers of human–AI engagement.",
+        "Self-disclosure and perceived uniqueness are more closely linked to AI attachment than mere frequency of use.",
+        "Greater emotional and relational engagement is associated with more anxiety and depression and lower social support."
+      ],
+      note: "该研究于 2026 年 9 月 7 日在线发表于 International Journal of Human-Computer Interaction（JCR Q1, IF=6.1）。华东师范大学心理与认知科学学院 2025 级博士生陈楚琪为第一作者，任慧广副教授为共同第一作者兼通讯作者，刘俊升教授全程指导，博士生田芳芳、王蕃隆共同参与。",
+      noteEn: "Published online on September 7, 2026 in the International Journal of Human-Computer Interaction (JCR Q1, IF = 6.1). Chuqi Chen is first author; Associate Prof. Huiguang Ren is co-first and corresponding author; Prof. Junsheng Liu supervised the project, with contributions from Fangfang Tian and Fanlong Wang.",
+      cite: "Chen, C., Ren, H., Liu, J., Tian, F., & Wang, F. (2026). A three-layered framework and measurement toolkit for understanding emotional and relational engagement with AI. International Journal of Human-Computer Interaction. Advance online publication.",
+      doi: "10.1080/10447318.2026.2725999"
+    },
+    {
+      title: "校园欺凌中的保护者并非一种：守护策略类型及其青少年社会情绪适应",
+      titleEn: "Not all defending is equal: Profiles and transitions in defending strategies",
+      img: "website-assets/02-research/highlights/defending.png",
+      summary: "当儿童目睹欺凌时，有人会出手帮助，但帮助方式并不相同。研究团队对 1,259 名中国儿童开展了三轮追踪（平均年龄 10.9 岁），使用潜在转变分析考察不同守护策略如何组合，以及这些组合在时间中的变化和社会情绪适应后果。研究关注的不是“是否介入”这一单一问题，而是青少年如何在非攻击性支持、直接干预和攻击性回应之间形成不同模式。",
+      summaryEn: "When children witness bullying, some intervene—but they do not all intervene in the same way. In a three-wave longitudinal study of 1,259 Chinese children (mean age 10.9 years), latent transition analysis identified distinct combinations of defending strategies, how those profiles changed over time, and their links to social-emotional adjustment.",
+      findings: [
+        "研究识别出四个守护者类型：非攻击性保护者、攻击性与非攻击性兼具者、一般保护者和低频保护者。",
+        "非攻击性与一般保护者相对稳定，其余类型在追踪期间更容易发生变化。",
+        "维持或转向非攻击性保护与更好的社会情绪适应相关；带有攻击性的类型则伴随更高的人际与适应风险。",
+        "反欺凌项目除了鼓励旁观者行动，还应帮助青少年以安全、非攻击的方式提供支持。"
+      ],
+      findingsEn: [
+        "Four profiles emerged: non-aggressive defenders, aggressive and non-aggressive defenders, average defenders, and infrequent defenders.",
+        "Non-aggressive and average defenders were more stable, whereas the other profiles changed more across waves.",
+        "Staying in or moving toward the non-aggressive profile was linked to better adjustment, while profiles involving aggression carried greater social risk.",
+        "Anti-bullying programs should help bystanders defend safely and constructively, not simply encourage them to act."
+      ],
+      cite: "Jin, G., Wei, L., Wang, Z., Ren, H., & Liu, J. (2026). Defending victimized peers in unique ways: Profiles and transitions in defending strategies and their associations with youth social-emotional adjustment. Journal of School Psychology, 115, 101524.",
+      doi: "10.1016/j.jsp.2025.101524"
+    },
+    {
+      title: "父母如何回应学业失败，会影响青少年的失败心态与学校倦怠",
+      titleEn: "What parents say after a failure can shape adolescent burnout",
+      img: "website-assets/02-research/highlights/academic_failure.png",
+      summary: "青少年考试失利后，父母的第一反应可能产生持续影响。研究基于 806 对中国亲子家庭的三轮数据（青少年平均年龄 13.9 岁，初一至初二），比较过程导向与个人导向两类失败社会化方式。过程导向强调努力、策略和从错误中学习；个人导向则把失败归因于能力或孩子本身。研究进一步检验失败增强型心态与学习取向如何连接家庭回应和学校倦怠。",
+      summaryEn: "Using three waves of data from 806 Chinese parent–adolescent dyads, the study examined process-oriented and person-oriented parental socialization of academic failure. Process-oriented messages predicted a stronger failure-is-enhancing mindset and lower school burnout, whereas person-oriented messages showed the opposite pattern. Adolescents' learning orientations amplified these associations.",
+      findings: [
+        "过程导向的失败社会化与更强的“失败能促进成长”心态相关，并通过这一心态降低学校倦怠。",
+        "个人导向的失败社会化呈现相反路径，更容易强化失败带来的负面意义。",
+        "认知坚持等积极学习取向增强了过程导向信息的益处；对失败的消极反应则放大了个人导向信息的成本。",
+        "家庭如何解释一次学业挫折，是支持青少年学习适应与心理健康的重要切入点。"
+      ],
+      findingsEn: [
+        "Process-oriented failure socialization predicted a stronger failure-is-enhancing mindset and lower school burnout.",
+        "Person-oriented socialization showed the opposite pattern, linking failures more strongly to negative self-meanings.",
+        "Cognitive persistence amplified the benefits of process-focused messages, whereas negative reactions to failure intensified the costs of person-focused messages.",
+        "How families frame failure is a practical lever for adolescent academic adjustment and wellbeing."
+      ],
+      cite: "Chen, C., Ren, H., Zhou, T., & Liu, J. (2026). Parental socialization of academic failure and adolescent school burnout: The mediating role of failure mindset and moderating role of learning orientations. Journal of Youth and Adolescence. Advance online publication.",
+      doi: "10.1007/s10964-026-02411-z"
+    }
+  ],
+
+  /* 【研究成果-发表论文】 */
+  papers: [
+    { year: 2026, cite: "Yang, M., Ren, H.<sup>*</sup>, Sun, R., Jin, G., Liu, J.<sup>*</sup>, &amp; Sang, B. (2026). Coregulation patterns in emotional sharing dynamics among adolescent friend dyads. Emotion, Advance online publication.", doi: "10.1037/emo0001756" },
+    { year: 2026, cite: "Bian, Q., Chen, X., Li, D., Liu, J., Fu, R., Cui, L., &amp; Liu, S. (2026). Self-reported shyness and social and school adjustment in children and adolescents. <em>International Journal of Behavioral Development</em>, <em>50</em>(1), 23–33.", doi: "10.1177/01650254241312130" },
+    { year: 2026, cite: "Chen, C.<sup>#</sup>, Ren, H.<sup>#</sup><sup>*</sup>, Liu, J., Tian, F., &amp; Wang, F. (2026). A three-layered framework and measurement toolkit for understanding emotional and relational engagement with AI. <em>International Journal of Human-Computer Interaction</em>. Advance online publication.", doi: "10.1080/10447318.2026.2725999" },
+    { year: 2026, cite: "Chen, C., Ren, H.<sup>*</sup>, Zhou, T., &amp; Liu, J. (2026). Parental socialization of academic failure and adolescent school burnout: The mediating role of failure mindset and moderating role of learning orientations. <em>Journal of Youth and Adolescence</em>. Advance online publication.", doi: "10.1007/s10964-026-02411-z" },
+    { year: 2026, cite: "Chen, X., Zhou, J., Liu, J., Li, D., Zhang, M., Zheng, S., Dai, Y., Zhou, T., &amp; Han, X. (2026). Concern for mianzi and social and school adjustment in rural Chinese adolescents: A longitudinal study. <em>Developmental Psychology</em>. Advance online publication.", doi: "10.1037/dev0002144" },
+    { year: 2026, cite: "Gao, D., van Geel, M., Liu, J.<sup>*</sup>, &amp; Mesman, J. (2026). Chinese mothers’ profiles of color-conscious socialization and social dominance orientation: Relations to children’s racial attitudes. <em>Cultural Diversity &amp; Ethnic Minority Psychology</em>, <em>32</em>(1), 1–11.", doi: "10.1037/cdp0000709" },
+    { year: 2026, cite: "Gong, J., Fu, J., Luo, J.<sup>*</sup>, &amp; Liu, J.<sup>*</sup> (2026). Longitudinal associations between callous–unemotional traits and proactive and reactive aggression in Chinese adolescents. <em>Psychology of Violence</em>. Advance online publication.", doi: "10.1037/vio0000691" },
+    { year: 2026, cite: "Gong, J., Xia, C., Wei, X., Zhang, X., Xiong, Y., Hu, N., Sang, B., &amp; Liu, J. (2026). Are emotion regulation strategies changing over time? A preregistered cross-temporal meta-analysis in Chinese adults (2005–2023). <em>Personality and Individual Differences</em>, <em>257</em>, 113793.", doi: "10.1016/j.paid.2026.113793" },
+    { year: 2026, cite: "Hei, L., Chen, X., Li, D., Liu, J., Zhang, M., Zheng, S., Zhou, T., &amp; Fu, R. (2026). Concern for Mianzi and social-behavioral and school adjustment among Chinese adolescents: The role of social preference. <em>Journal of Adolescence</em>, <em>98</em>(4), 1053–1063.", doi: "10.1002/jad.70116" },
+    { year: 2026, cite: "Huang, Y., Liu, J., &amp; Pluess, M. (2026). The relationship between different sensitivity types and coping behaviour: A cross-cultural study. <em>Journal of Research in Personality</em>, <em>122</em>, 104722.", doi: "10.1016/j.jrp.2026.104722" },
+    { year: 2026, cite: "Jin, G., Wei, L., Wang, Z., Ren, H.<sup>*</sup>, &amp; Liu, J.<sup>*</sup> (2026). Defending victimized peers in unique ways: Profiles and transitions in defending strategies and their associations with youth social-emotional adjustment. <em>Journal of School Psychology</em>, <em>115</em>, 101524.", doi: "10.1016/j.jsp.2025.101524" },
+    { year: 2026, cite: "Kong, X.<sup>*</sup>, Brook, C. A., Zhou, T., Liu, J.<sup>*</sup>, &amp; Schmidt, L. A. (2026). A cross-cultural study of different types of shyness: Associations with depression and aggression in Canadian and Chinese children. <em>Social Development</em>, <em>35</em>, e70052.", doi: "10.1111/sode.70052" },
+    { year: 2026, cite: "Liao, L., Hu, N., Bullock, A., Liu, J.<sup>*</sup>, &amp; Sang, B. (2026). Latent profiles of intrinsic interpersonal emotion regulation in Chinese children: Links to psychological adjustment. <em>Emotion</em>, <em>26</em>(3), 652–665.", doi: "10.1037/emo0001609" },
+    { year: 2026, cite: "Liao, L., Wang, F., Zhang, X.<sup>*</sup>, &amp; Liu, J.<sup>*</sup> (2026). Distinct parental emotion socialization strategies and contextual moderators: A meta-analysis of links with children and adolescents’ internalizing problems. <em>Developmental Review</em>, <em>79</em>, 101251.", doi: "10.1016/j.dr.2026.101251" },
+    { year: 2026, cite: "Liu, J.<sup>*</sup>, Xie, X., Wang, Z., &amp; Salmivalli, C. (2026). Peer victimization and adjustment difficulties among adolescents: Moderating effects of peer groups’ prosociality. <em>International Journal of Behavioral Development</em>. Advance online publication.", doi: "10.1177/01650254261468261" },
+    { year: 2026, cite: "Ma, X., Yang, P., Li, D., Zhou, J., Liu, M., Han, X., Liu, J., &amp; Chen, X. (2026). Joint developmental trajectories of social assertiveness and prosociality: A parallel process latent class growth analysis. <em>Journal of Youth and Adolescence</em>, <em>55</em>, 608–623.", doi: "10.1007/s10964-025-02217-5" },
+    { year: 2026, cite: "Ren, H., &amp; Cheah, C. S. L. (2026). Cultural, relational, and individual moderators in bidirectional links between Chinese immigrant mothers’ emotion socialization and their children’s emotional expressions. <em>Parenting: Science and Practice</em>, 1–40.", doi: "10.1080/15295192.2026.2700982" },
+    { year: 2026, cite: "Sun, R.<sup>#</sup>, Ren, H.<sup>#</sup><sup>*</sup>, &amp; Liu, J.<sup>*</sup> (2026). Associations between student leadership experiences and maladjustment trajectories among Chinese children: A five-wave longitudinal study. <em>School Mental Health</em>, 1–19.", doi: "10.1007/s12310-026-09897-9" },
+    { year: 2026, cite: "Sun, Y., Gong, J., Liu, J.<sup>*</sup>, Shi, Z., Sang, B., &amp; Liu, D. (2026). Development and validation of the Adolescent Social Goal Questionnaire among Chinese adolescents. <em>Personality and Individual Differences</em>, <em>256</em>, 113741.", doi: "10.1016/j.paid.2026.113741" },
+    { year: 2026, cite: "Sun, Y., Liu, J.<sup>*</sup>, Wei, L., Zhou, T., Jin, G., &amp; Sang, B. (2026). Peer victimization and depression among Chinese adolescents: Moderation of teachers’ aggression management. <em>School Psychology</em>, <em>41</em>(1), 76–85.", doi: "10.1037/spq0000697" },
+    { year: 2026, cite: "Wang, F., Hu, Y., Shi, Z., Sun, Y., Gong, J., Liu, J.<sup>*</sup>, &amp; Cheng, D. (2026). Intrinsic interpersonal emotion regulation moderates longitudinal associations between peer victimization and depressive symptoms among Chinese children. <em>Journal of Applied Developmental Psychology</em>, <em>103</em>, 101926.", doi: "10.1016/j.appdev.2026.101926" },
+    { year: 2026, cite: "Wang, F., Ren, H.<sup>*</sup>, Liu, J., Bian, X., &amp; Wang, Y. (2026). Profiles of sibling relationships among Chinese adolescents: The contribution of parental differential treatment of siblings. <em>British Journal of Developmental Psychology</em>. Advance online publication.", doi: "10.1111/bjdp.70040" },
+    { year: 2026, cite: "Yang, C.<sup>#</sup>, Ren, H.<sup>#</sup>, Porter, C. L., Hart, C. H., Cheah, C. S. L., Nelson, L. J., ..., &amp; Jiang, L. (2026). Patterns of co-occurring maternal and paternal parenting and child behavioral adjustment identified in Chinese families. <em>International Journal of Behavioral Development</em>. Advance online publication.", doi: "10.1177/01650254261451142" },
+    { year: 2026, cite: "Zeng, X.<sup>#</sup>, Ren, H.<sup>#</sup><sup>*</sup>, Liu, J.<sup>*</sup>, Zhao, Y., Yue, J., Sang, B., &amp; Wang, Z. (2026). Bidirectional relations between early adolescents&<sup>#</sup>x27; moral judgment of aggression and defending behaviors: The moderating role of victimization experiences. <em>Journal of Research on Adolescence</em>, <em>36</em>(2), e70209.", doi: "10.1111/jora.70209" },
+    { year: 2026, cite: "Zhao, S., Liu, M., Li, D., Liu, J., Liu, S., Zhou, T., &amp; Chen, X. (2026). Unsociability and school and psychological adjustment in Chinese adolescents: The moderating effects of classroom cultural norms. <em>Journal of Youth and Adolescence</em>, <em>55</em>, 1097–1110.", doi: "10.1007/s10964-025-02312-7" },
+    { year: 2026, cite: "Zhou, J., Chen, X., Li, D., Liu, J., Cui, L., &amp; Liu, S. (2026). Academic achievement of peer group leaders and members: Contributions to adolescents&<sup>#</sup>x27; social, school, and psychological adjustment. <em>Journal of Research on Adolescence</em>, <em>36</em>, e70143.", doi: "10.1111/jora.70143" },
+    { year: 2025, cite: "Chen, X., Hei, L., Li, D., Liu, J., Yang, P., &amp; French, D. C. (2025). Mixed-sex peer interactions and adjustment in Chinese adolescents. <em>Applied Research in Quality of Life</em>. Advance online publication.", doi: "10.1007/s11482-025-10459-5" },
+    { year: 2025, cite: "Chen, X., Liu, M., Li, D., Liu, J., &amp; Jin, G. (2025). Sociometric likeability and perceived likeability: Relation with academic performance and psychological problems in Chinese children and adolescents. <em>Developmental Psychology</em>. Advance online publication.", doi: "10.1037/dev0001981" },
+    { year: 2025, cite: "Gong, J., Bian, X., Jin, G., Zhou, T., Liu, J.<sup>*</sup>, Coplan, R. J., &amp; Sang, B. (2025). Depressive symptoms among Chinese adolescents during the COVID-19 pandemic: Exploring subgroups and changes using latent profile and transition analyses. <em>Journal of Child and Family Studies</em>, <em>34</em>, 1527–1537.", doi: "10.1007/s10826-025-03039-6" },
+    { year: 2025, cite: "Hei, L., Chen, X., Liu, J., Li, D., Liu, S., &amp; Zhao, S. (2025). Aggression and adjustment among Chinese adolescents: The role of classroom cultural norms. <em>Research on Child and Adolescent Psychopathology</em>, <em>53</em>, 1353–1365.", doi: "10.1007/s10802-025-01336-8" },
+    { year: 2025, cite: "Liao, L., Zhang, K., Zhou, Y., &amp; Liu, J.<sup>*</sup> (2025). The association between negative emotion differentiation and emotion regulation flexibility in daily life. <em>Cognition and Emotion</em>, <em>39</em>(3), 590–602.", doi: "10.1080/02699931.2024.2381079" },
+    { year: 2025, cite: "Liu, A., Ren, H.<sup>*</sup>, Liu, J., &amp; Sang, B. (2025). Cumulative and overload patterns of associations between parenting congruence and youth depressive symptoms across parenting dimensions. <em>Journal of Youth and Adolescence</em>. Advance online publication.", doi: "10.1007/s10964-025-02290-w" },
+    { year: 2025, cite: "Liu, M., Bian, Q., Liu, J., Li, D., Fu, R., &amp; Chen, X. (2025). Maternal warmth and power assertion and school and psychological adjustment in Chinese children. <em>Applied Research in Quality of Life</em>. Advance online publication.", doi: "10.1007/s11482-025-10488-0" },
+    { year: 2025, cite: "Sang, B., Zhang, X., Wei, X., Gong, J., Hu, N.<sup>*</sup>, &amp; Liu, J.<sup>*</sup> (2025). Changes of emotion regulation strategies in Chinese children and adolescents during 2003–2023: A cross-temporal meta-analysis. <em>Acta Psychologica</em>, <em>260</em>, 105557.", doi: "" },
+    { year: 2025, cite: "Sette, S., Coplan, R. J., ..., Liu, J., ..., &amp; Bowker, J. (2025). Measurement invariance of the Straightforwardly-Worded Social Interaction Anxiety Scale and associations with life satisfaction among emerging adults attending university in 10 countries. <em>Journal of Anxiety Disorders</em>, <em>116</em>, 103092.", doi: "" },
+    { year: 2025, cite: "Sun, R., Ren, H., Liu, J.<sup>*</sup>, Chen, X., &amp; Li, D. (2025). Warmth and control: Examining the associations between Chinese parenting behaviors and children’s academic performance in different parent-child dyads. <em>Journal of Youth and Adolescence</em>, <em>54</em>, 1250–1262.", doi: "10.1007/s10964-024-02128-x" },
+    { year: 2025, cite: "Wang, X., Ren, H., Reiter-Palmon, R., &amp; Pang, W. (2025). Exploring creativity in self-regulated learning and its association with academic performance. <em>Learning and Instruction</em>, <em>100</em>, 102224.", doi: "10.1016/j.learninstruc.2025.102224" },
+    { year: 2025, cite: "Wei, L., Marceau, K., Chen, X., Gest, S., Liu, J., Li, D., &amp; French, D. C. (2025). Children&<sup>#</sup>x27;s friendship stability in the United States, China, and Indonesia: Associations with individual attributes and dyadic similarity. <em>Child Development</em>, <em>96</em>(2), 591–605.", doi: "10.1111/cdev.14189" },
+    { year: 2025, cite: "Yang, C., Nelson, D. A., Sun, Y., Hart, C. H., Ren, H., Porter, C. L., ..., &amp; Wang, D. (2025). Historical dyadic-level latent profiles of Chinese maternal parenting and early childhood behavior. <em>Journal of Family Issues</em>. Advance online publication.", doi: "10.1177/0192513X251393178" },
+    { year: 2025, cite: "Yang, H., Lin, Y., &amp; Liu, J. (2025). Who prioritizes costs more? Exploring individual differences in decision-making processes. <em>Personality and Individual Differences</em>, <em>246</em>, 113337.", doi: "" },
+    { year: 2025, cite: "Yang, M., Sun, Y., Zhou, T., Zhang, K., Sang, B., Liu, J.<sup>*</sup>, Chen, X., Zarbatany, L., &amp; Ellis, W. (2025). Relations between peer group status hierarchy and loneliness in Chinese and Canadian adolescents: The role of group support. <em>Journal of Youth and Adolescence</em>. Advance online publication.", doi: "10.1007/s10964-025-02203-x" },
+    { year: 2025, cite: "Yuan, M., Yin, Y., Liu, J.<sup>*</sup>, &amp; Sang, B.<sup>*</sup> (2025). Adolescent mental time travel predicting meaning in life: The potential mediating role of self-continuity. <em>Journal of Adolescence</em>, <em>97</em>(3), 675–686.", doi: "10.1002/jad.12444" },
+    { year: 2025, cite: "Yuan, M., Zhou, T., Zhong, J., Yin, Y., Liu, J.<sup>*</sup>, &amp; Sang, B.<sup>*</sup> (2025). Searching for meaning alleviated individual depressive symptoms during COVID-19 pandemic: The mediating role of optimism. <em>International Journal of Psychology</em>, <em>60</em>(1), e7001.", doi: "10.1002/ijop.70001" },
+    { year: 2025, cite: "Zhang, B., Cheah, C. S. L., &amp; Ren, H. (2025). Considering children’s characteristics in Chinese American mothers’ attributions, well-being, and parenting practices. <em>Journal of Applied Developmental Psychology</em>, <em>99</em>, 101817.", doi: "10.1016/j.appdev.2025.101817" },
+    { year: 2025, cite: "Zhang, D., Gong, J., Liu, J.<sup>*</sup>, Bullock, A., &amp; Sang, B. (2025). The bidirectional relationships between cyberbullying and depression: A systematic review and meta-analysis of longitudinal studies. <em>Aggression and Violent Behavior</em>, <em>82</em>, 102052.", doi: "10.1016/j.avb.2025.102052" },
+    { year: 2025, cite: "Zhao, S., Chen, X., Yang, P., Li, D., Liu, J., &amp; Liu, S. (2025). Moderating effects of group- and self-orientations on the relations between peer victimization and adjustment in Chinese adolescents. <em>Social Development</em>, <em>34</em>(3), e70013.", doi: "10.1111/sode.70013" },
+    { year: 2025, cite: "Zhao, Y., Ren, H.<sup>*</sup>, Liu, J.<sup>*</sup>, Yue, J., &amp; Zeng, X. (2025). Conflict resolution strategy profiles and children’s psychological and social adjustment: A latent transition study. <em>International Journal of Behavioral Development</em>. Advance online publication.", doi: "10.1177/0165025425138818" },
+    { year: 2025, cite: "Zhou, J., Chen, X., Li, D., Liu, J., &amp; Zhou, T. (2025). Linear and curvilinear associations between affinity for solitude and adjustment in adolescence. <em>Journal of Research on Adolescence</em>, <em>36</em>, e70129.", doi: "10.1111/jora.70129" },
+    { year: 2025, cite: "Zhou, J., Chen, X., Li, D., Liu, J., Cui, L., &amp; Zhou, T. (2025). The structure of social competence and school adjustment in Chinese children and adolescents: A network analysis. <em>The Journal of Early Adolescence</em>. Advance online publication.", doi: "10.1177/02724316251391413" },
+    { year: 2025, cite: "Zhou, T., Chen, X., Bai, J., Fan, H., &amp; Liu, J.<sup>*</sup> (2025). Parental response to failure, teachers’ goal-oriented instructional practices, and Chinese adolescents’ mastery motivation in math learning: A longitudinal multilevel examination. <em>Learning and Individual Differences</em>, <em>124</em>, 102810.", doi: "10.1016/j.lindif.2025.102810" },
+    { year: 2024, cite: "Chen, X., Zhou, J., Li, D., Liu, J., &amp; Cui, L. (2024). Affinity for solitude in Chinese children and adolescents: Relations with social, school, and psychological adjustment. <em>Developmental Psychology</em>, <em>60</em>(5), 954–965.", doi: "10.1037/dev0001699" },
+    { year: 2024, cite: "Chen, X., Zhou, J., Li, D., Liu, J., Zhang, M., Zheng, S., &amp; Han, X. (2024). Concern for mianzi: Relations with adjustment in rural and urban Chinese adolescents. <em>Child Development</em>, <em>95</em>(1), 114–127.", doi: "10.1111/cdev.13964" },
+    { year: 2024, cite: "Cho, H. S., Gürsoy, H., Cheah, C. S. L., Zong, X., &amp; Ren, H. (2024). To maintain or conceal one’s cultural identity? Chinese American parents’ ethnic-racial socialization during COVID-19. <em>Journal of Family Psychology</em>. Advance online publication.", doi: "10.1037/fam0001169" },
+    { year: 2024, cite: "Gao, D., van Geel, M., Liu, J.<sup>*</sup>, &amp; Mesman, J. (2024). Chinese children show racial and skin-tone salience but little color evasion. <em>Social Development</em>, <em>33</em>, e12724.", doi: "10.1111/sode.12724" },
+    { year: 2024, cite: "He, X., Ren, H., Cui, L., &amp; Liu, J. (2024). Benign and malicious envy and its effects on cooperation in Chinese children. <em>Current Psychology</em>, <em>43</em>, 16389–16398.", doi: "10.1007/s12144-023-05592-z" },
+    { year: 2024, cite: "Jin, G., Bian, X., Zhou, T., &amp; Liu, J.<sup>*</sup> (2024). Different ways to defend victims of bullying: Defending profiles and their associations with adolescents’ victimization experiences and depressive symptoms. <em>Journal of Youth and Adolescence</em>, <em>53</em>, 621–631.", doi: "10.1007/s10964-023-01904-5" },
+    { year: 2024, cite: "Liu, J.<sup>*</sup>, Zhu, Z., Kong, X., Coplan, R. J., Zhao, K., Li, D., &amp; Chen, X. (2024). Developmental trajectories of emotional school engagement from middle to late childhood in mainland China: Contributions of early peer relationships and academic achievement. <em>European Journal of Psychology of Education</em>, <em>39</em>, 151–170.", doi: "10.1007/s10212-023-00691-8" },
+    { year: 2024, cite: "Liu, M., Bian, Q., Chen, X., Liu, J., &amp; Li, D. (2024). Parental migration and peer victimization: Implications for school and psychological adjustment of left-behind adolescents in rural China. <em>Chinese Sociological Review</em>. Advance online publication.", doi: "10.1080/21620555.2024.2307492" },
+    { year: 2024, cite: "Ren, H., Cheah, C. S. L., Cho, H. S., &amp; Aquino, A. K. (2024). Cascading effects of Chinese American parents&<sup>#</sup>x27; COVID-19 racial discrimination and racial socialization on adolescents’ adjustment. <em>Child Development</em>. Advance online publication.", doi: "10.1111/cdev.14037" },
+    { year: 2024, cite: "Ren, H., Hart, C. H., Cheah, C. S. L., Porter, C. L., Nelson, D. A., Yavuz-Müren, M., ..., &amp; Zhou, N. (2024). Parenting measurement, normativeness, and associations with child outcomes: Comparing evidence from four non-Western cultures. <em>Developmental Science</em>. Advance online publication.", doi: "10.1111/desc.13388" },
+    { year: 2024, cite: "Sun, J., Liu, J., Liu, M., Feng, Y., &amp; Li, Y. (2024). Maternal warmth and prosocial behaviors among Chinese preschool children: The role of social competence sibling presence. <em>Early Education and Development</em>, <em>35</em>(4), 691–703.", doi: "10.1080/10409289.2023.2200338" },
+    { year: 2024, cite: "Zhang, B., Cheah, C. S. L., Aquino, A. K., &amp; Ren, H. (2024). Becoming civically engaged adolescents: Individual and parenting mechanisms in Chinese American families. <em>Cultural Diversity &amp; Ethnic Minority Psychology</em>. Advance online publication.", doi: "10.1037/cdp0000720" },
+    { year: 2024, cite: "Zhang, K., Duan, J., Gest, S., Chen, X., Liu, J., Li, D., &amp; French, D. C. (2024). Peer relationships mediate the pathways from behavioral qualities to United States and Chinese children&<sup>#</sup>x27;s loneliness. <em>Child Development</em>, <em>95</em>(1), e21–e34.", doi: "10.1111/cdev.13982" },
+    { year: 2024, cite: "Zhao, S., Chen, X., Park, H., Li, D., Liu, J., &amp; Cui, L. (2024). The development of self- and group orientations among Chinese young adolescents: Implications for social and behavioral adjustment. <em>Developmental Psychology</em>, <em>60</em>(5), 942–953.", doi: "10.1037/dev0001719" },
+    { year: 2024, cite: "Zhou, J., Chen, X., Li, D., Liu, J., &amp; Cui, L. (2024). Leaders of peer groups in Chinese early adolescents: The roles of social, academic, and psychological characteristics in group leadership. <em>Journal of Youth and Adolescence</em>, <em>53</em>, 2151–2164.", doi: "10.1007/s10964-024-02003-9" },
+    { year: 2024, cite: "Zhou, T., Hu, Y., Jiang, W., Coplan, R. J., Yuan, M., Li, D., &amp; Liu, J.<sup>*</sup> (2024). Wuhan residents perceptions of prejudice and discrimination and the social categorization processes during and after the COVID-19 lockdown: A qualitative study. <em>Journal of Social and Personal Relationships</em>, <em>41</em>(12), 3616–3640.", doi: "10.1177/02654075241269711" },
+    { year: 2024, cite: "Zong, X., Cheah, C. S. L., &amp; Ren, H. (2024). Age-varying associations between COVID-19-related racial discrimination and Chinese American adolescents’ political civic engagement. <em>Journal of Youth and Adolescence</em>, 1–13.", doi: "10.1007/s10964-023-01879-3" },
+    { year: 2023, cite: "Bowker, J., Sette, S., ..., Liu, J., ..., &amp; Coplan, R. J. (2023). Cross-cultural measurement of social withdrawal motivations across ten countries using multiple-group factor analysis alignment. <em>International Journal of Behavioral Development</em>, <em>47</em>(2), 190–198.", doi: "10.1177/01650254221132774" },
+    { year: 2023, cite: "Cheah, C. S. L., Ren, H., Zong, X., &amp; Wang, C. (2023). COVID-19 racism and Chinese American families’ mental health: A comparison between 2020 and 2021. <em>International Journal of Environmental Research and Public Health</em>, <em>20</em>(8), 5437.", doi: "10.3390/ijerph20085437" },
+    { year: 2023, cite: "Chen, J., Zhao, Y., Xu, X., Liu, J., &amp; Deng, C. (2023). Predictive relations between executive function and Mandarin vocabulary ability among Uyghur-Mandarin bilingual preschoolers. <em>Cognitive Development</em>, <em>65</em>, 101270.", doi: "10.1016/j.cogdev.2022.101270" },
+    { year: 2023, cite: "Chen, J., Zhao, Y., Xu, X., Liu, J.<sup>*</sup>, &amp; Deng, C.<sup>*</sup> (2023). Effects of language switching frequency on inhibitory control in bilingual preschool children: Different roles of expressive and receptive language abilities. <em>Early Childhood Research Quarterly</em>, <em>62</em>, 327–336.", doi: "10.1016/j.ecresq.2023.01.002" },
+    { year: 2023, cite: "Chen, X., Zhou, J., Liu, J., Li, D., &amp; Liu, S. (2023). Academic performance and depression in Chinese children: Same-domain and cross-domain effects in friendships. <em>Child Development</em>, <em>94</em>(2), 348–362.", doi: "10.1111/cdev.13864" },
+    { year: 2023, cite: "Goldsmith, S. F., El-Baba, M., He, X., Lewis, D. J., Dirani, L. A., Liu, J., &amp; Morton, B. (2023). No bilingual advantage in children&<sup>#</sup>x27;s attentional disengagement: Congruency and sequential congruency effects in a large sample of monolingual and bilingual children. <em>Journal of Experimental Child Psychology</em>, <em>233</em>, 105692.", doi: "10.1016/j.jecp.2023.105692" },
+    { year: 2023, cite: "Hu, Y., Bullock, A., Zhou, Y., &amp; Liu, J.<sup>*</sup> (2023). Moderating effect of classroom sociable norm on the relations between unsociability and internalizing problems in Chinese adolescents. <em>Frontiers in Psychiatry</em>, <em>14</em>, 1168342.", doi: "10.3389/fpsyt.2023.1168342" },
+    { year: 2023, cite: "Hu, Y., Zhu, Z., Wang, Z., Ju, K., Liu, J.<sup>*</sup>, &amp; Bullock, A. (2023). The moderating effect of classroom status hierarchy on the associations between shyness and peer relationships difficulties in Chinese children. <em>Children and Youth Services Review</em>, <em>155</em>, 107171.", doi: "10.1016/j.childyouth.2023.107171" },
+    { year: 2023, cite: "Liu, M., Chen, X., Fu, R., Li, D., &amp; Liu, J. (2023). Social, academic, and psychological characteristics of peer groups in Chinese children: Same-domain and cross-domain effects on individual development. <em>Developmental Psychology</em>, <em>59</em>(1), 57–68.", doi: "10.1037/dev0001449" },
+    { year: 2023, cite: "Sun, Y., Bowker, J., Coplan, R. J., Liu, J.<sup>*</sup>, &amp; Sang, B. (2023). Best friends&<sup>#</sup>x27; popularity: Associations with psychological well-being and school adjustment in China during early adolescence. <em>Journal of Youth and Adolescence</em>, <em>52</em>(3), 670–683.", doi: "10.1007/s10964-022-01719-w" },
+    { year: 2023, cite: "Wang, S., Cheah, C. S. L., Zong, X., &amp; Ren, H. (2023). Parental stress and Chinese American preschoolers’ adjustment: The mediating role of parenting. <em>Behavioral Sciences</em>, <em>13</em>(7), 562.", doi: "10.3390/bs13070562" },
+    { year: 2023, cite: "Wang, Z., Laninga-Wijnen, L., Garandeau, C. F., &amp; Liu, J.<sup>*</sup> (2023). Development and validation of the Adolescent Defending Behaviours Questionnaire among Chinese early adolescents. <em>Assessment</em>, <em>30</em>(7), 2258–2275.", doi: "10.1177/10731911221149" },
+    { year: 2023, cite: "Xiao, B., Chen, W., Xie, X., Zheng, H., Law, D. M., Onditi, H., Liu, J., &amp; Shapka, J. (2023). Exploring the risk factors of cyberbullying among Chinese adolescents: The important role of cybervictimization. <em>International Journal of Bullying Intervention</em>. Advance online publication.", doi: "10.1007/s42380-023-00195-5" },
+    { year: 2023, cite: "Xiao, B., Xie, X., Chen, W., Law, D. M., Onditi, H., Liu, J., &amp; Shapka, J. (2023). Measurement invariance of the Resistance to Peer Influence Scale across culture and gender. <em>European Journal of Psychological Assessment</em>. Advance online publication.", doi: "10.1027/1015-5759/a000754" },
+    { year: 2023, cite: "Yuan, M., Bian, X., Liu, J.<sup>*</sup>, Zheng, H., Coplan, R. J., &amp; Sang, B. (2023). Relations between maternal panic over COVID-19 and children’s depressive symptoms: The moderating role of children’s daily routines. <em>Current Psychology</em>. Advance online publication.", doi: "10.1007/s12144-022-04129-0" },
+    { year: 2023, cite: "Zhao, S., Liu, M., Chen, X., Li, D., Liu, J., &amp; Liu, S. (2023). Unsociability and psychological and school adjustment in Chinese children: The moderating effects of peer group cultural orientations. <em>Journal of Cross-Cultural Psychology</em>, <em>54</em>(2), 283–302.", doi: "10.1177/00220221221132810" },
+    { year: 2023, cite: "Zhong, J., Liu, J.<sup>*</sup>, Xu, G., Zheng, H., Bowker, J., &amp; Coplan, R. J. (2023). Measurement invariance of two different short forms of the Social Interaction Anxiety Scale (SIAS) and Social Phobia Scale (SPS) in Chinese and US samples. <em>European Journal of Psychological Assessment</em>, <em>39</em>(1), 14–20.", doi: "10.1027/1015-5759/a000689" },
+    { year: 2023, cite: "Zhou, J., Chen, X., Li, D., Liu, J., Wei, L., Yang, P., &amp; French, D. C. (2023). Aggression and depression in Chinese early adolescents: Same-domain and cross-domain effects in friendships. <em>Research on Child and Adolescent Psychopathology</em>, <em>51</em>, 343–354.", doi: "10.1007/s10802-022-01001-4" },
+    { year: 2023, cite: "Zhou, T., Kong, X., Bian, X., Wang, S., Liu, J.<sup>*</sup>, &amp; Schmidt, L. A. (2023). Maternal involvement and adolescents’ psychological and academic adjustment after COVID-19 return-to-school: A one-year-longitudinal study. <em>Journal of Research on Adolescence</em>, <em>33</em>, 1391–1406.", doi: "10.1111/jora.12885" },
+    { year: 2023, cite: "Zhou, T., Liao, L., Nguyen, T., Li, D., &amp; Liu, J.<sup>*</sup> (2023). Solitude profiles and psychological adjustment in Chinese late adolescence: A person-centered research. <em>Frontiers in Psychiatry</em>, <em>14</em>, 1173441.", doi: "10.3389/fpsyt.2023.1173441" },
+    { year: 2023, cite: "Zong, X., Cheah, C. S. L., &amp; Ren, H. (2023). Longitudinal pathways linking racial discrimination and Chinese American mothers’ parenting. <em>Developmental Psychology</em>, <em>59</em>(11), 2119–2132.", doi: "10.1037/dev0001608" },
+    { year: 2022, cite: "Bullock, A., Xiao, B., Liu, J.<sup>*</sup>, Coplan, R. J., &amp; Chen, X. (2022). Shyness, parent-child relationships and peer difficulties during the middle school transition. <em>Journal of Child and Family Studies</em>, <em>31</em>, 86–98.", doi: "10.1007/s10826-021-01979-3" },
+    { year: 2022, cite: "Chen, X., Zhou, J., Li, D., Liu, J., Dai, Y., &amp; Zhou, T. (2022). Enjoyment of Chinese and mathematics and school performance in Chinese children and adolescents. <em>Child Development</em>, <em>94</em>(1), 126–141.", doi: "10.1111/cdev.13843" },
+    { year: 2022, cite: "Gao, D., Liu, J.<sup>*</sup>, Xu, L., Mesman, J., &amp; van Geel, M. (2022). Early adolescent social anxiety: Differential associations for fathers&<sup>#</sup>x27; and mothers&<sup>#</sup>x27; psychological controlling and autonomy-supportive parenting. <em>Journal of Youth and Adolescence</em>, <em>51</em>, 1858–1871.", doi: "10.1007/s10964-022-01636-y" },
+    { year: 2022, cite: "Hu, N., Xu, G., Chen, X., Yuan, M., Coplan, R. J., Liu, J.<sup>*</sup>, Li, D., &amp; Chen, X. (2022). A parallel latent growth model of affinity for solitude and depressive symptoms among Chinese early adolescents. <em>Journal of Youth and Adolescence</em>, <em>51</em>, 904–914.", doi: "10.1007/s10964-022-01595-4" },
+    { year: 2022, cite: "Huang, Y., Bullock, A., Liu, J.<sup>*</sup>, Wang, Z., Xu, G., &amp; Sang, B. (2022). Co-rumination with friends exacerbates association between peer victimization and adjustment in adolescence. <em>Journal of Applied Developmental Psychology</em>, <em>80</em>, 101410.", doi: "10.1016/j.appdev.2022.101410" },
+    { year: 2022, cite: "Jin, G., Fu, R., Li, D., Chen, X., &amp; Liu, J. (2022). Longitudinal associations between prosociality and depressive symptoms in Chinese children: The mediating role of peer preference. <em>Journal of Youth and Adolescence</em>, <em>51</em>, 956–966.", doi: "10.1007/s10964-021-01501-4" },
+    { year: 2022, cite: "Kong, X., Brook, C. A., Zhong, J., Liu, J.<sup>*</sup>, &amp; Schmidt, L. A. (2022). Are cross-cultural shyness comparisons valid? Testing invariance with multigroup CFA and the alignment method across Eastern and Western cultures. <em>Psychological Assessment</em>, <em>34</em>(3), 271–280.", doi: "10.1037/pas0001086" },
+    { year: 2022, cite: "Law, D. M., Xiao, B., Onditi, H., Liu, J., Xie, X., &amp; Shapka, J. (2022). Measurement invariance and relationships among school connectedness, cyberbullying, and cybervictimization: A comparison among Canadian, Chinese, and Tanzanian adolescents. <em>Journal of Psychoeducational Assessment</em>, <em>40</em>(7), 856–879.", doi: "10.1177/07342829221106585" },
+    { year: 2022, cite: "Ren, H., Cheah, C. S. L., Zong, X., Wang, S., Cho, H. S., Wang, C., &amp; Xue, X. (2022). Age-varying associations between Chinese American parents’ racial–ethnic socialization and children’s difficulties during the COVID-19 pandemic. <em>Asian American Journal of Psychology</em>, <em>13</em>(4), 351–363.", doi: "10.1037/aap0000278" },
+    { year: 2022, cite: "Ren, L., Mo, B., Liu, J., &amp; Li, D. (2022). A cross-lagged regression analysis of loneliness and depression: A two-year trace. <em>European Journal of Developmental Psychology</em>, <em>19</em>(2), 198–212.", doi: "10.1080/17405629.2020.1865146" },
+    { year: 2022, cite: "Xiao, B., Bullock, A., Liu, J.<sup>*</sup>, &amp; Coplan, R. J. (2022). Longitudinal links between marital conflict and children’s internalizing problems: Mediating role of maternal parenting styles. <em>Family Process</em>, <em>61</em>, 1749–1766.", doi: "10.1111/FAMP.12735" },
+    { year: 2022, cite: "Yang, P., Zhao, S., Li, D., Ma, Y., Liu, J., Chen, X., &amp; French, D. C. (2022). Bullying victimization and depressive symptoms in Chinese adolescents: A moderated mediation model of self-esteem and friendship intimacy. <em>Journal of Affective Disorders</em>, <em>319</em>(15), 48–56.", doi: "10.1016/j.jad.2022.09.038" },
+    { year: 2022, cite: "Yu, Y., Chen, X., Li, D., Liu, J., &amp; Yang, F. (2022). Growing up happy: Longitudinal relations between children’s happiness and their social and academic functioning. <em>The Journal of Positive Psychology</em>. Advance online publication.", doi: "10.1080/17439760.2022.2093783" },
+    { year: 2022, cite: "Zhao, S., Chen, X., Li, D., Liu, J., &amp; Yang, P. (2022). Maternal encouragement of competitiveness and school adjustment in Chinese adolescents. <em>Journal of Family Psychology</em>, <em>36</em>(8), 1376–1385.", doi: "10.1037/fam0001034" },
+    { year: 2022, cite: "Zhou, T., Bian, X., Zhang, K., Zheng, S., Lin, Y., Zheng, H., Liu, J.<sup>*</sup>, &amp; Finan, J. (2022). Maternal anxiety symptoms and Chinese adolescents&<sup>#</sup>x27; mental health during the COVID-19 pandemic: The protective role of adolescents&<sup>#</sup>x27; self-compassion. <em>Frontiers in Psychiatry</em>, <em>13</em>, 837846.", doi: "10.3389/fpsyt.2022.837846" },
+    { year: 2022, cite: "Zong, X., Cheah, C. S. L., &amp; Ren, H. (2022). Chinese American adolescents’ experiences of COVID-19-related racial discrimination and anxiety: Person-centered and intersectional approaches. <em>Journal of Research on Adolescence</em>, <em>32</em>(2), 451–469.", doi: "10.1111/jora.12696" },
+    { year: 2021, cite: "Cheah, C. S. L., Zong, X., Cho, H. S., Ren, H., Wang, S., Xue, X., &amp; Wang, C. (2021). Chinese American adolescents’ experiences of COVID-19 racial discrimination: Risk and protective factors for internalizing difficulties. <em>Cultural Diversity &amp; Ethnic Minority Psychology</em>, <em>27</em>(4), 559–568.", doi: "10.1037/cdp0000498" },
+    { year: 2021, cite: "Chen, X., Fu, R., Li, D., Liu, J., Liu, S., &amp; Cui, L. (2021). Acculturation and adjustment among rural migrant children in urban China: A longitudinal study. <em>Applied Psychology: Health and Well-Being</em>, <em>13</em>, 559–577.", doi: "10.1111/aphw.12264" },
+    { year: 2021, cite: "Gao, D., Bullock, A., &amp; Liu, J.<sup>*</sup> (2021). Cross-lagged panel analyses of maternal psychological control and young adolescents’ emotion regulation. <em>Journal of Adolescence</em>, <em>87</em>, 52–62.", doi: "10.1016/j.adolescence.2021.01.001" },
+    { year: 2021, cite: "Gao, D., Hart, C. H., Cheah, C. S. L., Balkaya-Ince, M., Vu, K., &amp; Liu, J. (2021). Chinese American children’s temperamental shyness and response to peer victimization as moderated by maternal praise. <em>Journal of Family Psychology</em>, <em>35</em>(5), 680–690.", doi: "10.1037/fam0000831" },
+    { year: 2021, cite: "Gao, D., Liu, J.<sup>*</sup>, Bullock, A., &amp; Chen, X. (2021). Children’s interpretation moderates relations of maternal autonomy support with sociability and assertiveness in China. <em>Social Development</em>, <em>30</em>, 449–462.", doi: "10.1111/sode.12491" },
+    { year: 2021, cite: "Gao, D., Liu, J.<sup>*</sup>, Bullock, A., Li, D., &amp; Chen, X. (2021). Transactional models linking maternal authoritative parenting, child self-esteem, and approach coping strategies. <em>Journal of Applied Developmental Psychology</em>, <em>73</em>, 101262.", doi: "10.1016/j.appdev.2021.101262" },
+    { year: 2021, cite: "Hu, N., Yuan, M., Liu, J.<sup>*</sup>, Coplan, R. J., &amp; Zhou, Y. (2021). Examining reciprocal links between parental autonomy-support and children’s peer preference in mainland China. <em>Children</em>, <em>8</em>, 508.", doi: "10.3390/children8060508" },
+    { year: 2021, cite: "Li, D., Xu, X., Liu, J., &amp; Chen, X. (2021). Cybervictimization and adjustment in late childhood: Moderating effects of social sensitivity. <em>Journal of Applied Developmental Psychology</em>, <em>73</em>, 101258.", doi: "10.1016/j.appdev.2021.101258" },
+    { year: 2021, cite: "Liu, J., Zhou, T., Yuan, M., Ren, H., Bian, X., &amp; Coplan, R. J. (2021). Daily routines, parent-child conflict, and psychological maladjustment among Chinese children and adolescents during the COVID-19 pandemic. <em>Journal of Family Psychology</em>, <em>35</em>(8), 1077–1085.", doi: "10.1037/fam0000914" },
+    { year: 2021, cite: "Ren, H., Cheah, C. S. L., &amp; Liu, J.<sup>*</sup> (2021). The cost and benefit of fear induction parenting on children’s health during the COVID-19 outbreak. <em>Developmental Psychology</em>, <em>57</em>(10), 1667–1680.", doi: "10.1037/dev0001205" },
+    { year: 2021, cite: "Ren, H., Cheah, C. S. L., Tahseen, M., &amp; Zhou, N. (2021). A person-centered examination of acculturation and psychological functioning among Chinese and Korean immigrant mothers in the United States. <em>Cultural Diversity &amp; Ethnic Minority Psychology</em>, <em>27</em>(1), 95–106.", doi: "10.1037/cdp0000430" },
+    { year: 2021, cite: "Ren, H., He, X., Bian, X., Shang, X., &amp; Liu, J.<sup>*</sup> (2021). The protective roles of exercise and maintenance of daily living routines for Chinese adolescents during the COVID-19 quarantine period. <em>Journal of Adolescent Health</em>, <em>68</em>(1), 35–42.", doi: "10.1016/j.jadohealth.2020.09.026" },
+    { year: 2021, cite: "Ren, L., Han, X., Li, D., Hu, F., Mo, B., &amp; Liu, J.<sup>*</sup> (2021). The association between loneliness and depression among Chinese college students: Affinity for aloneness and gender as moderators. <em>European Journal of Developmental Psychology</em>, <em>18</em>(3), 382–395.", doi: "10.1080/17405629.2020.1789861" },
+    { year: 2021, cite: "Ren, L., Mo, B., Li, D., Liu, J.<sup>*</sup>, Bullock, A., &amp; Yuan, M. (2021). Relationship between interpersonal competences and loneliness among Chinese college students: A two-year follow-up study. <em>Current Psychology</em>. Advance online publication.", doi: "10.1007/s12144-021-02048-0" },
+    { year: 2021, cite: "Wang, Z., Bowker, J., Liu, J.<sup>*</sup>, Li, D., &amp; Chen, X. (2021). Relations between shyness and psychological adjustment during early adolescence: The role of friendship quality. <em>Infant and Child Development</em>, <em>30</em>, e2209.", doi: "10.1002/icd.2209" },
+    { year: 2021, cite: "Xiao, B., Bullock, A., Coplan, R. J., Liu, J.<sup>*</sup>, &amp; Cheah, C. S. L. (2021). Exploring the relations between parenting practices, child shyness, and internalizing problems in Chinese culture. <em>Journal of Family Psychology</em>, <em>35</em>(6), 833–843.", doi: "10.1037/fam0000904" },
+    { year: 2021, cite: "Xiao, B., Bullock, A., Liu, J.<sup>*</sup>, &amp; Coplan, R. J. (2021). Unsociability, peer rejection, and loneliness in Chinese early adolescents: Testing a cross-lagged model. <em>The Journal of Early Adolescence</em>, <em>41</em>(6), 865–885.", doi: "10.1177/0272431620961457" },
+    { year: 2021, cite: "Xu, G., Bullock, A., Yang, P., &amp; Liu, J.<sup>*</sup> (2021). Psychological control and internalizing problems: The mediating role of mother-child relationship quality. <em>Parenting: Science and Practice</em>, <em>21</em>(2), 108–117.", doi: "10.1080/15295192.2020.1831295" },
+    { year: 2021, cite: "Yang, P., Xu, G., Zhao, D., Li, D., Liu, J., &amp; Chen, X. (2021). Shyness and psychological maladjustment in Chinese adolescents: Selection and influence processes in friendship networks. <em>Journal of Youth and Adolescence</em>, <em>50</em>(10), 2108–2121.", doi: "10.1007/s10964-021-01415-1" },
+    { year: 2021, cite: "Zhao, S., Chen, X., Liu, J., Li, D., &amp; Cui, L. (2021). Maternal encouragement of sociability and adjustment in non-migrant and migrant children in urban China. <em>Journal of Family Psychology</em>, <em>35</em>(6), 822–832.", doi: "10.1037/fam0000858" },
+    { year: 2020, cite: "Bullock, A., Xiao, B., Xu, G., Liu, J.<sup>*</sup>, Coplan, R. J., &amp; Chen, X. (2020). Unsociability, peer relations, and psychological maladjustment among children: A moderated-mediated model. <em>Social Development</em>, <em>29</em>, 1014–1030.", doi: "10.1111/sode.12444" },
+    { year: 2020, cite: "Cheah, C. S. L., Wang, C., Ren, H., Zong, X., Cho, H. S., &amp; Xue, X. (2020). COVID-19 racism and mental health in Chinese American families. <em>Pediatrics</em>, <em>146</em>(5).", doi: "10.1542/peds.2020-021816" },
+    { year: 2020, cite: "Ding, X., Chen, X., Fu, R., Li, D., &amp; Liu, J. (2020). Relations of shyness and unsociability with adjustment in migrant and non-migrant children in urban China. <em>Journal of Abnormal Child Psychology</em>, <em>48</em>(2), 289–300.", doi: "10.1007/s10802-019-00583-w" },
+    { year: 2020, cite: "Ren, H., Cheah, C. S. L., Sang, B., &amp; Liu, J. (2020). Maternal attribution and Chinese immigrant children’s social skills: The mediating role of authoritative parenting practices. <em>Parenting: Science and Practice</em>, <em>20</em>(3), 229–239.", doi: "10.1080/15295192.2019.1694834" },
+    { year: 2020, cite: "Wang, Z., Chen, X., Liu, J.<sup>*</sup>, Bullock, A., Li, D., Chen, X., &amp; French, D. C. (2020). Moderating role of conflict resolution strategies in the links between peer victimization and psychological adjustment among youth. <em>Journal of Adolescence</em>, <em>79</em>, 184–192.", doi: "10.1016/j.adolescence.2020.01.002" },
+    { year: 2020, cite: "Xu, X., Zhao, S., Yiu, W. Y. V., Li, D., Liu, J.<sup>*</sup>, Liu, S., &amp; Chen, X. (2020). Relations between maternal power-assertive parenting and adjustment in Chinese children: A longitudinal study. <em>International Journal of Psychology</em>, <em>55</em>(2), 154–162.", doi: "10.1002/ijop.12570" },
+    { year: 2020, cite: "Zhou, T., Nguyen, T., Zhong, J., &amp; Liu, J. (2020). A COVID-19 descriptive study of life after lockdown in Wuhan, China. <em>Royal Society Open Science</em>, <em>7</em>, 200705.", doi: "10.1098/rsos.200705" },
+    { year: 2019, cite: "Cheah, C. S. L., Yu, J., Liu, J., &amp; Coplan, R. J. (2019). Chinese children’s cognitive appraisal moderates associations between psychologically controlling parenting and children’s depressive symptoms. <em>Journal of Adolescence</em>, <em>76</em>, 109–119.", doi: "10.1016/j.adolescence.2019.08.005" },
+    { year: 2019, cite: "Chen, X., Fu, R., Li, D., &amp; Liu, J. (2019). Developmental trajectories of shyness-sensitivity from middle childhood to early adolescence in China: Contributions of peer preference and mutual friendship. <em>Journal of Abnormal Child Psychology</em>, <em>47</em>(7), 1197–1209.", doi: "10.1007/s10802-018-00507-0" },
+    { year: 2019, cite: "Chen, X., Li, D., Liu, J., Fu, R., &amp; Liu, S. (2019). Father migration and mother migration: Different implications for social, school, and psychological adjustment of left-behind children in rural China. <em>Journal of Contemporary China</em>, <em>28</em>, 849–863.", doi: "10.1080/10670564.2019.1594100" },
+    { year: 2019, cite: "Chen, X., Li, D., Xu, X., Liu, J., Fu, R., Cui, L., &amp; Liu, S. (2019). School adjustment of children from rural migrant families in urban China. <em>Journal of School Psychology</em>, <em>72</em>, 14–28.", doi: "10.1016/j.jsp.2018.12.003" },
+    { year: 2019, cite: "Li, D., Zhang, R., Liu, S., Liu, J., &amp; Zhang, T. (2019). The characteristics of Chinese adolescents with suicidal ideation: A mixed-methods approach. <em>Journal of Adolescent Research</em>, <em>34</em>(2), 201–230.", doi: "10.1177/0743558417723603" },
+    { year: 2019, cite: "Liu, J., Bowker, J., Coplan, R. J., Yang, P., Li, D., &amp; Chen, X. (2019). Evaluating links among shyness, peer relations, and internalizing problems in Chinese young adolescents. <em>Journal of Research on Adolescence</em>, <em>29</em>(3), 696–709.", doi: "10.1111/jora.12406" },
+    { year: 2019, cite: "Liu, Y., Sang, B., Liu, J., Gong, S., &amp; Ding, X. (2019). Parental support and homework emotions in Chinese children: Mediating roles of homework self-efficacy and emotion regulation strategies. <em>Educational Psychology</em>, <em>39</em>(5), 617–635.", doi: "10.1080/01443410.2018.1540769" },
+    { year: 2019, cite: "Ren, H., Sun, S., Cheah, C. S. L., Sang, B., &amp; Liu, J. (2019). Confirmatory factor analyses of the parent attributions questionnaire among Asian immigrant mothers. <em>International Journal of Behavioral Development</em>, <em>43</em>(2), 185–193.", doi: "10.1177/0165025418798492" },
+    { year: 2018, cite: "Bullock, A., Liu, J., Cheah, C. S. L., Coplan, R. J., Chen, X., &amp; Li, D. (2018). The role of adolescents&<sup>#</sup>x27; perceived parental psychological control in the links between shyness and socio-emotional adjustment among youth. <em>Journal of Adolescence</em>, <em>68</em>, 117–126.", doi: "10.1016/j.adolescence.2018.07.007" },
+    { year: 2018, cite: "Chen, X., Fu, R., Liu, J.<sup>*</sup>, Wang, L., Zarbatany, L., &amp; Ellis, W. (2018). Social sensitivity and social, school, and psychological adjustment among children across contexts. <em>Developmental Psychology</em>, <em>54</em>(6), 1124–1134.", doi: "10.1037/dev0000496" },
+    { year: 2018, cite: "Chen, X., Li, D., Liu, J., Chen, H., &amp; Zhao, S. (2018). Judgments of damage to public versus private property in Chinese children at different historical times. <em>Developmental Science</em>, <em>21</em>(1), e12506.", doi: "10.1111/desc.12506" },
+    { year: 2018, cite: "Fu, R., Chen, X., Liu, J., &amp; Li, D. (2018). Relations between social comparison orientation and adjustment in Chinese adolescents: Moderating effects of initial adjustment status. <em>International Journal of Psychology</em>, <em>53</em>(2), 133–141.", doi: "10.1002/ijop.12278" },
+    { year: 2018, cite: "Le, Y., Liu, J., Deng, C., &amp; Dai, Y. (2018). Heart rate variability reflects the effects of emotional design principle on mental effort in multimedia learning. <em>Computers in Human Behavior</em>, <em>89</em>, 40–47.", doi: "10.1016/j.chb.2018.07.037" },
+    { year: 2018, cite: "Liu, J., Bullock, A., Coplan, R. J., Chen, X., Li, D., &amp; Zhou, Y. (2018). Developmental cascade models linking peer victimization, depression, and academic achievement in Chinese children. <em>British Journal of Developmental Psychology</em>, <em>36</em>, 47–63.", doi: "10.1111/bjdp.12212" },
+    { year: 2018, cite: "Liu, J., Xiao, B., Coplan, R. J., Chen, X., &amp; Li, D. (2018). Cross-lagged panel analyses of child shyness, maternal and paternal authoritarian parenting, and teacher-child relationships in mainland China. <em>Journal of Child and Family Studies</em>, <em>27</em>(12), 4116–4125.", doi: "10.1007/s10826-018-1229-7" },
+    { year: 2018, cite: "Liu, J., Xiao, B., Hipson, W. E., Coplan, R. J., Yang, P., &amp; Cheah, C. S. L. (2018). Self-regulation, learning problems and maternal authoritarian parenting in Chinese children: A developmental cascades model. <em>Journal of Child and Family Studies</em>, <em>27</em>(12), 4060–4070.", doi: "10.1007/s10826-018-1218-x" },
+    { year: 2018, cite: "Liu, X., Fu, R., Li, D., Liu, J., &amp; Chen, X. (2018). Self- and group-orientations and adjustment in urban and rural Chinese children. <em>Journal of Cross-Cultural Psychology</em>, <em>49</em>(9), 1440–1456.", doi: "10.1177/0022022118795294" },
+    { year: 2018, cite: "Sang, B., Ding, X., Coplan, R. J., Liu, J., Pan, T., &amp; Feng, X. (2018). Assessment and implications of social avoidance in Chinese early adolescents. <em>The Journal of Early Adolescence</em>, <em>38</em>, 554–573.", doi: "10.1177/0272431616678988" },
+    { year: 2018, cite: "Zhou, N., Cheah, C. S. L., Li, Y., Liu, J., &amp; Sun, S. (2018). The role of maternal and child characteristics in Chinese children’s dietary intake across three groups. <em>Journal of Pediatric Psychology</em>, <em>43</em>(5), 503–512.", doi: "10.1093/jpepsy/jsx131" },
+    { year: 2017, cite: "Coplan, R. J., Liu, J.<sup>*</sup>, Cao, J., Chen, X., &amp; Li, D. (2017). Shyness and school adjustment in Chinese children: The roles of teachers and peers. <em>School Psychology Quarterly</em>, <em>32</em>(1), 131–142.", doi: "10.1037/spq0000179" },
+    { year: 2017, cite: "Liu, J., Chen, X., Zhou, Y., Fu, R., Li, D., &amp; Coplan, R. J. (2017). Relations of shyness-sensitivity and unsociability with adjustment in middle childhood and early adolescence in suburban Chinese children. <em>International Journal of Behavioral Development</em>, <em>41</em>(6), 681–687.", doi: "10.1177/0165025416664195" },
+    { year: 2017, cite: "Liu, J., Xiao, B., Hipson, W. E., Coplan, R. J., Li, D., &amp; Chen, X. (2017). Self-control, peer preference, and loneliness in Chinese children: A three-year longitudinal study. <em>Social Development</em>, <em>26</em>(4), 876–890.", doi: "10.1111/sode.12224" },
+    { year: 2016, cite: "Chen, X., Liu, J.<sup>*</sup>, Ellis, W., &amp; Zarbatany, L. (2016). Social sensitivity and adjustment in Chinese and Canadian children. <em>Child Development</em>, <em>87</em>(4), 1115–1129.", doi: "10.1111/cdev.12514" },
+    { year: 2016, cite: "Coplan, R. J., Liu, J.<sup>*</sup>, Ooi, L., Chen, X., Li, D., &amp; Ding, X. (2016). A person-oriented analysis of social withdrawal in Chinese children. <em>Social Development</em>, <em>25</em>(4), 794–811.", doi: "10.1111/sode.12181" },
+    { year: 2016, cite: "Kingsbury, M., Liu, J.<sup>*</sup>, Coplan, R. J., Chen, X., &amp; Li, D. (2016). Assessment and implications of coping styles in response to a social stressor among early adolescents in China. <em>The Journal of Early Adolescence</em>, <em>36</em>(2), 222–250.", doi: "10.1177/0272431614561262" },
+    { year: 2016, cite: "Zhou, Y., Bullock, A., Liu, J.<sup>*</sup>, Fu, R., Coplan, R. J., &amp; Cheah, C. S. L. (2016). Validation of the self-regulation scale in Chinese children. <em>Journal of Psychoeducational Assessment</em>, <em>34</em>(6), 589–594.", doi: "10.1177/0734282915622853" },
+    { year: 2015, cite: "Ding, X., Coplan, R. J., Sang, B., Liu, J., Pan, T., &amp; Cheng, C. (2015). Starting small: Revisiting young children&<sup>#</sup>x27;s perceptions of social withdrawal in China. <em>British Journal of Developmental Psychology</em>, <em>33</em>, 183–186.", doi: "10.1111/bjdp.12089" },
+    { year: 2015, cite: "Ding, X., Coplan, R. J., Sang, B., Liu, J., Pan, T., &amp; Cheng, C. (2015). Young Chinese children’s beliefs about the implications of subtypes of social withdrawal: A first look at social avoidance. <em>British Journal of Developmental Psychology</em>, <em>33</em>, 159–173.", doi: "10.1111/bjdp.12081" },
+    { year: 2015, cite: "Ding, X., Weeks, M., Liu, J.<sup>*</sup>, Sang, B., &amp; Zhou, Y. (2015). Relations between unsociability and peer problems in Chinese children: Moderating effect of behavioral control. <em>Infant and Child Development</em>, <em>24</em>, 94–103.", doi: "10.1002/icd.1864" },
+    { year: 2015, cite: "Liu, J., Chen, X., Coplan, R. J., Ding, X., Zarbatany, L., &amp; Ellis, W. (2015). Shyness and unsociability and their relations with adjustment in Chinese and Canadian children. <em>Journal of Cross-Cultural Psychology</em>, <em>46</em>(3), 371–386.", doi: "10.1177/0022022114567537" },
+    { year: 2015, cite: "Liu, J., Coplan, R. J., Ooi, L., Chen, X., &amp; Li, D. (2015). Examining the implications of social anxiety in a community sample of mainland Chinese children. <em>Journal of Clinical Psychology</em>, <em>71</em>(10), 979–993.", doi: "10.1002/jclp.22195" },
+    { year: 2015, cite: "Liu, J., Li, D., Purwono, U., Chen, X., &amp; French, D. C. (2015). Loneliness of Indonesian and Chinese adolescents as predicted by relationships with parents and friends. <em>Merrill-Palmer Quarterly</em>, <em>61</em>(3), 362–382.", doi: "" },
+    { year: 2015, cite: "Liu, J., Zhou, Y., Li, D., &amp; Chen, X. (2015). 儿童中期和青春期早期独处偏好与心理适应之关系：有调节的中介效应 [Relations between preference for solitude and psychological adjustment in middle childhood and early adolescence: A moderated mediation model]. <em>心理学报</em> [<em>Acta Psychologica Sinica</em>], <em>47</em>(8), 1004–1012.", doi: "" },
+    { year: 2014, cite: "Chen, X., Wang, L., Li, D., &amp; Liu, J. (2014). Loneliness in Chinese children across contexts. <em>Developmental Psychology</em>, <em>50</em>(10), 2324–2333.", doi: "10.1037/a0037689" },
+    { year: 2014, cite: "Ding, X., Liu, J.<sup>*</sup>, Coplan, R. J., Chen, X., Li, D., &amp; Sang, B. (2014). Self-reported shyness in Chinese children: Validation of the Children’s Shyness Questionnaire and exploration of its links with adjustment and the role of coping. <em>Personality and Individual Differences</em>, <em>68</em>, 183–188.", doi: "10.1016/j.paid.2014.04.027" },
+    { year: 2014, cite: "Liu, J., Bullock, A., &amp; Coplan, R. J. (2014). Predictive relations between peer victimization and academic achievement in the Chinese children. <em>School Psychology Quarterly</em>, <em>29</em>(1), 89–98.", doi: "10.1037/spq0000044" },
+    { year: 2014, cite: "Liu, J., Coplan, R. J., Chen, X., Li, D., Ding, X., &amp; Zhou, Y. (2014). Unsociability and shyness in Chinese children: Concurrent and predictive relations with indices of adjustment. <em>Social Development</em>, <em>23</em>(1), 119–136.", doi: "10.1111/sode.12034" },
+    { year: 2013, cite: "Li, D., Zong, L., &amp; Liu, J.<sup>*</sup> (2013). 外化问题行为与集体道德情绪、集体责任行为之关系：班级氛围的调节效应 [Relations of externalizing problem behaviors to collective moral emotion and collective responsibility behavior: The moderating effect of classroom climate]. <em>心理学报</em> [<em>Acta Psychologica Sinica</em>], <em>45</em>(9), 1015–1025.", doi: "" },
+    { year: 2013, cite: "Liu, J., Zhou, Y., &amp; Li, D. (2013). 童年中晚期孤独感的发展轨迹：一项潜变量增长模型分析 [Developmental trajectories of loneliness in middle and late childhood: A latent growth model analysis]. <em>心理学报</em> [<em>Acta Psychologica Sinica</em>], <em>45</em>(2), 179–192.", doi: "" },
+    { year: 2012, cite: "Chen, X., Wang, L., &amp; Liu, J. (2012). Adolescent cultural values and adjustment in the changing Chinese society. In G. Trommsdorff &amp; X. Chen (Eds.), <em>Values, religion, and culture in adolescent development</em>. Cambridge University Press.", doi: "" },
+    { year: 2012, cite: "Liu, J., Chen, X., Li, D., &amp; French, D. C. (2012). Shyness-sensitivity, aggression, and adjustment in urban Chinese adolescents at different historical times. <em>Journal of Research on Adolescence</em>, <em>22</em>(3), 393–399.", doi: "10.1111/j.1532-7795.2012.00790.x" },
+  ],
+
+  /* 【研究成果-在研项目】 */
+  projects: [
+    { name: "长宁精卫-华师大卓越领航项目", nameEn: "Changning Mental Health Center \u2013 ECNU Excellence Pilot Project", desc: "2026 年 · 负责人" },
+    { name: "田家炳基金会《学习力导向的校家社协同育人项目》", nameEn: "Tin Ka Ping Foundation: Learning-Capacity-Oriented School\u2013Family\u2013Community Collaborative Education", desc: "2026 年 · 负责人" },
+    { name: "上海市浦江人才项目", nameEn: "Shanghai Pujiang Talent Program", desc: "2025 年 · 负责人" },
+    { name: "全国教育科学规划项目《施加和遭受校园欺凌儿童的家庭社会化教育与干预研究》", nameEn: "National Education Science Program: Family Socialization, Education, and Intervention for Children Who Bully or Are Bullied", desc: "2025 年 · 负责人" },
+    { name: "华东师范大学中国自主知识体系建设项目《超道德与一般道德行为社会评价对儿童道德行为发展的影响》", nameEn: "ECNU Independent Knowledge System Project: Effects of Social Evaluation of Extraordinary vs. Ordinary Moral Behavior on Children\u2019s Moral Development", desc: "2025 年 · 负责人" }
+  ],
+
+  /* 【研究成果-工具箱】 */
+  toolbox: [
+    { type: "问卷工具包", typeEn: "Questionnaire Toolkit", name: "人–AI 情感与关系性互动问卷工具包", nameEn: "Human–AI Emotional and Relational Engagement Questionnaire Toolkit", desc: "包含多维 AI 使用量表（MAIUS）、AI 互动感知独特性量表（PUAIIS）和 AI 情感依恋量表（AIEAS），分别测量行为使用、关系性认知与情感依恋三个层面。经邮件申请并确认授权后，可用于相关研究。", descEn: "Includes the Multidimensional AI Use Scale (MAIUS), Perceived Uniqueness of AI Interaction Scale (PUAIIS), and AI Emotional Attachment Scale (AIEAS), measuring behavioral use, relational cognition, and emotional attachment. Available for research after email authorization.", auth: true, email: "hgren@dep.ecnu.edu.cn", doi: "10.1080/10447318.2026.2725999" }
+  ],
+
+  /* 【团队成员】 排序：学博→学硕→专硕；同类型按入学年份升序（老→新）；同年按姓名首字母 */
+  members: [
+    { group: "ra", name: "高云", role: "研究助理 · 2023 级", nameEn: "Gao Yun", roleEn: "Research Assistant · Class of 2023", affilEn: "College of Economics and Management, Shanghai Ocean University", dept: "上海海洋大学 经济管理学院", bio: "一名热爱心理学的跨专业本科生，目前主要关注认知科学与人机交互领域，以及人工智能对儿童青少年心理与认知发展的影响。", bioEn: "An interdisciplinary undergraduate passionate about psychology, with research interests in cognitive science, human-computer interaction, and the impact of AI on child and adolescent development.", email: "lulululula2333@163.com", avatar: "🎓", gallery: ["website-assets/03-members/portraits/gaoyun_v1.png"] },
+    { group: "ra", name: "谢雨轩", role: "研究助理 · 2024 级", nameEn: "Xie Yuxuan", roleEn: "Research Assistant · Class of 2024", affilEn: "School of Psychology and Cognitive Science, East China Normal University", dept: "华东师范大学 心理与认知科学学院", bio: "热爱心理学的人，INFJ，喜欢摄影、绘画和听音乐。研究方向：校园欺凌和受害儿童的父母社会化过程以及干预。", bioEn: "An INFJ who enjoys photography, painting, and music. Research interests: school bullying, parental socialization processes among victimized children, and intervention.", email: "10240350467@stu.ecnu.edu.cn", avatar: "🎓", gallery: ["website-assets/03-members/portraits/xieyuxuan_v1.jpg"] },
+    { group: "ra", name: "汪心怡", role: "研究助理 · 2024 级", nameEn: "Wang Xinyi", roleEn: "Research Assistant · Class of 2024", affilEn: "School of Psychology and Cognitive Science, East China Normal University", dept: "华东师范大学 心理与认知科学学院", bio: "喜爱心理学，比较内向，喜欢听音乐、看电影、融入自然，对 AI companion 以及儿童与青少年心理健康的发展与干预很感兴趣。", bioEn: "A relatively introverted person with a passion for psychology. She enjoys music, films, and nature, and is particularly interested in AI companions and the development and intervention of mental health among children and adolescents.", email: "10240350458@stu.ecnu.edu.cn", avatar: "🎓", gallery: ["website-assets/03-members/portraits/wangxinyi_v1.png"] },
+    { group: "ra", name: "焦子墨", role: "研究助理 · 2025 级", nameEn: "Jiao Zimo", roleEn: "Research Assistant · Class of 2025", affilEn: "School of Psychology and Cognitive Science, East China Normal University", dept: "华东师范大学 心理与认知科学学院", bio: "持续学习心理学的岸边巨大鹅卵石，流体花岗岩，防洪沙袋。对儿童青少年的道德与社会性发展非常感兴趣，目前在协助进行人工智能与儿童的社会与情感发展领域论文写作的相关工作。", bioEn: "Deeply passionate about children's and adolescents' moral and social development. He is currently assisting with research and academic writing on AI and children's social and emotional development.", email: "sgmtyybd@163.com", avatar: "🎓", gallery: ["website-assets/03-members/portraits/jiaozimo_v1.jpeg"] },
+    {"group": "teachers", "name": "任慧广", "dept": "华东师范大学 教育学部教育心理学系", "role": "PI · 副教授", "nameEn": "Huiguang Ren", "affilEn": "Department of Educational Psychology, Faculty of Education, East China Normal University", "roleEn": "PI · Associate Professor", "bio": "任慧广博士，华东师范大学教育学部教育心理学系副教授，华东师范大学儿童心理与行为研究中心执行主任，上海市白玉兰青年人才，浦江人才。上海市卫健委“社会心理服务与危机干预体系”专班挂职干部。主持全国教育科学规划、上海市浦江计划等国家级和省部级项目。研究方向聚焦于家庭教养、儿童和青少年的社会化、与 AI 相关的人机情感互动和社会化过程，并致力于开发科学有效的心理干预手段。在 Child Development、Developmental Psychology、Developmental Science 等国际高水平期刊发表论文三十余篇，累计被引 1300+ 次，h-index 13。", "bioEn": "Dr. Huiguang Ren is Associate Professor in the Department of Educational Psychology, Faculty of Education, East China Normal University, and Executive Director of the ECNU Center for Child Psychology and Behavioral Research. He is a Shanghai Magnolia Young Scholar and Pujiang Talent, and has served in the Shanghai Municipal Health Commission's task force on social psychological services and crisis intervention. He has led national and provincial projects, including programs funded by the National Education Science Program and Shanghai Pujiang Program. His research focuses on parenting, child and adolescent socialization, human–AI emotional interaction and socialization, and the development of scientifically effective psychological interventions. He has published more than 30 papers in journals including Child Development, Developmental Psychology, and Developmental Science, with over 1,300 citations and an h-index of 13.", "research": "1. 严苛的社会化反馈模式对儿童发展的影响\n2. 青少年和大学生与 AI 的情感联结与社会化过程\n3. 从幼儿到青少年的道德社会化过程及其对儿童道德和社会性发展的影响\n4. 校园欺凌和受害儿童的父母社会化过程以及干预", "researchEn": "1. Effects of harsh socialization feedback on child development\n2. Emotional attachment to AI and socialization among adolescents and university students\n3. Moral socialization from early childhood to adolescence and its effects on children's moral and social development\n4. Parental socialization and intervention for children involved in school bullying and victimization", "email": "hgren@dep.ecnu.edu.cn", "links": [{"label": "Google Scholar", "url": "https://scholar.google.com/citations?user=dtRyaKIAAAAJ&hl=en&oi=ao"}, {"label": "ResearchGate", "url": "https://www.researchgate.net/profile/Huiguang-Ren"}], "avatar": "👨‍🔬", "gallery": ["website-assets/03-members/portraits/renhuiguang_v1.jpg"], "pets": [{"name": "Inky", "img": "website-assets/03-members/pets/pet_inky.png", "emoji": "🐈‍⬛"}, {"name": "汤圆", "img": "website-assets/03-members/pets/pet_tangyuan.png", "emoji": "🐈"}]},
+    {"group": "teachers", "name": "刘俊升", "dept": "华东师范大学 心理与认知科学学院", "role": "PI · 教授", "nameEn": "Junsheng Liu", "affilEn": "School of Psychology and Cognitive Science, East China Normal University", "roleEn": "PI · Professor", "bio": "刘俊升博士，华东师范大学心理与认知科学学院教授，博士生导师。华东师范大学儿童心理与行为发展研究中心主任，未成年人学校保护研究中心副主任，上海市儿童脑智发育重点实验室副主任。上海市曙光学者，入选上海市“浦江人才”计划。教育部全国学生心理健康工作咨询委员会委员、中国心理学会校园欺凌与暴力防治专业委员会副主任、中国心理学会发展心理专业委员会委员、中国心理学会心理危机干预工作委员会委员、中国教育学会学校教育心理学分会常务理事、中国心理卫生学会家校社医协同专业委员会委员、上海市心理学会副理事长兼秘书长、上海市心理卫生学会理事、上海市心理学会心理学与社会治理专业委员会主任、上海市心理学会德育心理专业委员会副主任。Social Development 副主编，Journal of Youth and Adolescence、Journal of Research on Adolescence、Journal of Applied Developmental Psychology 等杂志编委。2010—2011 年，加拿大西安大略大学心理学系和美国宾夕法尼亚大学应用心理学系访问教授。", "bioEn": "Dr. Junsheng Liu is Professor and Doctoral Supervisor in the School of Psychology and Cognitive Science at East China Normal University. He is Director of the ECNU Research Center for Children's Psychological and Behavioral Development, Deputy Director of the Research Center for the Protection of Minors in Schools, and Deputy Director of the Shanghai Key Laboratory of Children's Brain and Cognitive Development. He is a Shanghai Shuguang Scholar and a recipient of the Shanghai Pujiang Talent Program. He serves on the National Student Mental Health Advisory Committee of the Ministry of Education and holds leadership roles in several professional organizations, including the Chinese Psychological Society and the Shanghai Psychological Society. He is an Associate Editor of Social Development and serves on the editorial boards of Journal of Youth and Adolescence, Journal of Research on Adolescence, and Journal of Applied Developmental Psychology. He was a visiting professor in the Department of Psychology at Western University, Canada, and the Department of Applied Psychology at the University of Pennsylvania, USA, from 2010 to 2011.", "research": "儿童青少年社会性发展。研究主要关注儿童青少年社会情绪功能的发展，包括社会能力、社会退缩、攻击与受欺负等发展过程，以及生理和社会因素对上述发展过程的影响。", "researchEn": "Social development in children and adolescents. His research focuses on the development of socio-emotional functioning, including social competence, social withdrawal, aggression, and victimization, as well as the biological and social factors that shape these developmental processes.", "email": "jsliu@psy.ecnu.edu.cn", "links": [], "avatar": "👨‍🏫", "gallery": ["website-assets/03-members/portraits/liujunsheng_v1.jpg"]},
+
+    { group: "students", name: "陈雪明", role: "学博 · 2023 级", nameEn: "Xueming Chen", bioEn: "A lifelong learner, ISFJ, enjoys reading, watching films, drawing, doing handicrafts, and taking walks. Research interests: (1) children's and adolescents' mental health; (2) school bullying; (3) parental coping socialization.", affilEn: "School of Psychology and Cognitive Science, East China Normal University", roleEn: "PhD Student · Class of 2023", avatar: "🧑‍🎓", avatarImg: "members/chenxueming.jpeg", gallery: ["website-assets/03-members/portraits/chenxueming_v1.jpg"], dept: "华东师范大学 心理与认知科学学院", bio: "持续学习的人，isfj，喜欢阅读、观影、画画、做手工、遛弯儿。研究方向：（1）儿童与青少年心理健康；（2）校园欺凌；（3）父母应对社会化。", email: "15620588946@163.com", pets: [{ name: "文献(已故)", img: "website-assets/03-members/pets/pet_chenxueming_1.jpg", emoji: "🥕" }] },
+    { group: "students", name: "刘安琪", role: "学博 · 2023 级", nameEn: "Anqi Liu", bioEn: "I value freedom and approach life thoughtfully.\n\nResearch interests:\n1. The development of adversity beliefs and their links to adjustment among children and adolescents in the Chinese cultural context.\n2. Parenting practices and psychosocial adjustment in children and adolescents.", affilEn: "School of Psychology and Cognitive Science, East China Normal University", roleEn: "PhD Student · Class of 2023", avatar: "🧑‍🎓", avatarImg: "members/liuanqi.jpg", gallery: ["website-assets/03-members/portraits/liuanqi_v1.jpg"], dept: "华东师范大学 心理与认知科学学院", bio: "爱好自由，行事谨慎。研究方向：1）中国文化下儿童青少年逆境信念的发展与适应结果；2）父母教养行为与儿童青少年心理社会适应", email: "anqi_liu2022@163.com", ach: "1. Liu, A., Ren, H., Liu, J., & Sang, B. (2025). Cumulative and overload patterns of associations between parenting congruence and youth depressive symptoms across parenting dimensions. Journal of Youth and Adolescence, 55(4), 933–949. https://doi.org/10.1007/s10964-025-02290-w         \n2. Liu, A., Yu, Y., & Sun, S. (2023). How is the Big Five related to college students’ anxiety: The role of rumination and resilience. Personality and Individual Differences, 200, 111901. https://doi.org/10.1016/j.paid.2022.111901" },
+    { group: "students", name: "孙睿", role: "学博 · 2023 级", nameEn: "Rui Sun", bioEn: "An introvert in an extrovert's clothing. Research interests: (1) Moral socialization: Should we give greater praise to those who engage in extraordinary moral behavior, or should we recognize ordinary and extraordinary moral acts equally? Building on this question, my research explores how different patterns of moral evaluation (i.e., favoring extraordinary morality, favoring ordinary morality, or praising both equally) shape children's and adolescents' moral development; (2) Student leadership experiences in Chinese schools: My research examines the dynamic relationships between formal student leadership status, peer relationships, academic performance, and psychosocial adjustment among Chinese children and adolescents.", affilEn: "School of Psychology and Cognitive Science, East China Normal University", roleEn: "PhD Student · Class of 2023", avatar: "🧑‍🎓", avatarImg: "members/sunrui.jpeg", gallery: ["website-assets/03-members/portraits/sunrui_v1.jpeg"], dept: "华东师范大学 心理与认知科学学院", bio: "一个伪装成e人的i人。研究方向：（1）道德社会化过程，我们应该更加赞扬那些做出超道德行为的人，还是对一般道德行为和超道德行为给予同等认可？围绕这一问题，关注偏爱超道德行为、偏爱一般道德行为及同等表扬等不同道德评价方式如何影响儿童青少年的道德发展；（2）中国学校情境下的学生干部经历，关注学生干部身份与同伴关系、学业表现及心理社会适应之间的动态联系。", email: "52273200009@stu.ecnu.edu.cn" },
+    { group: "students", name: "岳佳莹", role: "学博 · 2024 级", nameEn: "Jiaying Yue", bioEn: "ISFJ. In my spare time, I enjoy reading novels.\nResearch interests:\n\n1. Adolescents’ academic adjustment in educational settings, including academic engagement, academic burnout, etc.\n\n2. Peer influence, with a focus on the stringency of peer effort norms and the psychological mechanisms behind their effects.", affilEn: "School of Psychology and Cognitive Science, East China Normal University", roleEn: "PhD Student · Class of 2024", avatar: "🧑‍🎓", avatarImg: "members/yuejiaying.jpeg", gallery: ["website-assets/03-members/portraits/yuejiaying_v1.jpeg", "website-assets/03-members/portraits/yuejiaying_v2.jpeg"], dept: "华东师范大学 心理与认知科学学院", bio: "ISFJ，闲暇喜欢阅读小说。研究方向：1）教育场景中青少年学业适应，涵盖学业投入、学业倦怠等；2）同伴影响，重点关注同伴努力规范的严苛程度及其作用的心理机制。", email: "yjykycg@163.com" },
+    { group: "students", name: "曾雪琪", role: "学博 · 2024 级", nameEn: "Xueqi Zeng", bioEn: "ENTP", affilEn: "School of Psychology and Cognitive Science, East China Normal University", roleEn: "PhD Student · Class of 2024", avatar: "🧑‍🎓", avatarImg: "members/zengxueqi.jpeg", gallery: ["website-assets/03-members/portraits/zengxueqi_v1.jpeg"], dept: "华东师范大学 心理与认知科学学院", bio: "ENTP", email: "zengxueqi23@163.com" },
+    { group: "students", name: "赵誉婧", role: "学博 · 2024 级", nameEn: "Yujing Zhao", bioEn: "A person who is looking forward to life after graduation, isfp. Research interests: social behaviors in early adulthood (e.g., cyberbullying and bystander behaviors in cyberbullying), and the development of social behaviors in children and adolescents (e.g., Mianzi management).", affilEn: "School of Psychology and Cognitive Science, East China Normal University", roleEn: "PhD Student · Class of 2024", avatar: "🧑‍🎓", avatarImg: "members/zhaoyujing.jpg", gallery: ["website-assets/03-members/portraits/zhaoyujing_v1.jpg", "website-assets/03-members/portraits/zhaoyujing_v2.jpg"], dept: "华东师范大学", bio: "向往毕业后生活的一个人，isfp 研究方向：1）成年早期社会性行为（例如网络欺凌及旁观者行为）；2）儿童与青少年社会性行为（例如面子整饰）", email: "yjzhao2023@163.com", ach: "1. Zhao, Y., Ren, H., Liu, J., Yue, J., & Zeng, X. (2025). Conflict resolution strategy profiles and children’s psychological and social adjustment: A latent transition study. International Journal of Behavioral Development, 48(5), 1-13. https://doi.org/10.1177/01650254251388189. \n2. Zhao, Y., Chu, X., & Rong, K. (2025). Why do people with histrionic personality tend to troll others online? A perspective from the self. Revista de Psicodidáctica (English ed.), 500181.\n3. Zhao, Y., Chu, X., & Rong, K. (2023). Cyberbullying experience and bystander behavior in cyberbullying incidents: The serial mediating roles of perceived incident severity and empathy. Computers in Human Behavior, 138, Article 107484. https://doi.org/10.1016/j.chb.2022.107484\n4. Chu, X., Zhao, Y., Gao, L., & Wang, Y. (2025). Moral identity and bystander behavior in cyberbullying: The roles of moral outrage and online interpersonal trust. Victims & Offenders, 20(4), 631-649. https://doi.org/10.1080/15564886.2023.2171170\n5. Chu, X., Zhao, Y., Li, X., Yang, S., & Lei, Y. (2024). The sense of responsibility and bystanders’ prosocial behavior in cyberbullying: The mediating role of compassion and the moderating roles of moral outrage and moral disgust. Cyberpsychology: Journal of Psychosocial Research on Cyberspace, 18(3), Article 8. https://doi.org/10.5817/CP2024-3-8" },
+    { group: "students", name: "陈楚琪", role: "学博 · 2025 级", nameEn: "Chuqi Chen", bioEn: "I love the lovely people, moments, and little things around me, enjoy being close to nature, and have a special place in my heart for Hangzhou and West Lake. INFJ. Pretty good at getting things done in research, but still working on bringing that same energy into everyday life. Looking forward to meeting more interesting people and becoming a better version of myself along the way.\nResearch interests:\n1) Emotional engagement with AI among emerging adults (with potential future exploration of adolescent populations); 2) Parental academic socialization and adolescents’ academic adjustment; 3) Personality and social development.", affilEn: "School of Psychology and Cognitive Science, East China Normal University", roleEn: "PhD Student · Class of 2025", avatar: "🧑‍🎓", avatarImg: "members/chenchuqi.jpg", gallery: ["website-assets/03-members/portraits/chenchuqi_v1.jpg"], dept: "华东师范大学 心理与认知科学学院", bio: "热爱身边可爱的人、事、物，亲近大自然，爱杭州也爱西湖。infj, 科研行动力ok, 生活行动力有待提高。期待遇见更多有趣的人，也成为更好的自己。研究方向：1）新兴成年人的AI情感参与（或有望进一步探索青少年群体）；2）亲子学业社会化过程及青少年学业适应；3）个性与社会性发展。", email: "52290132001@stu.ecnu.edu.cn", ach: "论文1：Chen, C.*, Ren, H.*, Liu, J., Tian, F., & Wang, F. (2026). A three-layered framework and measurement toolkit for understanding emotional and relational engagement with AI. International Journal of Human-Computer Interaction. Advanced online publication. https://doi.org/10.1080/10447318.2026.2725999\n论文2：Chen, C., Ren, H., Zhou, T., & Liu, J. (2026). Parental socialization of academic failure and adolescent school burnout: The mediating role of failure mindset and moderating role of learning orientations. Journal of Youth and Adolescence. Advanced online publication. https://doi.org/10.1007/s10964-026-02411-z" },
+    { group: "students", name: "田芳芳", role: "学博 · 2025 级", nameEn: "Fangfang Tian", bioEn: "infp Research interests: 1) human-AI romantic relationships; 2) bullying victimization.", affilEn: "School of Psychology and Cognitive Science, East China Normal University", roleEn: "PhD Student · Class of 2025", avatar: "🧑‍🎓", avatarImg: "members/tianfangfang.png", gallery: ["website-assets/03-members/portraits/tianfangfang_v1.jpg"], dept: "华东师范大学 心理与认知科学学院", bio: "infp，研究人机浪漫关系，欺凌保护", email: "tianf686@163.com", pets: [{ name: "墩墩", img: "website-assets/03-members/pets/pet_tianfangfang_1.jpg", emoji: "🐶" }, { name: "咪咪", img: "website-assets/03-members/pets/pet_tianfangfang_2.jpg", emoji: "🐱" }] },
+    { group: "students", name: "王蕃隆", role: "学博 · 2026 级", nameEn: "Fanlong Wang", bioEn: "I enjoy connecting with nature, hiking, climbing, etc.\nResearch interests: 1) The development of sibling relationships and the underlying mechanisms; 2) AI–human interaction.", affilEn: "School of Psychology and Cognitive Science, East China Normal University", roleEn: "PhD Student · Class of 2026", avatar: "🧑‍🎓", avatarImg: "members/wangfanlong.jpg", gallery: ["website-assets/03-members/portraits/wangfanlong_v1.png"], dept: "华东师范大学 心理与认知科学学院", bio: "喜欢接触自然，徒步、爬山等......研究方向：1）同胞关系的发展及其机制探讨；2）AI—人交互；", email: "52300132003@stu.ecnu.edu.cn", ach: "1. Wang, F., Ren, H., Liu, J., Bian, X., & Wang, Y. (2026). Profiles of sibling relationships among Chinese adolescents: The contribution of parental differential treatment of siblings. British Journal of Developmental Psychology, 44(3), 641–656. https://doi.org/10.1111/bjdp.70040\n2. Wang, F., Hu, Y., Shi, Z., Sun, Y., Gong, J., Liu, J., & Cheng, D. (2026). Intrinsic interpersonal emotion regulation moderates longitudinal associations between peer victimization and depressive symptoms among Chinese children. Journal of Applied Developmental Psychology, 103, 101926. https://doi.org/10.1016/j.appdev.2026.101926" },
+    { group: "students", name: "夏聪", role: "学博 · 2026 级", nameEn: "Cong Xia", bioEn: "Interests: Sports and cooking.\nResearch interests:\n \n1. Computational models of effort allocation\n​\n2. Formation and perception of collective beliefs in classroom groups\n​\n3. Neural development of emotion regulation", affilEn: "School of Psychology and Cognitive Science, East China Normal University", roleEn: "PhD Student · Class of 2026", avatar: "🧑‍🎓", avatarImg: "members/xiacong.png", gallery: ["website-assets/03-members/portraits/xiacong_v1.png"], dept: "华东师范大学 心理与认知科学学院", bio: "热爱运动，烹饪。研究方向: 1.努力分配的计算模型；2.班级集体信念的形成与感知；3.情绪调节的神经发育。", email: "sup_xc@126.com", pets: [{ name: "露娜和卡车", img: "website-assets/03-members/pets/pet_xiacong_1.png", emoji: "🌙" }] },
+
+    { group: "students", name: "严涵", role: "学硕 · 2024 级", nameEn: "Han Yan", bioEn: "Passionate about psychology and eager to apply it in business, ISFJ personality type, enjoys playing badminton. Research focus: parental involvement in children's educationThose who love psychology and aspire to apply it to business, isfj, and enjoy playing badminton. Research interests: Parental involvement in children's education", affilEn: "Department of Educational Psychology, Faculty of Education, East China Normal University", roleEn: "MA Student · Class of 2024", avatar: "🧑‍🎓", avatarImg: "members/yanhan.png", gallery: ["website-assets/03-members/portraits/yanhan_v1.jpg"], dept: "华东师范大学 教育学部教育心理学系", bio: "热爱心理学，希望将心理学用于商业的人，isfj,喜欢打羽毛球。研究方向：父母学业参与", email: "51274118008.stu.ecnu.edu.cn" },
+    { group: "students", name: "杨凯悦", role: "学硕 · 2025 级", nameEn: "Kaiyue Yang", bioEn: "🌟 Big dreamer, world-class daydreamer, and proud ENFP.\n\n🧸 Kid enthusiast & Fan Zhendong fan 💕\n\n🧠 Researching moral socialization — perhaps because I care a little too much about what people think of me! Currently investigating how the strictness of others’ evaluative standards (praise vs. criticism) shapes children’s and adolescents’ moral decision-making.\n\n🤖 Also exploring the fun intersection of AI and parenting. Curious mind, big dreams, and always a million ideas brewing!", affilEn: "Department of Educational Psychology, Faculty of Education, East China Normal University", roleEn: "MA Student · Class of 2025", avatar: "🧑‍🎓", avatarImg: "members/yangkaiyue.png", gallery: ["website-assets/03-members/portraits/yangkaiyue_v1.png"], dept: "华东师范大学 教育学部教育心理学系", bio: "大梦想家，最会做白日梦之人。ENFP，喜欢小朋友还有樊振东～\n研究方向：道德社会化，因为比较在乎他人对自己的评价，所以目前在探究他人评价（表扬/批评）标准严格程度对儿童青少年道德决策的影响，还对AI+教养感兴趣", email: "yang_kaiyue@163.com" },
+    { group: "students", name: "陈比娴", role: "学硕 · 2026 级", nameEn: "Bixian Chen", bioEn: "Hello! I'm Chen Bixian, someone who is curious about the world and human psychology and also enjoys fishing.Research interests: (1) Harsh socialization feedback patterns and child development; (2) AI emotional attachment and the socialization process of young people. In addition, I also follow the information characteristics of health communication and try my hand at various interesting mini-program designs.", affilEn: "Department of Educational Psychology, Faculty of Education, East China Normal University", roleEn: "MA Student · Class of 2026", avatar: "🧑‍🎓", avatarImg: "members/chenbixian.jpg", gallery: ["website-assets/03-members/portraits/chenbixian_v1.jpg"], dept: "华东师范大学 教育学部教育心理学系", bio: "Hello呀！我是陈比娴，一个好奇世界和人类心理、喜欢钓鱼的人。欢迎与我一起探讨有趣的话题！研究方向：（1）严苛的社会化反馈模式与儿童发展；（2）青少年和大学生的AI情感联结与社会化过程。此外，我也在关注健康传播的信息特征，并尝试各类有趣的小程序设计。", email: "chenbixian2003@163.com", pets: [{ name: "271199", img: "website-assets/03-members/pets/pet_chenbixian_1.png", emoji: "🧸" }] },
+    { group: "students", name: "舒梓玥", role: "学硕 · 2026 级", nameEn: "Ziyue Shu", bioEn: "I'm an anime fan and INFP. I love listening to music, watching movies and anime, and traveling whenever I get the chance. Hoping to make my mark in the field of psychology.Research interests:1）Adolescent social development；2）Bullying；3）Interpersonal relationships", affilEn: "School of Psychology and Cognitive Science, East China Normal University", roleEn: "MA Student · Class of 2026", avatar: "🧑‍🎓", avatarImg: "members/shuziyue.png", gallery: ["website-assets/03-members/portraits/shuziyue_v1.png", "website-assets/03-members/portraits/shuziyue_v2.png"], dept: "华东师范大学", bio: "一位深度二次元INFP，喜欢听音乐，看电影/动漫，旅游，希望能在心理学行业中发光发热。研究方向：1）青少年社会化发展 2）欺凌 3）人际交往", email: "51290132120@stu.ecnu.edu.cn", ach: "舒梓玥,王玉龙,王欣辰,等.社会排斥对青少年自伤的影响：消极情绪的纵向中介作用[J].中国临床心理学杂志,2025,33(3):516-521.DOI:10.16128/j.cnki.1005-3611.2025.03.013.\nJiang, P., Shu, Z., Li, S., Liu, Q., Wang, W. (2025). Longitudinal association between habitual mobile phone use and subjective well-being among university students: The chain mediating effect of self-management and learning burnout. Journal of Psychology in Africa, 35(1), 127–133.\n王玉龙,王丹云,舒梓玥,等.父母粗暴养育对早期青少年自杀意念的影响：心理韧性的纵向调节作用[J].中国临床心理学杂志,2024,32(3):549-554.DOI:10.16128/j.cnki.1005-3611.2024.03.011.", pets: [{ name: "洛茜小团子", img: "website-assets/03-members/pets/pet_shuziyue_1.png", emoji: "🍡" }, { name: "罗小黑", img: "website-assets/03-members/pets/pet_shuziyue_2.png", emoji: "🐈‍⬛" }] },
+    { group: "students", name: "孙晨壹", role: "学硕 · 2026 级", nameEn: "Chenyi Sun", bioEn: "A person who is trying to understand himself as well as exploring the world. ISFP-T. He loves singing in the choir, almost everything about public transportation, and picturing scenery with plants. Research interests: 1) How do interactions with family, teachers and friends affect one's socialization? 2) How do people change after communicating with AI about their emotional issues and self development? 3) Other educational & psychological topics about college students.", affilEn: "Department of Educational Psychology, Faculty of Education, East China Normal University", roleEn: "MA Student · Class of 2026", avatar: "🧑‍🎓", avatarImg: "members/sunchenyi.jpg", gallery: ["website-assets/03-members/portraits/sunchenyi_v1.jpg"], dept: "华东师范大学 教育学部教育心理学系", bio: "他是一个正在认识自己和探索世界的人，mbti是ISFP-T，喜欢合唱、公共交通、拍摄花花草草。感兴趣的研究方向：1）来自家人、教师和同伴的互动方式如何影响个体的社会化表现；2）长期与AI倾诉情感、探讨自身发展对人有何影响；3）与我们大学生自身息息相关的其他教育心理学话题。", email: "sunchenyi2016@126.com", pets: [{ name: "线条小狗", img: "website-assets/03-members/pets/pet_sunchenyi_1.jpg", emoji: "🐶" }, { name: "上海巴士纸模型", img: "website-assets/03-members/pets/pet_sunchenyi_2.jpeg", emoji: "🚌" }] },
+
+    { group: "students", name: "季时佳", role: "专硕 · 2026 级", nameEn: "Shijia Ji", bioEn: "An easygoing, outgoing ENFJ who loves good food and fun but stays driven—with a soft spot for bubble tea and desserts.\nMy research interests include:\n（1）The effects of strict socialization feedback patterns on child development.\n（2）Affective connections in human–AI interaction and socialization processes among adolescents and university students.", affilEn: "Department of Educational Psychology, Faculty of Education, East China Normal University", roleEn: "Professional MA · Class of 2026", avatar: "🧑‍🎓", avatarImg: "members/jishijia.jpg", gallery: ["website-assets/03-members/portraits/jishijia_v1.jpg", "website-assets/03-members/portraits/jishijia_v2.jpg", "website-assets/03-members/portraits/jishijia_v3.jpg"], dept: "华东师范大学 教育学部教育心理学系", bio: "随和开朗的ENFJ，爱吃爱玩但不摆烂，奶茶店野生产品经理。研究方向：（1）严苛的社会化反馈模式对儿童发展的影响；（2）青少年和大学生与AI的情感联结与社会化过程", email: "shijiaji0311@163.com", pets: [{ name: "DIMOO", img: "website-assets/03-members/pets/pet_jishijia_1.jpg", emoji: "🍼" }] },
+    { group: "students", name: "余宛青", role: "专硕 · 2026 级", nameEn: "Wanqing Yu", bioEn: "I’m an ENFP who loves life. I enjoy handicrafts and dancing. Research interests: the impacts of strictness social‑feedback patterns on children’s development.", affilEn: "Department of Educational Psychology, Faculty of Education, East China Normal University", roleEn: "Professional MA · Class of 2026", avatar: "🧑‍🎓", avatarImg: "members/yuwanqing.jpg", gallery: ["website-assets/03-members/portraits/yuwanqing_v1.jpg", "website-assets/03-members/portraits/yuwanqing_v2.jpg", "website-assets/03-members/portraits/yuwanqing_v3.jpg"], dept: "华东师范大学 教育学部教育心理学系", bio: "我是一个热爱生活的enfp，喜欢做手工、跳舞。研究方向：严苛的社会化反馈模式对儿童发展的影响。", email: "51284118020@stu.ecnu.edu.cn", pets: [{ name: "三少", img: "website-assets/03-members/pets/pet_yuwanqing_1.jpg", emoji: "🐱" }] },
+    { group: "students", name: "张瑶", role: "专硕 · 2026 级", nameEn: "Yao Zhang", bioEn: "Hello everyone. I am easy-going. In my spare time, I love reading, listening to music and singing. Research interests: 1) Socialization feedback and child development ；2) Children’s cognitive and socio-emotional development.\nI look forward to discussing research topics and taking part in interesting group activities with you all. Welcome to join our research group!", affilEn: "Department of Educational Psychology, Faculty of Education, East China Normal University", roleEn: "Professional MA · Class of 2026", avatar: "🧑‍🎓", avatarImg: "members/zhangyao.jpg", gallery: ["website-assets/03-members/portraits/zhangyao_v1.jpg", "website-assets/03-members/portraits/zhangyao_v2.jpg", "website-assets/03-members/portraits/zhangyao_v3.jpg"], dept: "华东师范大学 教育学部教育心理学系", bio: "大家好，我的性格比较随和好相处，平时喜欢看书、听音乐和唱歌。研究方向：1）社会化反馈与儿童发展；2）儿童认知与社会情感发展。\n期待和大家一起讨论科研问题、参与有意思的组内活动，欢迎大家加入我们课题组！", email: "zhangyao_psy@163.com", pets: [{ name: "粉红兔子", img: "website-assets/03-members/pets/pet_zhangyao_1.png", emoji: "🐰" }] },
+
+    { group: "alumni", name: "杨濛", role: "已毕业 · 2022 级", nameEn: "Meng Yang", bioEn: "Certified lazy P-person, currently enrolled in the School of Pretending to Be a Grown-Up. Badminton strolling champion & karaoke ASAP & fitness newbie, actively in training for the Olympics. Research interests: 1) Adolescent peer relationships 2) Emotion co-regulation 3) Happily collecting every new method I can get my hands on.", affilEn: "Institute of Brain and Psychological Sciences, Sichuan Normal University", roleEn: "Alumnus · Class of 2022", avatar: "🎓", avatarImg: "members/yangmeng.jpg", gallery: ["website-assets/03-members/portraits/yangmeng_v1.png"], dept: "四川师范大学 脑与心理科学研究院", bio: "懒懒散散的p人一个，正在学习如何扮演大人。羽毛球散步达人&唱k一定参加&健身入门选手，积极备战奥运中。感兴趣方向：1）青少年同伴关系 2）情绪共同调节 3）积极探索各类新方法", email: "myang@sicnu.edu.cn" },
+    { group: "alumni", name: "龚杰", role: "已毕业 · 2022 级", nameEn: "Jie Gong", bioEn: "Research interests: 1) Academic development in children and adolescents; 2) Peer socialization processes.", affilEn: "School of Education, Yangzhou University", roleEn: "Alumnus · Class of 2022", avatar: "🎓", avatarImg: "members/gongjie.jpg", gallery: ["website-assets/03-members/portraits/gongjie_v1.jpg"], dept: "扬州大学 教育学院", bio: "研究方向：1）儿童与青少年学业发展；2）同伴社会化过程。", email: "gjie1024@163.com" }
+  ],
+
+  /* 【萌宠图鉴】 */
+  pets: [
+    { name: "Inky", owner: "任慧广", emoji: "🐈‍⬛", img: "website-assets/03-members/pets/pet_inky.png" },
+    { name: "汤圆", owner: "任慧广", emoji: "🐈", img: "website-assets/03-members/pets/pet_tangyuan.png" },
+    { name: "文献(已故)", owner: "陈雪明", emoji: "🥕", img: "website-assets/03-members/pets/pet_chenxueming_1.jpg" },
+    { name: "墩墩", owner: "田芳芳", emoji: "🐶", img: "website-assets/03-members/pets/pet_tianfangfang_1.jpg" },
+    { name: "咪咪", owner: "田芳芳", emoji: "🐱", img: "website-assets/03-members/pets/pet_tianfangfang_2.jpg" },
+    { name: "露娜和卡车", owner: "夏聪", emoji: "🌙", img: "website-assets/03-members/pets/pet_xiacong_1.png" },
+    { name: "271199", owner: "陈比娴", emoji: "🧸", img: "website-assets/03-members/pets/pet_chenbixian_1.png" },
+    { name: "洛茜小团子", owner: "舒梓玥", emoji: "🍡", img: "website-assets/03-members/pets/pet_shuziyue_1.png" },
+    { name: "罗小黑", owner: "舒梓玥", emoji: "🐈‍⬛", img: "website-assets/03-members/pets/pet_shuziyue_2.png" },
+    { name: "线条小狗", owner: "孙晨壹", emoji: "🐶", img: "website-assets/03-members/pets/pet_sunchenyi_1.jpg" },
+    { name: "上海巴士纸模型", owner: "孙晨壹", emoji: "🚌", img: "website-assets/03-members/pets/pet_sunchenyi_2.jpeg" },
+    { name: "DIMOO", owner: "季时佳", emoji: "🍼", img: "website-assets/03-members/pets/pet_jishijia_1.jpg" },
+    { name: "三少", owner: "余宛青", emoji: "🐱", img: "website-assets/03-members/pets/pet_yuwanqing_1.jpg" },
+    { name: "粉红兔子", owner: "张瑶", emoji: "🐰", img: "website-assets/03-members/pets/pet_zhangyao_1.png" }
+  ]
+};
+
+
+/* ============================================================
+   i18n：中英切换（LANG='zh'|'en'）
+   ============================================================ */
+let LANG = 'zh';
+function t(zh, en) { return (LANG === 'en' && en != null && en !== '') ? en : zh; }
+const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/* 静态文案字典（key 必须与页面中的中文原文完全一致） */
+const UI_MAP = {
+  '首页': 'Home',
+  '研究成果': 'Research Results',
+  '实验室动态': 'Lab News',
+  '团队成员': 'Team',
+  '加入我们': 'Join Us',
+  '实验室简介': 'About the Lab',
+  '最新动态': 'Latest News',
+  '研究方向': 'Research Directions',
+  '精选成果': 'Highlights',
+  '重要成果': 'Featured Results',
+  '发表成果': 'Publications',
+  '在研项目': 'Ongoing Projects',
+  '实验室工具箱': 'Lab Toolbox',
+  '全部动态': 'All Updates',
+  '学术动态': 'Academic',
+  '生活动态': 'Life',
+  '通知公告': 'Notices',
+  '指导教师': 'Faculty',
+  '在读学生': 'Current Students',
+  '研究助理': 'Research Assistants',
+  '往届成员': 'Alumni',
+  '实验室风采': 'Lab Gallery',
+  '查看更多实验室动态': 'More lab news',
+  '查看完整研究成果': 'View full research results',
+  '查看完整信息': 'View full details',
+  '研究助理（RA）': 'Research Assistants (RA)',
+  '萌宠图鉴': 'Lab Pets',
+  '联系我们': 'Contact Us',
+  '欢迎来信': 'Get in Touch',
+  '任智发展实验室 · 华东师范大学': 'Renzhi Child Development Lab · East China Normal University',
+  '华东师范大学': 'East China Normal University',
+  '我们关注家庭、同伴、老师甚至 AI 如何塑造儿童青少年的情绪、社交、道德、价值观与心理健康。':
+    'We study how family, peers, teachers, and even AI shape children and adolescents\u2019 emotions, social lives, morality, values, and mental health.',
+  '任智发展实验室，华东师范大学心理与认知科学学院与教育学部联合团队，由刘俊升教授、任慧广副教授共同指导。':
+    'The Renzhi Child Development Lab is a joint team of the School of Psychology and Cognitive Science and the Faculty of Education at East China Normal University, co-directed by Professor Junsheng Liu and Associate Professor Huiguang Ren.',
+  '我们致力于研究家庭、同伴、教师、AI 等对儿童青少年社会情绪能力、社交、道德、价值观、心理健康的影响。实验室采用追踪研究、实验干预、计算建模等方法，致力于探索和理解严苛的社会化反馈、AI 情感联结、道德完美主义、校园欺凌等现实议题，如何在儿童与青少年身上留下痕迹。':
+    'We study how family, peers, teachers, AI, and other ecological factors influence children\u2019s and adolescents\u2019 socio-emotional competence, social lives, morality, values, and mental health. Using longitudinal studies, experimental interventions, computational modeling, and other methods, we explore and seek to understand how real-world issues\u2014such as harsh socialization feedback, emotional attachment to AI, moral perfectionism, and school bullying\u2014leave their marks on children and adolescents.',
+  '如果你对儿童青少年社会化过程研究感兴趣，欢迎通过以下方式加入或关注任智发展实验室：':
+    'If you are interested in the socialization of children and adolescents, you are welcome to join or follow the Renzhi Child Development Lab through the channels below:',
+  '有意加入实验室、申请研究助理、咨询研究生招生或洽谈学术合作，请直接发送邮件至以下邮箱，我们会在 2–3 个工作日内回复：':
+    'To join the lab, apply for a research assistant position, inquire about graduate admissions, or discuss academic collaboration, please email us directly. We usually reply within 2\u20133 working days:',
+  '网站本身不收集、保存任何信息': 'This website does not collect or store any personal information.',
+  '致谢：衷心感谢华东师范大学夏聪、何曦木、陈比娴对网站设计的贡献。':
+    'Acknowledgments: Our sincere thanks to Cong Xia, Ximu He, and Bixian Chen of East China Normal University for their contributions to the website design.'
+};
+
+/* 注册静态可翻译文本（只跑一次；品牌标题 h1 / 导航双语名 / svg 不参与） */
+function registerStatic() {
+  document.querySelectorAll('body *').forEach(el => {
+    if (el.dataset.i18nReady) return;
+    if (el.children.length) return;
+    if (el.closest('svg')) return;
+    if (el.matches('h1, .nav-title-zh, .nav-title-en, .en-title, .brand-zh, .brand-en, #langBtn')) return;
+    const zh = el.textContent.trim();
+    if (!zh || !UI_MAP[zh]) return;
+    el.dataset.i18nReady = '1';
+    el.dataset.i18nZh = zh;
+  });
+}
+function applyStatic() {
+  document.querySelectorAll('[data-i18n-ready]').forEach(el => {
+    el.textContent = (LANG === 'en' && UI_MAP[el.dataset.i18nZh]) ? UI_MAP[el.dataset.i18nZh] : el.dataset.i18nZh;
+  });
+}
+
+function memberByName(name) { return LAB.members.find(m => m.name === name); }
+
+function newsDateText(date) {
+  const match = String(date || '').match(/^(\d{4})\.(\d{2})(?:\.(\d{2}))?$/);
+  if (!match) return date || '';
+  const year = match[1];
+  const month = parseInt(match[2], 10);
+  const day = match[3] ? parseInt(match[3], 10) : null;
+  return t(
+    `${year}年${month}月${day ? `${day}日` : ''}`,
+    `${MONTHS_EN[month - 1]}${day ? ` ${day}` : ''}, ${year}`
+  );
+}
+
+/* ============================================================
+   渲染：最新动态（首页卡片：仅图+标题，点击进详情）
+   ============================================================ */
+function newsCardHtml(n, i) {
+  const title = t(n.title, n.titleEn);
+  const dateText = newsDateText(n.date);
+  return `
+  <div class="news-card" data-news-index="${i}">
+    <div class="news-thumb">
+      <div class="fallback">${n.icon || '📰'}</div>
+      ${n.img ? `<img src="${n.img}" alt="${title}" onerror="this.style.display='none'">` : ''}
+    </div>
+    <h4 title="${title}">${title}</h4>
+    <div class="news-meta">
+      <span class="news-date-text">${dateText}</span>
+    </div>
+  </div>`;
+}
+function renderHomeNews() {
+  const container = document.getElementById('home-news-cards');
+  const items = LAB.news.slice(0, 4);
+  container.innerHTML = items.map((n, i) => newsCardHtml(n, i)).join('');
+}
+
+/* 完整动态页：分类筛选 + 列表式版面 */
+let currentNewsCat = '全部';
+function renderNewsList(cat) {
+  currentNewsCat = cat || '全部';
+  const list = (currentNewsCat !== '全部') ? LAB.news.filter(n => n.cat === currentNewsCat) : LAB.news;
+  const box = document.getElementById('page-news-list');
+  if (!box) return;
+  if (!list.length) {
+    box.innerHTML = `<div style="text-align:center;color:var(--text-light);font-size:0.9rem;padding:40px 0;">${t(`「${currentNewsCat}」下暂无动态`, `No updates in "${UI_MAP[currentNewsCat] || currentNewsCat}" yet`)}</div>`;
+    return;
+  }
+  box.innerHTML = list.map(n => {
+    const idx = LAB.news.indexOf(n);
+    const title = t(n.title, n.titleEn);
+    const content = t(n.content, n.contentEn) || '';
+    return `
+    <article class="news-full-item" id="news-item-${idx}" data-news-index="${idx}">
+      <div class="news-full-thumb">
+        ${n.icon || '📰'}
+        ${n.img ? `<img src="${n.img}" alt="${title}" onerror="this.style.display='none'">` : ''}
+      </div>
+      <div class="news-full-body">
+        <div class="news-full-meta">
+          <span class="news-full-date">${newsDateText(n.date)}</span>
+          <span class="news-full-tag">${t(n.cat || n.tag, UI_MAP[n.cat] || n.tag)}</span>
+        </div>
+        <h3>${title}</h3>
+        <p>${content.slice(0, 80)}${content.length > 80 ? '…' : ''}</p>
+        <div class="news-full-more">${t('查看详情', 'View details')}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+}
+function bindNewsTabs() {
+  document.querySelectorAll('#page-news-tabs .news-tab').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('#page-news-tabs .news-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderNewsList(btn.dataset.cat);
+    };
+  });
+}
+function renderNewsTabs() {
+  const tabs = document.getElementById('page-news-tabs');
+  if (tabs) tabs.querySelectorAll('.news-tab').forEach(b => b.classList.toggle('active', b.dataset.cat === currentNewsCat));
+}
+
+/* 新闻详情（学校官网式整页视图，可返回上一页/首页） */
+function openNewsDetail(idx) {
+  const n = LAB.news[idx];
+  if (!n) return;
+  const title = t(n.title, n.titleEn);
+  const content = t(n.content, n.contentEn) || '';
+  const page = document.getElementById('page-news');
+  page.innerHTML = `
+    <section class="section news-detail">
+      <div class="news-detail-nav">
+        <button class="news-back-btn" onclick="closeNewsDetail()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          ${t('返回', 'Back')}
+        </button>
+        <button class="news-back-btn ghost" onclick="closeNewsDetail(); switchPage('home');">${t('回首页', 'Home')}</button>
+      </div>
+      <article class="news-article">
+        <div class="news-article-meta">
+          <span>${newsDateText(n.date)}</span>
+          <span class="news-full-tag">${t(n.cat || n.tag, UI_MAP[n.cat] || n.tag)}</span>
+        </div>
+        <h1 class="news-article-title">${title}</h1>
+        <div class="news-article-hero">
+          ${n.icon || '📰'}
+          ${n.img ? `<img src="${n.img}" alt="${title}" onerror="this.style.display='none'">` : ''}
+        </div>
+        <div class="news-article-body">
+          ${content.split(/\n+/).filter(Boolean).map(p => `<p>${p}</p>`).join('') || `<p>${t('（详情内容待补充）', '(Details to be added)')}</p>`}
+        </div>
+        ${n.link ? `<a class="news-full-link" href="${n.link}" target="_blank" rel="noopener">${t('查看原文', 'Read original')} ↗</a>` : ''}
+      </article>
+    </section>`;
+  page.dataset.detail = '1';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function closeNewsDetail() {
+  const page = document.getElementById('page-news');
+  page.innerHTML = newsPageHtml();
+  delete page.dataset.detail;
+  bindNewsTabs();
+  renderNewsList(currentNewsCat);
+  renderNewsTabs();
+}
+
+/* 动态页骨架（closeNewsDetail / 语言切换复用） */
+function newsPageHtml() {
+  return `
+    <section class="section" style="padding-top:24px;">
+      <h2 class="section-title">${t('实验室动态', 'Lab News')}</h2>
+      <div class="news-tabs" id="page-news-tabs">
+        <button class="news-tab" data-cat="全部">${t('全部动态', 'All Updates')}</button>
+        <button class="news-tab" data-cat="学术动态">${t('学术动态', 'Academic')}</button>
+        <button class="news-tab" data-cat="生活动态">${t('生活动态', 'Life')}</button>
+        <button class="news-tab" data-cat="通知公告">${t('通知公告', 'Notices')}</button>
+      </div>
+      <div class="news-full-list" id="page-news-list"></div>
+    </section>`;
+}
+
+
+/* ============================================================
+   渲染：首页-研究方向
+   ============================================================ */
+function renderResearch() {
+  document.getElementById('home-research-content').innerHTML = LAB.research.map(r => `
+  <div class="research-row">
+    <div class="research-info">
+      <h3>${t(r.title, r.titleEn)}</h3>
+      <p>${t(r.desc, r.descEn)}</p>
+    </div>
+    <div class="research-visual">
+      ${r.img ? `<img src="${r.img}" alt="${r.title}" class="rv-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="rv-emoji" style="display:none;">${r.icon}</div>` : `<div class="rv-emoji">${r.icon}</div>`}
+      <div class="rv-cap">${t(r.title, r.titleEn)}</div>
+    </div>
+  </div>
+`).join('');
+}
+
+/* 滚动上滑动画（PPT 式）：除团队成员页外统一 —— 每个 section 内的主要块依次上滑入场 */
+(function initReveal() {
+  const targets = [...document.querySelectorAll(
+    '.page .section > .section-title, .page .section > .about-grid, .page .section > .research-alternating, ' +
+    '.page .section > .highlight-cards, .page .section > .team-mosaic, .page .section > .grid-4, .page .section > .hang-grid, ' +
+    '.page .section-soft .inner > .section-title, .page .section-soft .inner > .news-cards, ' +
+    '.page .section-soft .inner > .gallery-show, .page .section > .more-wrap, .page .msg-card, ' +
+    '.page .result-section, .page .join-checklist, .page .join-contact, .page .brand-draw, ' +
+    '.page .group-header, .page .pet-carousel, .page .news-full-list, .page .hero-sub, .page .hero'
+  )].filter(el => !el.closest('#page-team'));
+  targets.forEach(el => el.classList.add('reveal'));
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          en.target.classList.add('in');
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    targets.forEach(el => io.observe(el));
+  } else {
+    targets.forEach(el => el.classList.add('in'));
+  }
+})();
+
+
+/* ============================================================
+   渲染：首页-精选成果
+   ============================================================ */
+function renderHighlights() {
+  document.getElementById('home-highlights-content').innerHTML = LAB.highlights.map(h => `
+  <div class="highlight-card">
+    <div class="highlight-thumb">
+      <img src="${h.img}" alt="${h.title}" onerror="this.style.display='none'">
+    </div>
+    <h4>${t(h.title, h.titleEn)}</h4>
+    ${h.source ? `<p class="highlight-source"><a href="${h.sourceUrl}" target="_blank" rel="noopener">${t(h.source, h.sourceEn)} ↗</a></p>` : ''}
+  </div>
+`).join('');
+}
+
+
+/* ============================================================
+   渲染：教师寄语（团队成员页开头）+ 首页团队拼贴
+   ============================================================ */
+function renderMessages() {
+  document.getElementById('team-messages').innerHTML = LAB.messages.map(msg => `
+  <div class="msg-card">
+    <p>${t(msg.text, msg.textEn)}</p>
+    <div class="msg-who">
+      <div class="msg-avatar">${msg.photo ? `<img src="${msg.photo}" alt="${msg.name}" onerror="this.remove()">` : (msg.avatar || '👨‍🔬')}</div>
+      <div>
+        <div class="msg-name">${t(msg.name, msg.nameEn)}</div>
+        <div class="msg-role">${t(msg.role, msg.roleEn)}</div>
+      </div>
+    </div>
+  </div>
+`).join('');
+}
+
+function renderMosaic() {
+  const featuredMembers = LAB.members
+    .map((member, index) => ({ member, index }))
+    .filter(({ member }) => member.group === 'teachers' || member.group === 'students')
+    .slice(0, 5);
+  document.getElementById('home-team-mosaic').innerHTML = `
+  <div class="mosaic-intro">
+    <h3>${t('认识我们', 'Meet the Team')}</h3>
+    <p>${t('任智发展实验室成员来自华东师范大学教育学部与心理与认知科学学院，点击卡片认识大家。',
+      'The Renzhi Child Development Lab is co-directed by Associate Professor Huiguang Ren and Professor Junsheng Liu. Members come from the Faculty of Education and the School of Psychology and Cognitive Science at East China Normal University. Click a card to meet everyone.')}</p>
+  </div>
+  ${featuredMembers.map(({ member: m, index }) => {
+    const photo = (m.gallery && m.gallery[0]) || '';
+    return `
+  <div class="mosaic-tile" data-member-index="${index}">
+    <div class="tile-face">${photo ? `<img src="${photo}" alt="${m.name}" onerror="this.remove()">` : m.avatar}</div>
+    <div class="tile-info"><b>${t(m.name, m.nameEn)}</b><span>${t(m.role, m.roleEn)}</span></div>
+  </div>`;
+  }).join('')}
+  <button class="mosaic-all" onclick="switchPage('team')">
+    <span class="arrow">→</span>${t('查看全部成员', 'View all members')}
+  </button>
+`;
+}
+
+
+/* ============================================================
+   渲染：首页-实验室风采
+   ============================================================ */
+let galleryTimer = null;
+function renderGallery() {
+  document.getElementById('home-gallery-content').innerHTML = `
+  ${LAB.gallery.map((g, i) => `
+    <div class="gallery-slide${i === 0 ? ' on' : ''}">
+      ${g.img ? `<img src="${g.img}" alt="${g.caption}">` : ''}
+    </div>`).join('')}
+  <div class="gallery-caption" id="galleryCaption">${t(LAB.gallery[0].caption, LAB.gallery[0].captionEn)}</div>
+  <button class="gallery-nav prev" id="galleryPrev" aria-label="上一张">‹</button>
+  <button class="gallery-nav next" id="galleryNext" aria-label="下一张">›</button>
+  <div class="gallery-dots" id="galleryDots">
+    ${LAB.gallery.map((_, i) => `<button class="gallery-dot${i === 0 ? ' on' : ''}" data-i="${i}" aria-label="第${i + 1}张"></button>`).join('')}
+  </div>`;
+  const slides = [...document.querySelectorAll('#home-gallery-content .gallery-slide')];
+  const dots = [...document.querySelectorAll('#galleryDots .gallery-dot')];
+  const caption = document.getElementById('galleryCaption');
+  const total = slides.length;
+  let i = 0;
+  const go = n => {
+    i = (n + total) % total;
+    slides.forEach((s, k) => s.classList.toggle('on', k === i));
+    dots.forEach((d, k) => d.classList.toggle('on', k === i));
+    caption.textContent = t(LAB.gallery[i].caption, LAB.gallery[i].captionEn);
+  };
+  const play = () => { clearInterval(galleryTimer); galleryTimer = setInterval(() => go(i + 1), 3000); };
+  document.getElementById('galleryPrev').addEventListener('click', () => { go(i - 1); play(); });
+  document.getElementById('galleryNext').addEventListener('click', () => { go(i + 1); play(); });
+  dots.forEach(d => d.addEventListener('click', () => { go(parseInt(d.dataset.i)); play(); }));
+  const show = document.getElementById('home-gallery-content');
+  show.addEventListener('mouseenter', () => clearInterval(galleryTimer));
+  show.addEventListener('mouseleave', play);
+  play();
+}
+
+
+/* ============================================================
+   渲染：首页-加入我们简版
+   ============================================================ */
+function renderJoinMini() {
+  document.getElementById('home-join-content').innerHTML = LAB.joinMini.map(j => `
+  <div class="join-mini-card">
+    <div class="icon">${j.icon}</div>
+    <h4>${t(j.title, j.titleEn)}</h4>
+  </div>
+`).join('');
+}
+
+
+/* ============================================================
+   渲染：加入我们页（左清单）
+   ============================================================ */
+function renderJoinFull() {
+  document.getElementById('join-checklist').innerHTML = LAB.joinFull.map(j => `
+  <div class="join-check">
+    <div class="icon">${j.icon}</div>
+    <h3>${t(j.title, j.titleEn)}</h3>
+    <p>${t(j.desc, j.descEn)}</p>
+    ${j.link ? `<a class="join-link" href="${j.link}" target="_blank" rel="noopener">${t('详情请关注公众号推文', 'Read the WeChat post for details')} ↗</a>` : ''}
+    ${j.qr ? `<img class="join-qr" src="${j.qr}" alt="实验室微信公众号二维码" onerror="this.style.display='none'">` : ''}
+  </div>
+`).join('');
+}
+
+
+/* ============================================================
+   渲染：研究成果-重要成果（单一版面 · 精简全文 · 无弹窗）
+   ============================================================ */
+function renderFeatures() {
+  document.getElementById('results-features-content').innerHTML = LAB.features.map(f => {
+    const findings = t(f.findings, f.findingsEn) || [];
+    return `
+  <div class="feature-card">
+    <h4 class="feature-title">${t(f.title, f.titleEn)}</h4>
+    ${f.img ? `<img class="feature-img" src="${f.img}" alt="${f.title}" onerror="this.remove()">` : ''}
+    <p class="feature-brief">${t(f.summary, f.summaryEn)}</p>
+    ${findings.length ? `
+    <div class="feature-findings">
+      <h5>${t('主要发现', 'Key findings')}</h5>
+      <ul>${findings.map(item => `<li>${item}</li>`).join('')}</ul>
+    </div>` : ''}
+    ${f.note ? `<p class="feature-brief" style="font-size:0.88rem;color:#515154;">${t(f.note, f.noteEn)}</p>` : ''}
+    <div class="feature-cite">${f.cite}${f.doi ? `<a class="doi-link" href="https://doi.org/${f.doi}" target="_blank" rel="noopener">https://doi.org/${f.doi}</a>` : ''}</div>
+  </div>`;
+  }).join('');
+}
+
+
+/* ============================================================
+   渲染：研究成果-发表成果（顶部一排方块年份 tab，点击切换）
+   ============================================================ */
+function renderPapers() {
+  const byYear = {};
+  LAB.papers.forEach(p => {
+    if (!byYear[p.year]) byYear[p.year] = [];
+    byYear[p.year].push(p);
+  });
+  const years = Object.keys(byYear).sort((a, b) => b - a);
+  const box = document.getElementById('results-papers-content');
+  box.innerHTML = `
+    <p class="papers-meta">${t(`共 ${LAB.papers.length} 条记录 · 作者标注：* 通讯作者，# 共同第一作者`, `${LAB.papers.length} records · Author marks: * corresponding author, # co-first author`)}</p>
+    <div class="year-tabs">
+      ${years.map((y, i) => `<button class="year-tab ${i === 0 ? 'active' : ''}" type="button" data-year="${y}">${y}</button>`).join('')}
+    </div>
+    ${years.map((y, i) => `
+      <div class="year-panel ${i === 0 ? 'active' : ''}" data-year-panel="${y}">
+        ${byYear[y].map(p => `
+          <div class="paper-item">
+            <div class="cite">
+              ${p.cite}
+              ${p.doi ? `<a href="https://doi.org/${p.doi}" target="_blank" class="doi-link">DOI: ${p.doi}</a>` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `).join('')}`;
+
+  box.querySelectorAll('.year-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      box.querySelectorAll('.year-tab').forEach(t => t.classList.remove('active'));
+      box.querySelectorAll('.year-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const panel = box.querySelector(`[data-year-panel="${tab.dataset.year}"]`);
+      if (panel) panel.classList.add('active');
+    });
+  });
+}
+
+
+/* ============================================================
+   渲染：研究成果-在研项目（只有年份 + 标题）
+   ============================================================ */
+function renderProjects() {
+  document.getElementById('results-projects-content').innerHTML = LAB.projects.map(p => {
+    const year = (p.desc || '').match(/\d{4}/);
+    return `
+  <div class="paper-item project-item">
+    <div class="cite"><span class="project-year">${year ? year[0] : ''}</span> <b>${t(p.name, p.nameEn)}</b></div>
+  </div>
+`;
+  }).join('');
+}
+
+
+/* ============================================================
+   渲染：研究成果-工具箱
+   ============================================================ */
+function renderToolbox() {
+  document.getElementById('results-toolbox-content').innerHTML = LAB.toolbox.map(tl => `
+  <div class="toolbox-item">
+    <span class="tool-type">${t(tl.type, tl.typeEn)}</span>
+    <h4>${t(tl.name, tl.nameEn)}</h4>
+    <p>${t(tl.desc, tl.descEn)}</p>
+    ${tl.auth ? `<a class="auth-note" href="mailto:${tl.email}?subject=${encodeURIComponent(t('人–AI 情感与关系性互动问卷工具包使用申请', 'Human–AI Emotional and Relational Engagement Questionnaire Toolkit request'))}">${t('需邮件申请授权', 'Authorization by email required')}</a>` : ''}
+    ${tl.doi ? `<a class="doi-link" href="https://doi.org/${tl.doi}" target="_blank" rel="noopener">${t('查看关联论文', 'View related paper')}</a>` : ''}
+  </div>
+`).join('');
+}
+
+
+/* ============================================================
+   渲染：团队成员（按 group 分组）
+   ============================================================ */
+const groupMap = {
+  teachers: 'team-teachers-grid',
+  students: 'team-students-grid',
+  ra: 'team-ra-grid',
+  alumni: 'team-alumni-grid'
+};
+function memberPhotoHtml(m) {
+  const photo = (m.gallery && m.gallery[0]) || '';
+  return photo
+    ? `<img src="${photo}" alt="${m.name}" onerror="this.parentElement.innerHTML='<div class=&quot;member-emoji&quot;>${m.avatar}</div>'">`
+    : `<div class="member-emoji">${m.avatar}</div>`;
+}
+function renderTeam() {
+  Object.keys(groupMap).forEach(g => {
+    const list = LAB.members.filter(m => m.group === g);
+    const grid = document.getElementById(groupMap[g]);
+    /* 全员挂绳翻牌卡 */
+    grid.innerHTML = list.map(m => {
+      const idx = LAB.members.indexOf(m);
+      const bio = t(m.bio, m.bioEn) || '';
+      return `
+    <div class="hang-item" data-member-index="${idx}">
+      <div class="hang-string"></div>
+      <div class="flip-card">
+        <div class="flip-face flip-front member-card">
+          <div class="member-photo">${memberPhotoHtml(m)}</div>
+          <div class="member-info">
+            <div class="member-name">${t(m.name, m.nameEn)}</div>
+            <div class="member-tag">${t(m.role, m.roleEn)}</div>
+          </div>
+        </div>
+        <div class="flip-face flip-back">
+          <div class="flip-back-name">${t(m.name, m.nameEn)}</div>
+          <div class="flip-back-role">${t(m.role, m.roleEn)}</div>
+          <p class="flip-back-bio">${bio}</p>
+          <button class="hang-detail" data-detail-index="${idx}" type="button">${t('查看更多详情', 'View details')}</button>
+        </div>
+      </div>
+    </div>`;
+    }).join('');
+    grid.querySelectorAll('.hang-item').forEach(item => {
+      item.addEventListener('pointerleave', () => item.classList.remove('flipped'));
+    });
+    if (!list.length) {
+      const header = grid.previousElementSibling;
+      if (header && header.classList.contains('group-header')) header.style.display = 'none';
+      grid.style.display = 'none';
+    }
+  });
+}
+
+
+/* ============================================================
+   渲染：萌宠图鉴（轮播）
+   ============================================================ */
+function renderPets() {
+  const petItems = LAB.pets.map(p => {
+    const owner = memberByName(p.owner);
+    return `
+  <div class="pet-card ${p.placeholder ? 'pet-placeholder' : ''}">
+    <div class="pet-avatar">
+      ${p.img ? `<img src="${p.img}" alt="${p.name}" onerror="this.parentElement.innerHTML='${p.emoji}'">` : p.emoji}
+    </div>
+    <div class="pet-name">${p.name}</div>
+    <div class="pet-owner">${t(p.owner, owner && owner.nameEn)}</div>
+  </div>`;
+  }).join('');
+  document.getElementById('team-pets-grid').innerHTML =
+    `<div class="pet-track">${petItems}${petItems}</div>`;
+}
+
+
+/* ============================================================
+   交互：点击成员卡片 → 弹出详情
+   ============================================================ */
+const overlay = document.getElementById('modalOverlay');
+const modalLeft = document.getElementById('modalLeft');
+const modalRight = document.getElementById('modalRight');
+let currentVideo = null;
+
+function openMemberModal(idx) {
+  const m = LAB.members[idx];
+  if (!m) return;
+  /* 左侧：竖版照片轮播（统一竖版比例，可滑动） */
+  if (m.gallery && m.gallery.length) {
+    modalLeft.innerHTML = `
+      <div class="modal-gallery">
+        <div class="modal-gallery-track" id="mgTrack">
+          ${m.gallery.map(src => `<div class="modal-gallery-slide"><img src="${src}" alt="${m.name}" onerror="this.parentElement.innerHTML='<div class=&quot;avatar-large&quot;>${m.avatar}</div>'"></div>`).join('')}
+        </div>
+        ${m.gallery.length > 1 ? `
+        <button class="mg-nav prev" id="mgPrev" aria-label="上一张">‹</button>
+        <button class="mg-nav next" id="mgNext" aria-label="下一张">›</button>
+        <div class="mg-dots" id="mgDots">${m.gallery.map((_, i) => `<span class="mg-dot ${i === 0 ? 'on' : ''}" data-i="${i}"></span>`).join('')}</div>` : ''}
+      </div>`;
+    if (m.gallery.length > 1) initGallery(m.gallery.length);
+  } else {
+    modalLeft.innerHTML = `<div class="avatar-large">${m.avatar}</div>`;
+  }
+  let html = `<h2 class="modal-name">${t(m.name, m.nameEn)}</h2><div class="modal-role">${t(m.role, m.roleEn)}</div>`;
+  if (m.dept || m.affilEn) html += `<div class="modal-field"><div class="modal-label">${t('部门', 'Affiliation')}</div><div class="modal-value">${t(m.dept, m.affilEn)}</div></div>`;
+  if (m.bio || m.bioEn) html += `<div class="modal-field"><div class="modal-label">${t('个人简介', 'Biography')}</div><div class="modal-value">${t(m.bio, m.bioEn)}</div></div>`;
+  if (m.research || m.researchEn) html += `<div class="modal-field"><div class="modal-label">${t('研究方向', 'Research Interests')}</div><div class="modal-value">${t(m.research, m.researchEn)}</div></div>`;
+  if (m.email) html += `<div class="modal-field"><div class="modal-label">${t('邮箱', 'Email')}</div><div class="modal-value"><a href="mailto:${m.email}">${m.email}</a></div></div>`;
+  if (m.links && m.links.length) html += `<div class="modal-field"><div class="modal-label">${t('个人链接', 'Profile Links')}</div><div class="modal-value">${m.links.map(link => `<a href="${link.url}" target="_blank" rel="noopener">${link.label} ↗</a>`).join('<br>')}</div></div>`;
+  if (m.ach) html += `<div class="modal-field"><div class="modal-label">${t('代表性成果', 'Selected Publications')}</div><div class="modal-value">${m.ach.split(/\n+/).filter(Boolean).map(s => `<div style="margin-bottom:8px;">${s}</div>`).join('')}</div></div>`;
+  if (m.pets && m.pets.length) {
+    html += `<div class="modal-field"><div class="modal-label">${t('TA 的萌宠', 'Their Pets')}</div>${m.pets.map(p => `
+      <div class="modal-pet"><div class="modal-pet-avatar">${p.img ? `<img src="${p.img}" alt="${p.name}">` : p.emoji}</div><div style="font-weight:700;">${p.name}</div></div>
+    `).join('')}</div>`;
+  }
+  modalRight.innerHTML = html;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+/* 首页拼贴/翻牌卡：事件委托（支持重渲染） */
+document.addEventListener('click', e => {
+  const tile = e.target.closest('.mosaic-tile[data-member-index]');
+  if (tile) { openMemberModal(parseInt(tile.dataset.memberIndex)); return; }
+  const detail = e.target.closest('.hang-detail');
+  if (detail) {
+    e.preventDefault();
+    e.stopPropagation();
+    openMemberModal(parseInt(detail.dataset.detailIndex));
+    return;
+  }
+  const hang = e.target.closest('.hang-item');
+  if (hang && !e.target.closest('.hang-detail')) {
+    hang.classList.toggle('flipped');
+  }
+});
+
+/* 弹窗左侧竖版图轮播 */
+function initGallery(total) {
+  const track = document.getElementById('mgTrack');
+  const prev = document.getElementById('mgPrev');
+  const next = document.getElementById('mgNext');
+  const dots = [...document.querySelectorAll('#mgDots .mg-dot')];
+  let i = 0;
+  const go = n => {
+    i = (n + total) % total;
+    track.style.transform = `translateX(-${i * 100}%)`;
+    dots.forEach((d, k) => d.classList.toggle('on', k === i));
+  };
+  prev.addEventListener('click', e => { e.stopPropagation(); go(i - 1); });
+  next.addEventListener('click', e => { e.stopPropagation(); go(i + 1); });
+  dots.forEach(d => d.addEventListener('click', e => { e.stopPropagation(); go(parseInt(d.dataset.i)); }));
+  /* 触摸滑动 */
+  let x0 = null;
+  track.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', e => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 40) go(dx < 0 ? i + 1 : i - 1);
+    x0 = null;
+  }, { passive: true });
+}
+
+function closeModal() {
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  if (currentVideo) { currentVideo.pause(); currentVideo = null; }
+}
+document.getElementById('modalClose').addEventListener('click', closeModal);
+overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+
+document.addEventListener('click', e => {
+  const nc = e.target.closest('.news-card');
+  if (nc) {
+    const idx = parseInt(nc.dataset.newsIndex);
+    if (!isNaN(idx)) {
+      switchPage('news');
+      openNewsDetail(idx);
+    }
+    return;
+  }
+  const nf = e.target.closest('.news-full-item');
+  if (nf) {
+    const idx = parseInt(nf.dataset.newsIndex);
+    if (!isNaN(idx)) openNewsDetail(idx);
+    return;
+  }
+});
+
+
+/* ============================================================
+   交互：页面切换（支持锚点定位）
+   ============================================================ */
+function switchPage(pageName, anchor) {
+  const homeHero = document.getElementById('home-hero');
+  if (homeHero) homeHero.hidden = pageName !== 'home';
+  const navbarWrap = document.querySelector('.navbar-wrap');
+  if (navbarWrap) navbarWrap.classList.toggle('nav-floating', pageName === 'home');
+  document.querySelectorAll('.nav-item').forEach(t => {
+    t.classList.remove('active');
+    t.classList.remove('sub-open');
+  });
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const nav = document.querySelector(`.nav-item[data-nav="${pageName}"]`);
+  if (nav) nav.classList.add('active');
+  const page = document.getElementById('page-' + pageName);
+  if (page) page.classList.add('active');
+
+  /* 加入我们页：品牌动态字重新播放 */
+  if (pageName === 'join') {
+    const bd = document.getElementById('brandDraw');
+    if (bd) { bd.classList.remove('play'); void bd.offsetWidth; bd.classList.add('play'); }
+  }
+
+  if (anchor) {
+    const el = document.getElementById(anchor);
+    if (el) {
+      requestAnimationFrame(() => {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        el.classList.remove('flash');
+        void el.offsetWidth;
+        el.classList.add('flash');
+      });
+      return;
+    }
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* 顶部导航：主按钮 + 下拉列表 */
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    switchPage(tab.dataset.page);
+    tab.blur();
+  });
+});
+document.querySelectorAll('.nav-item.has-sub').forEach(item => {
+  const openSub = () => {
+    item.classList.add('sub-open');
+  };
+  const closeSub = () => {
+    item.classList.remove('sub-open');
+  };
+  item.addEventListener('pointerenter', openSub);
+  item.addEventListener('pointerleave', () => {
+    closeSub();
+    if (item.contains(document.activeElement)) document.activeElement.blur();
+  });
+  item.addEventListener('focusin', openSub);
+  item.addEventListener('focusout', event => {
+    if (!item.contains(event.relatedTarget)) closeSub();
+  });
+});
+document.querySelectorAll('.nav-sub button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.dataset.newsCat) {
+      switchPage('news');
+      const tab = [...document.querySelectorAll('#page-news-tabs .news-tab')]
+        .find(t => t.dataset.cat === btn.dataset.newsCat);
+      if (tab) tab.click();
+    } else {
+      switchPage(btn.dataset.page, btn.dataset.anchor);
+    }
+    btn.blur();
+  });
+});
+
+
+/* ============================================================
+   初始化 + 中英切换
+   ============================================================ */
+function renderAll() {
+  renderHomeNews();
+  renderResearch();
+  renderHighlights();
+  renderMessages();
+  renderMosaic();
+  renderGallery();
+  renderJoinMini();
+  renderJoinFull();
+  renderFeatures();
+  renderPapers();
+  renderProjects();
+  renderToolbox();
+  renderTeam();
+  renderPets();
+  if (!document.getElementById('page-news').dataset.detail) {
+    document.getElementById('page-news').innerHTML = newsPageHtml();
+    bindNewsTabs();
+    renderNewsList(currentNewsCat);
+    renderNewsTabs();
+  }
+  applyStatic();
+}
+
+document.getElementById('langBtn').addEventListener('click', () => {
+  LANG = (LANG === 'zh') ? 'en' : 'zh';
+  document.documentElement.lang = (LANG === 'en') ? 'en' : 'zh-CN';
+  document.getElementById('langBtn').textContent = (LANG === 'en') ? 'EN | 中文' : '中文 | EN';
+  renderAll();
+});
+
+/* 首次渲染 */
+registerStatic();
+renderAll();
+</script>
+
+</body>
+</html>

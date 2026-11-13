@@ -2461,6 +2461,55 @@ function handleProgressiveImageHide(img) {
   img.style.display = 'none';
 }
 
+function revealProgressiveFullImage(baseImg, loadedImage, fullUrl) {
+  const parent = baseImg.parentElement;
+  if (!parent || !baseImg.isConnected) return;
+
+  const parentStyle = getComputedStyle(parent);
+  if (parentStyle.position === 'static') parent.style.position = 'relative';
+
+  const imageStyle = getComputedStyle(baseImg);
+  const imageRect = baseImg.getBoundingClientRect();
+  const parentRect = parent.getBoundingClientRect();
+  const overlay = loadedImage;
+  overlay.className = 'progressive-full-layer';
+  overlay.alt = '';
+  overlay.decoding = 'async';
+  Object.assign(overlay.style, {
+    position: 'absolute',
+    left: `${imageRect.left - parentRect.left + parent.scrollLeft}px`,
+    top: `${imageRect.top - parentRect.top + parent.scrollTop}px`,
+    width: `${imageRect.width}px`,
+    height: `${imageRect.height}px`,
+    objectFit: imageStyle.objectFit,
+    objectPosition: imageStyle.objectPosition,
+    borderRadius: imageStyle.borderRadius,
+    opacity: '0',
+    zIndex: '1',
+    pointerEvents: 'none',
+    transition: 'opacity 420ms ease',
+    willChange: 'opacity',
+  });
+  parent.appendChild(overlay);
+
+  requestAnimationFrame(() => {
+    overlay.style.opacity = '1';
+  });
+
+  let swapped = false;
+  const finishSwap = () => {
+    if (swapped) return;
+    swapped = true;
+    if (baseImg.isConnected) {
+      baseImg.src = fullUrl;
+      baseImg.classList.add('is-full');
+    }
+    requestAnimationFrame(() => overlay.remove());
+  };
+  overlay.addEventListener('transitionend', finishSwap, { once: true });
+  setTimeout(finishSwap, 650);
+}
+
 function pumpProgressiveImages() {
   while (progressiveImagesLoading.size < PROGRESSIVE_IMAGE_CONCURRENCY) {
     let img = progressiveImageQueue.shift();
@@ -2476,8 +2525,7 @@ function pumpProgressiveImages() {
     loader.fetchPriority = 'high';
     const finish = replaceWithFull => {
       if (replaceWithFull && img.isConnected && fullUrl) {
-        img.src = fullUrl;
-        img.classList.add('is-full');
+        revealProgressiveFullImage(img, loader, fullUrl);
       }
       img.removeAttribute('data-full-src');
       img.removeAttribute('data-full-queued');

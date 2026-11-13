@@ -1299,7 +1299,7 @@ body {
   <section class="section" id="home-about" style="padding-top:56px;">
     <div class="about-grid">
       <div class="about-image">
-        <img src="website-assets/03-members/lab_photo.png" alt="实验室合影" onerror="this.parentElement.innerHTML='<div style=\'height:260px;display:flex;align-items:center;justify-content:center;background:#F4F6F4;color:#6E7671;\'>实验室合影 · 待补充</div>'">
+        <img src="website-assets/03-members/thumbs/lab_photo.jpg" data-full-src="website-assets/03-members/lab_photo.png" alt="实验室合影" decoding="async" onerror="handleProgressiveImageHide(this)">
       </div>
       <div class="about-text">
         <h2>实验室简介</h2>
@@ -2019,7 +2019,7 @@ function newsCardHtml(n, i) {
   <div class="news-card" data-news-index="${i}">
     <div class="news-thumb">
       <div class="fallback">${n.icon || '📰'}</div>
-      ${n.img ? `<img src="${n.img}" alt="${title}" onerror="this.style.display='none'">` : ''}
+      ${n.img ? `<img src="${assetThumbUrl(n.img)}" data-full-src="${n.img}" alt="${title}" decoding="async" onerror="handleProgressiveImageHide(this)">` : ''}
     </div>
     <h4 title="${title}">${title}</h4>
     <div class="news-meta">
@@ -2031,6 +2031,7 @@ function renderHomeNews() {
   const container = document.getElementById('home-news-cards');
   const items = LAB.news.slice(0, 4);
   container.innerHTML = items.map((n, i) => newsCardHtml(n, i)).join('');
+  enqueueProgressiveImages(container);
 }
 
 /* 完整动态页：分类筛选 + 列表式版面 */
@@ -2052,7 +2053,7 @@ function renderNewsList(cat) {
     <article class="news-full-item" id="news-item-${idx}" data-news-index="${idx}">
       <div class="news-full-thumb">
         ${n.icon || '📰'}
-        ${n.img ? `<img src="${n.img}" alt="${title}" onerror="this.style.display='none'">` : ''}
+        ${n.img ? `<img src="${assetThumbUrl(n.img)}" data-full-src="${n.img}" alt="${title}" decoding="async" onerror="handleProgressiveImageHide(this)">` : ''}
       </div>
       <div class="news-full-body">
         <div class="news-full-meta">
@@ -2067,6 +2068,7 @@ function renderNewsList(cat) {
       </div>
     </article>`;
   }).join('');
+  enqueueProgressiveImages(box);
 }
 function bindNewsTabs() {
   document.querySelectorAll('#page-news-tabs .news-tab').forEach(btn => {
@@ -2106,7 +2108,7 @@ function openNewsDetail(idx) {
         <h1 class="news-article-title">${title}</h1>
         <div class="news-article-hero">
           ${n.icon || '📰'}
-          ${n.img ? `<img src="${n.img}" alt="${title}" onerror="this.style.display='none'">` : ''}
+          ${n.img ? `<img src="${assetThumbUrl(n.img)}" data-full-src="${n.img}" alt="${title}" decoding="async" onerror="handleProgressiveImageHide(this)">` : ''}
         </div>
         <div class="news-article-body">
           ${content.split(/\n+/).filter(Boolean).map(p => `<p>${p}</p>`).join('') || `<p>${t('（详情内容待补充）', '(Details to be added)')}</p>`}
@@ -2115,6 +2117,7 @@ function openNewsDetail(idx) {
       </article>
     </section>`;
   page.dataset.detail = '1';
+  enqueueProgressiveImages(page);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 function closeNewsDetail() {
@@ -2153,7 +2156,7 @@ function renderResearch() {
       <p>${t(r.desc, r.descEn)}</p>
     </div>
     <div class="research-visual">
-      ${r.img ? `<img src="${r.img}" alt="${r.title}" class="rv-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="rv-emoji" style="display:none;">${r.icon}</div>` : `<div class="rv-emoji">${r.icon}</div>`}
+      ${r.img ? `<img src="${assetThumbUrl(r.img)}" data-full-src="${r.img}" data-avatar="${r.icon}" alt="${r.title}" class="rv-img" decoding="async" onerror="handleProgressiveImageError(this)"><div class="rv-emoji" style="display:none;">${r.icon}</div>` : `<div class="rv-emoji">${r.icon}</div>`}
       <div class="rv-cap">${t(r.title, r.titleEn)}</div>
     </div>
   </div>
@@ -2194,7 +2197,7 @@ function renderHighlights() {
   document.getElementById('home-highlights-content').innerHTML = LAB.highlights.map(h => `
   <div class="highlight-card">
     <div class="highlight-thumb">
-      <img src="${h.img}" alt="${h.title}" onerror="this.style.display='none'">
+      <img src="${assetThumbUrl(h.img)}" data-full-src="${h.img}" alt="${h.title}" decoding="async" onerror="handleProgressiveImageHide(this)">
     </div>
     <h4>${t(h.title, h.titleEn)}</h4>
     ${h.source ? `<p class="highlight-source"><a href="${h.sourceUrl}" target="_blank" rel="noopener">${t(h.source, h.sourceEn)} ↗</a></p>` : ''}
@@ -2211,7 +2214,7 @@ function renderMessages() {
   <div class="msg-card">
     <p>${t(msg.text, msg.textEn)}</p>
     <div class="msg-who">
-      <div class="msg-avatar">${msg.photo ? `<img src="${msg.photo}" alt="${msg.name}" onerror="this.remove()">` : (msg.avatar || '👨‍🔬')}</div>
+      <div class="msg-avatar">${msg.photo ? `<img src="${assetThumbUrl(msg.photo)}" data-full-src="${msg.photo}" data-avatar="${msg.avatar || '👨‍🔬'}" alt="${msg.name}" decoding="async" onerror="handleProgressiveImageError(this)">` : (msg.avatar || '👨‍🔬')}</div>
       <div>
         <div class="msg-name">${t(msg.name, msg.nameEn)}</div>
         <div class="msg-role">${t(msg.role, msg.roleEn)}</div>
@@ -2236,7 +2239,7 @@ function renderMosaic() {
     const photo = (m.gallery && m.gallery[0]) || '';
     return `
   <div class="mosaic-tile" data-member-index="${index}">
-    <div class="tile-face">${photo ? `<img src="${photo}" alt="${m.name}" onerror="this.remove()">` : m.avatar}</div>
+    <div class="tile-face">${photo ? `<img src="${assetThumbUrl(photo)}" data-full-src="${photo}" data-avatar="${m.avatar}" alt="${m.name}" decoding="async" onerror="handleProgressiveImageError(this)">` : m.avatar}</div>
     <div class="tile-info"><b>${t(m.name, m.nameEn)}</b><span>${t(m.role, m.roleEn)}</span></div>
   </div>`;
   }).join('')}
@@ -2255,7 +2258,7 @@ function renderGallery() {
   document.getElementById('home-gallery-content').innerHTML = `
   ${LAB.gallery.map((g, i) => `
     <div class="gallery-slide${i === 0 ? ' on' : ''}">
-      ${g.img ? `<img src="${g.img}" alt="${g.caption}">` : ''}
+      ${g.img ? `<img src="${assetThumbUrl(g.img)}" data-full-src="${g.img}" alt="${g.caption}" decoding="async" onerror="handleProgressiveImageHide(this)">` : ''}
     </div>`).join('')}
   <div class="gallery-caption" id="galleryCaption">${t(LAB.gallery[0].caption, LAB.gallery[0].captionEn)}</div>
   <button class="gallery-nav prev" id="galleryPrev" aria-label="上一张">‹</button>
@@ -2323,7 +2326,7 @@ function renderFeatures() {
     return `
   <div class="feature-card">
     <h4 class="feature-title">${t(f.title, f.titleEn)}</h4>
-    ${f.img ? `<img class="feature-img" src="${f.img}" alt="${f.title}" onerror="this.remove()">` : ''}
+    ${f.img ? `<img class="feature-img" src="${assetThumbUrl(f.img)}" data-full-src="${f.img}" data-avatar="📷" alt="${f.title}" decoding="async" onerror="handleProgressiveImageError(this)">` : ''}
     <p class="feature-brief">${t(f.summary, f.summaryEn)}</p>
     ${findings.length ? `
     <div class="feature-findings">
@@ -2446,6 +2449,15 @@ function handleProgressiveImageError(img) {
     const holder = img.parentElement;
     holder.innerHTML = `<div class="avatar-large">${avatar}</div>`;
   }
+}
+
+function handleProgressiveImageHide(img) {
+  if (img.dataset.fullSrc && img.dataset.fullFallback !== '1') {
+    img.dataset.fullFallback = '1';
+    img.src = img.dataset.fullSrc;
+    return;
+  }
+  img.style.display = 'none';
 }
 
 function pumpProgressiveImages() {
@@ -2796,6 +2808,7 @@ function renderAll() {
     renderNewsList(currentNewsCat);
     renderNewsTabs();
   }
+  enqueueProgressiveImages(document);
   applyStatic();
 }
 

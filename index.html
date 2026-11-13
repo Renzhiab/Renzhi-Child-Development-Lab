@@ -798,6 +798,11 @@ body {
   width: 100%; height: 100%; object-fit: cover; display: block;
   transition: transform 0.5s ease;
 }
+.member-photo img.progressive-photo {
+  filter: blur(0.8px);
+  transition: transform 0.5s ease, filter 0.3s ease;
+}
+.member-photo img.progressive-photo.is-full { filter: none; }
 .member-card:hover .member-photo img { transform: scale(1.07); }
 .member-photo .member-emoji {
   width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
@@ -1892,6 +1897,29 @@ const LAB = {
   ]
 };
 
+/* 【萌宠图鉴补充】高云、汪心怡、焦子墨的成员详情与轮播数据 */
+const MEMBER_PET_EXTRAS = {
+  "高云": [
+    { name: "黑煤球（AI桌宠版）", img: "website-assets/03-members/pets/pet_gaoyun_1.jpg", emoji: "🖤" }
+  ],
+  "汪心怡": [
+    { name: "TT", img: "website-assets/03-members/pets/pet_wangxinyi_1.png", emoji: "🦝" },
+    { name: "达不溜（w）", img: "website-assets/03-members/pets/pet_wangxinyi_2.png", emoji: "🐯" }
+  ],
+  "焦子墨": [
+    { name: "小灰", img: "website-assets/03-members/pets/pet_jiaozimo_1.jpeg", emoji: "🐴" }
+  ]
+};
+LAB.members.forEach(member => {
+  if (MEMBER_PET_EXTRAS[member.name]) member.pets = MEMBER_PET_EXTRAS[member.name];
+});
+LAB.pets.push(
+  { name: "黑煤球（AI桌宠版）", owner: "高云", emoji: "🖤", img: "website-assets/03-members/pets/pet_gaoyun_1.jpg" },
+  { name: "TT", owner: "汪心怡", emoji: "🦝", img: "website-assets/03-members/pets/pet_wangxinyi_1.png" },
+  { name: "达不溜（w）", owner: "汪心怡", emoji: "🐯", img: "website-assets/03-members/pets/pet_wangxinyi_2.png" },
+  { name: "小灰", owner: "焦子墨", emoji: "🐴", img: "website-assets/03-members/pets/pet_jiaozimo_1.jpeg" }
+);
+
 
 /* ============================================================
    i18n：中英切换（LANG='zh'|'en'）
@@ -2390,10 +2418,74 @@ const groupMap = {
   ra: 'team-ra-grid',
   alumni: 'team-alumni-grid'
 };
+
+/* 低清缩略图先显示，原图按队列逐张加载并替换。 */
+const progressiveImageQueue = [];
+let progressiveImageBusy = false;
+
+function assetThumbUrl(src) {
+  if (!src) return '';
+  const slash = src.lastIndexOf('/');
+  const directory = slash >= 0 ? src.slice(0, slash + 1) : '';
+  const filename = slash >= 0 ? src.slice(slash + 1) : src;
+  const stem = filename.replace(/\.[^.]+$/, '');
+  return `${directory}thumbs/${stem}.jpg`;
+}
+
+function handleProgressiveImageError(img) {
+  if (img.dataset.fullSrc && img.dataset.fullFallback !== '1') {
+    img.dataset.fullFallback = '1';
+    img.src = img.dataset.fullSrc;
+    return;
+  }
+  const avatar = img.dataset.avatar || '🎓';
+  const memberPhoto = img.closest('.member-photo');
+  if (memberPhoto) {
+    memberPhoto.innerHTML = `<div class="member-emoji">${avatar}</div>`;
+  } else {
+    const holder = img.parentElement;
+    holder.innerHTML = `<div class="avatar-large">${avatar}</div>`;
+  }
+}
+
+function pumpProgressiveImages() {
+  if (progressiveImageBusy) return;
+  let img = progressiveImageQueue.shift();
+  while (img && !img.isConnected) img = progressiveImageQueue.shift();
+  if (!img) return;
+
+  progressiveImageBusy = true;
+  const fullUrl = img.dataset.fullSrc;
+  const loader = new Image();
+  loader.decoding = 'async';
+  const finish = () => {
+    if (img.isConnected && fullUrl) {
+      img.src = fullUrl;
+      img.classList.add('is-full');
+    }
+    img.removeAttribute('data-full-src');
+    img.removeAttribute('data-full-queued');
+    progressiveImageBusy = false;
+    setTimeout(pumpProgressiveImages, 60);
+  };
+  loader.onload = finish;
+  loader.onerror = finish;
+  loader.src = fullUrl;
+}
+
+function enqueueProgressiveImages(root = document) {
+  root.querySelectorAll('img[data-full-src]').forEach(img => {
+    if (img.dataset.fullQueued === '1') return;
+    img.dataset.fullQueued = '1';
+    progressiveImageQueue.push(img);
+  });
+  setTimeout(pumpProgressiveImages, 0);
+}
+
 function memberPhotoHtml(m) {
   const photo = (m.gallery && m.gallery[0]) || '';
   return photo
-    ? `<img src="${photo}" alt="${m.name}" onerror="this.parentElement.innerHTML='<div class=&quot;member-emoji&quot;>${m.avatar}</div>'">`
+    ? `<img class="progressive-photo" src="${assetThumbUrl(photo)}" data-full-src="${photo}" data-avatar="${m.avatar}" alt="${m.name}" loading="lazy" decoding="async" onerror="handleProgressiveImageError(this)">`
     : `<div class="member-emoji">${m.avatar}</div>`;
 }
 function renderTeam() {
@@ -2419,13 +2511,39 @@ function renderTeam() {
           <div class="flip-back-name">${t(m.name, m.nameEn)}</div>
           <div class="flip-back-role">${t(m.role, m.roleEn)}</div>
           <p class="flip-back-bio">${bio}</p>
-          <button class="hang-detail" data-detail-index="${idx}" type="button">${t('查看更多详情', 'View details')}</button>
+          <button class="hang-detail" data-detail-index="${idx}" type="button" onclick="event.stopPropagation(); openMemberModal(${idx});">${t('查看更多详情', 'View details')}</button>
         </div>
       </div>
     </div>`;
     }).join('');
     grid.querySelectorAll('.hang-item').forEach(item => {
-      item.addEventListener('pointerleave', () => item.classList.remove('flipped'));
+      let touchStartX = null;
+      let touchStartY = null;
+      item.addEventListener('touchstart', event => {
+        if (event.target.closest('.hang-detail')) return;
+        const touch = event.changedTouches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+      }, { passive: true });
+      item.addEventListener('touchend', event => {
+        if (event.target.closest('.hang-detail') || touchStartX === null) return;
+        const touch = event.changedTouches[0];
+        const moved = Math.hypot(touch.clientX - touchStartX, touch.clientY - touchStartY);
+        touchStartX = null;
+        touchStartY = null;
+        if (moved > 12) return;
+        event.preventDefault();
+        item.classList.toggle('flipped');
+      }, { passive: false });
+      item.addEventListener('pointerleave', event => {
+        if (event.pointerType === 'mouse') item.classList.remove('flipped');
+      });
+      const detailButton = item.querySelector('.hang-detail');
+      detailButton.addEventListener('touchend', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        openMemberModal(parseInt(detailButton.dataset.detailIndex));
+      }, { passive: false });
     });
     if (!list.length) {
       const header = grid.previousElementSibling;
@@ -2433,6 +2551,7 @@ function renderTeam() {
       grid.style.display = 'none';
     }
   });
+  enqueueProgressiveImages(document.getElementById('page-team'));
 }
 
 
@@ -2445,7 +2564,7 @@ function renderPets() {
     return `
   <div class="pet-card ${p.placeholder ? 'pet-placeholder' : ''}">
     <div class="pet-avatar">
-      ${p.img ? `<img src="${p.img}" alt="${p.name}" onerror="this.parentElement.innerHTML='${p.emoji}'">` : p.emoji}
+      ${p.img ? `<img src="${assetThumbUrl(p.img)}" data-full-src="${p.img}" data-avatar="${p.emoji}" alt="${p.name}" loading="lazy" decoding="async" onerror="handleProgressiveImageError(this)">` : p.emoji}
     </div>
     <div class="pet-name">${p.name}</div>
     <div class="pet-owner">${t(p.owner, owner && owner.nameEn)}</div>
@@ -2453,6 +2572,7 @@ function renderPets() {
   }).join('');
   document.getElementById('team-pets-grid').innerHTML =
     `<div class="pet-track">${petItems}${petItems}</div>`;
+  enqueueProgressiveImages(document.getElementById('team-pets-grid'));
 }
 
 
@@ -2472,7 +2592,7 @@ function openMemberModal(idx) {
     modalLeft.innerHTML = `
       <div class="modal-gallery">
         <div class="modal-gallery-track" id="mgTrack">
-          ${m.gallery.map(src => `<div class="modal-gallery-slide"><img src="${src}" alt="${m.name}" onerror="this.parentElement.innerHTML='<div class=&quot;avatar-large&quot;>${m.avatar}</div>'"></div>`).join('')}
+          ${m.gallery.map(src => `<div class="modal-gallery-slide"><img class="progressive-photo" src="${assetThumbUrl(src)}" data-full-src="${src}" data-avatar="${m.avatar}" alt="${m.name}" decoding="async" onerror="handleProgressiveImageError(this)"></div>`).join('')}
         </div>
         ${m.gallery.length > 1 ? `
         <button class="mg-nav prev" id="mgPrev" aria-label="上一张">‹</button>
@@ -2480,6 +2600,7 @@ function openMemberModal(idx) {
         <div class="mg-dots" id="mgDots">${m.gallery.map((_, i) => `<span class="mg-dot ${i === 0 ? 'on' : ''}" data-i="${i}"></span>`).join('')}</div>` : ''}
       </div>`;
     if (m.gallery.length > 1) initGallery(m.gallery.length);
+    enqueueProgressiveImages(modalLeft);
   } else {
     modalLeft.innerHTML = `<div class="avatar-large">${m.avatar}</div>`;
   }
@@ -2492,10 +2613,11 @@ function openMemberModal(idx) {
   if (m.ach) html += `<div class="modal-field"><div class="modal-label">${t('代表性成果', 'Selected Publications')}</div><div class="modal-value">${m.ach.split(/\n+/).filter(Boolean).map(s => `<div style="margin-bottom:8px;">${s}</div>`).join('')}</div></div>`;
   if (m.pets && m.pets.length) {
     html += `<div class="modal-field"><div class="modal-label">${t('TA 的萌宠', 'Their Pets')}</div>${m.pets.map(p => `
-      <div class="modal-pet"><div class="modal-pet-avatar">${p.img ? `<img src="${p.img}" alt="${p.name}">` : p.emoji}</div><div style="font-weight:700;">${p.name}</div></div>
+      <div class="modal-pet"><div class="modal-pet-avatar">${p.img ? `<img src="${assetThumbUrl(p.img)}" data-full-src="${p.img}" data-avatar="${p.emoji}" alt="${p.name}" decoding="async" onerror="handleProgressiveImageError(this)">` : p.emoji}</div><div style="font-weight:700;">${p.name}</div></div>
     `).join('')}</div>`;
   }
   modalRight.innerHTML = html;
+  enqueueProgressiveImages(modalRight);
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
 }

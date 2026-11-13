@@ -1299,7 +1299,7 @@ body {
   <section class="section" id="home-about" style="padding-top:56px;">
     <div class="about-grid">
       <div class="about-image">
-        <img src="website-assets/03-members/thumbs/lab_photo.jpg" data-full-src="website-assets/03-members/lab_photo.png" alt="实验室合影" decoding="async" onerror="handleProgressiveImageHide(this)">
+        <img src="website-assets/03-members/thumbs/lab_photo.jpg" data-full-src="website-assets/03-members/lab_photo.png" data-load-priority="1" alt="实验室合影" decoding="async" onerror="handleProgressiveImageHide(this)">
       </div>
       <div class="about-text">
         <h2>实验室简介</h2>
@@ -2031,7 +2031,6 @@ function renderHomeNews() {
   const container = document.getElementById('home-news-cards');
   const items = LAB.news.slice(0, 4);
   container.innerHTML = items.map((n, i) => newsCardHtml(n, i)).join('');
-  enqueueProgressiveImages(container);
 }
 
 /* 完整动态页：分类筛选 + 列表式版面 */
@@ -2068,7 +2067,6 @@ function renderNewsList(cat) {
       </div>
     </article>`;
   }).join('');
-  enqueueProgressiveImages(box);
 }
 function bindNewsTabs() {
   document.querySelectorAll('#page-news-tabs .news-tab').forEach(btn => {
@@ -2076,6 +2074,7 @@ function bindNewsTabs() {
       document.querySelectorAll('#page-news-tabs .news-tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       renderNewsList(btn.dataset.cat);
+      enqueueProgressiveImages(document.getElementById('page-news-list'));
     };
   });
 }
@@ -2126,6 +2125,7 @@ function closeNewsDetail() {
   delete page.dataset.detail;
   bindNewsTabs();
   renderNewsList(currentNewsCat);
+  enqueueProgressiveImages(document.getElementById('page-news-list'));
   renderNewsTabs();
 }
 
@@ -2424,7 +2424,8 @@ const groupMap = {
 
 /* 低清缩略图先显示，原图按队列逐张加载并替换。 */
 const progressiveImageQueue = [];
-let progressiveImageBusy = false;
+const progressiveImagesLoading = new Set();
+const PROGRESSIVE_IMAGE_CONCURRENCY = 4;
 
 function assetThumbUrl(src) {
   if (!src) return '';
@@ -2461,28 +2462,32 @@ function handleProgressiveImageHide(img) {
 }
 
 function pumpProgressiveImages() {
-  if (progressiveImageBusy) return;
-  let img = progressiveImageQueue.shift();
-  while (img && !img.isConnected) img = progressiveImageQueue.shift();
-  if (!img) return;
-
-  progressiveImageBusy = true;
-  const fullUrl = img.dataset.fullSrc;
-  const loader = new Image();
-  loader.decoding = 'async';
-  const finish = () => {
-    if (img.isConnected && fullUrl) {
-      img.src = fullUrl;
-      img.classList.add('is-full');
+  while (progressiveImagesLoading.size < PROGRESSIVE_IMAGE_CONCURRENCY) {
+    let img = progressiveImageQueue.shift();
+    while (img && (!img.isConnected || progressiveImagesLoading.has(img))) {
+      img = progressiveImageQueue.shift();
     }
-    img.removeAttribute('data-full-src');
-    img.removeAttribute('data-full-queued');
-    progressiveImageBusy = false;
-    setTimeout(pumpProgressiveImages, 60);
-  };
-  loader.onload = finish;
-  loader.onerror = finish;
-  loader.src = fullUrl;
+    if (!img) break;
+
+    progressiveImagesLoading.add(img);
+    const fullUrl = img.dataset.fullSrc;
+    const loader = new Image();
+    loader.decoding = 'async';
+    loader.fetchPriority = 'high';
+    const finish = replaceWithFull => {
+      if (replaceWithFull && img.isConnected && fullUrl) {
+        img.src = fullUrl;
+        img.classList.add('is-full');
+      }
+      img.removeAttribute('data-full-src');
+      img.removeAttribute('data-full-queued');
+      progressiveImagesLoading.delete(img);
+      pumpProgressiveImages();
+    };
+    loader.onload = () => finish(true);
+    loader.onerror = () => finish(false);
+    loader.src = fullUrl;
+  }
 }
 
 function enqueueProgressiveImages(root = document) {
@@ -2491,7 +2496,18 @@ function enqueueProgressiveImages(root = document) {
     img.dataset.fullQueued = '1';
     progressiveImageQueue.push(img);
   });
-  setTimeout(pumpProgressiveImages, 0);
+  const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+  progressiveImageQueue.sort((a, b) => {
+    const priorityA = a.dataset.loadPriority === '1' ? -1000000 : 0;
+    const priorityB = b.dataset.loadPriority === '1' ? -1000000 : 0;
+    const rectA = a.getBoundingClientRect();
+    const rectB = b.getBoundingClientRect();
+    const visibleA = rectA.bottom >= -100 && rectA.top <= viewportHeight + 100;
+    const visibleB = rectB.bottom >= -100 && rectB.top <= viewportHeight + 100;
+    return (priorityA + (visibleA ? Math.max(0, rectA.top) : 100000 + Math.max(0, rectA.top)))
+      - (priorityB + (visibleB ? Math.max(0, rectB.top) : 100000 + Math.max(0, rectB.top)));
+  });
+  pumpProgressiveImages();
 }
 
 function memberPhotoHtml(m) {
@@ -2563,7 +2579,6 @@ function renderTeam() {
       grid.style.display = 'none';
     }
   });
-  enqueueProgressiveImages(document.getElementById('page-team'));
 }
 
 
@@ -2584,7 +2599,6 @@ function renderPets() {
   }).join('');
   document.getElementById('team-pets-grid').innerHTML =
     `<div class="pet-track">${petItems}${petItems}</div>`;
-  enqueueProgressiveImages(document.getElementById('team-pets-grid'));
 }
 
 

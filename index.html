@@ -1875,7 +1875,7 @@ const LAB = {
     { group: "students", name: "张瑶", role: "专硕 · 2026 级", nameEn: "Yao Zhang", bioEn: "Hello everyone. I am easy-going. In my spare time, I love reading, listening to music and singing. Research interests: 1) Socialization feedback and child development ；2) Children’s cognitive and socio-emotional development.\nI look forward to discussing research topics and taking part in interesting group activities with you all. Welcome to join our research group!", affilEn: "Department of Educational Psychology, Faculty of Education, East China Normal University", roleEn: "Professional MA · Class of 2026", avatar: "🧑‍🎓", avatarImg: "members/zhangyao.jpg", gallery: ["website-assets/03-members/portraits/zhangyao_v1.jpg", "website-assets/03-members/portraits/zhangyao_v2.jpg", "website-assets/03-members/portraits/zhangyao_v3.jpg"], dept: "华东师范大学 教育学部教育心理学系", bio: "大家好，我的性格比较随和好相处，平时喜欢看书、听音乐和唱歌。研究方向：1）社会化反馈与儿童发展；2）儿童认知与社会情感发展。\n期待和大家一起讨论科研问题、参与有意思的组内活动，欢迎大家加入我们课题组！", email: "zhangyao_psy@163.com", pets: [{ name: "粉红兔子", img: "website-assets/03-members/pets/pet_zhangyao_1.png", emoji: "🐰" }] },
 
     { group: "alumni", name: "杨濛", role: "已毕业 · 2022 级", nameEn: "Meng Yang", bioEn: "Certified lazy P-person, currently enrolled in the School of Pretending to Be a Grown-Up. Badminton strolling champion & karaoke ASAP & fitness newbie, actively in training for the Olympics. Research interests: 1) Adolescent peer relationships 2) Emotion co-regulation 3) Happily collecting every new method I can get my hands on.", affilEn: "Institute of Brain and Psychological Sciences, Sichuan Normal University", roleEn: "Alumnus · Class of 2022", avatar: "🎓", avatarImg: "members/yangmeng.jpg", gallery: ["website-assets/03-members/portraits/yangmeng_v1.png"], dept: "四川师范大学 脑与心理科学研究院", bio: "懒懒散散的p人一个，正在学习如何扮演大人。羽毛球散步达人&唱k一定参加&健身入门选手，积极备战奥运中。感兴趣方向：1）青少年同伴关系 2）情绪共同调节 3）积极探索各类新方法", email: "myang@sicnu.edu.cn" },
-    { group: "alumni", name: "龚杰", role: "已毕业 · 2022 级", nameEn: "Jie Gong", bioEn: "Research interests: 1) Academic development in children and adolescents; 2) Peer socialization processes.", affilEn: "School of Education, Yangzhou University", roleEn: "Alumnus · Class of 2022", avatar: "🎓", avatarImg: "members/gongjie.jpg", gallery: ["website-assets/03-members/portraits/gongjie_v1.jpg"], dept: "扬州大学 教育学院", bio: "研究方向：1）儿童与青少年学业发展；2）同伴社会化过程。", email: "gjie1024@163.com" }
+    { group: "alumni", name: "龚杰", role: "已毕业 · 2022 级", nameEn: "Jie Gong", bioEn: "Research interests: 1) Academic development in children and adolescents; 2) Peer socialization processes.", affilEn: "School of Education, Yangzhou University", roleEn: "Alumnus · Class of 2022", avatar: "🎓", avatarImg: "members/gongjie.jpg", gallery: ["website-assets/03-members/portraits/gongjie_v2.jpg"], dept: "扬州大学 教育学院", bio: "研究方向：1）儿童与青少年学业发展；2）同伴社会化过程。", email: "gjie1024@163.com" }
   ],
 
   /* 【萌宠图鉴】 */
@@ -2019,7 +2019,7 @@ function newsCardHtml(n, i) {
   <div class="news-card" data-news-index="${i}">
     <div class="news-thumb">
       <div class="fallback">${n.icon || '📰'}</div>
-      ${n.img ? `<img src="${assetThumbUrl(n.img)}" data-full-src="${n.img}" alt="${title}" decoding="async" onerror="handleProgressiveImageHide(this)">` : ''}
+      ${n.img ? `<img src="${n.img}" alt="${title}" decoding="async" onerror="this.style.display='none'">` : ''}
     </div>
     <h4 title="${title}">${title}</h4>
     <div class="news-meta">
@@ -2052,7 +2052,7 @@ function renderNewsList(cat) {
     <article class="news-full-item" id="news-item-${idx}" data-news-index="${idx}">
       <div class="news-full-thumb">
         ${n.icon || '📰'}
-        ${n.img ? `<img src="${assetThumbUrl(n.img)}" data-full-src="${n.img}" alt="${title}" decoding="async" onerror="handleProgressiveImageHide(this)">` : ''}
+        ${n.img ? `<img src="${n.img}" alt="${title}" decoding="async" onerror="this.style.display='none'">` : ''}
       </div>
       <div class="news-full-body">
         <div class="news-full-meta">
@@ -2107,7 +2107,7 @@ function openNewsDetail(idx) {
         <h1 class="news-article-title">${title}</h1>
         <div class="news-article-hero">
           ${n.icon || '📰'}
-          ${n.img ? `<img src="${assetThumbUrl(n.img)}" data-full-src="${n.img}" alt="${title}" decoding="async" onerror="handleProgressiveImageHide(this)">` : ''}
+          ${n.img ? `<img src="${n.img}" alt="${title}" decoding="async" onerror="this.style.display='none'">` : ''}
         </div>
         <div class="news-article-body">
           ${content.split(/\n+/).filter(Boolean).map(p => `<p>${p}</p>`).join('') || `<p>${t('（详情内容待补充）', '(Details to be added)')}</p>`}
@@ -2197,7 +2197,7 @@ function renderHighlights() {
   document.getElementById('home-highlights-content').innerHTML = LAB.highlights.map(h => `
   <div class="highlight-card">
     <div class="highlight-thumb">
-      <img src="${assetThumbUrl(h.img)}" data-full-src="${h.img}" alt="${h.title}" decoding="async" onerror="handleProgressiveImageHide(this)">
+      <img src="${h.img}" alt="${h.title}" decoding="async" onerror="this.style.display='none'">
     </div>
     <h4>${t(h.title, h.titleEn)}</h4>
     ${h.source ? `<p class="highlight-source"><a href="${h.sourceUrl}" target="_blank" rel="noopener">${t(h.source, h.sourceEn)} ↗</a></p>` : ''}
@@ -2258,7 +2258,7 @@ function renderGallery() {
   document.getElementById('home-gallery-content').innerHTML = `
   ${LAB.gallery.map((g, i) => `
     <div class="gallery-slide${i === 0 ? ' on' : ''}">
-      ${g.img ? `<img src="${assetThumbUrl(g.img)}" data-full-src="${g.img}" alt="${g.caption}" decoding="async" onerror="handleProgressiveImageHide(this)">` : ''}
+      ${g.img ? `<img src="${g.img}" alt="${g.caption}" decoding="async" onerror="this.style.display='none'">` : ''}
     </div>`).join('')}
   <div class="gallery-caption" id="galleryCaption">${t(LAB.gallery[0].caption, LAB.gallery[0].captionEn)}</div>
   <button class="gallery-nav prev" id="galleryPrev" aria-label="上一张">‹</button>
@@ -2326,7 +2326,7 @@ function renderFeatures() {
     return `
   <div class="feature-card">
     <h4 class="feature-title">${t(f.title, f.titleEn)}</h4>
-    ${f.img ? `<img class="feature-img" src="${assetThumbUrl(f.img)}" data-full-src="${f.img}" data-avatar="📷" alt="${f.title}" decoding="async" onerror="handleProgressiveImageError(this)">` : ''}
+    ${f.img ? `<img class="feature-img" src="${f.img}" alt="${f.title}" decoding="async" onerror="this.remove()">` : ''}
     <p class="feature-brief">${t(f.summary, f.summaryEn)}</p>
     ${findings.length ? `
     <div class="feature-findings">

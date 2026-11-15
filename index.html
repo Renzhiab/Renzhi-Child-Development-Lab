@@ -621,6 +621,18 @@ body {
   display: block; width: 100%; max-width: 920px; margin: 0 auto 24px;
   border-radius: 12px; border: 1px solid var(--border);
 }
+.progressive-spinner {
+  position: absolute; width: 38px; height: 38px; margin-left: -19px; margin-top: -19px;
+  z-index: 5; display: grid; place-items: center; pointer-events: none;
+  background: rgba(255,255,255,0.82); border-radius: 50%;
+  box-shadow: 0 5px 18px rgba(20,30,25,0.2); backdrop-filter: blur(3px);
+}
+.progressive-spinner::after {
+  content: ""; width: 19px; height: 19px; border-radius: 50%;
+  border: 2px solid rgba(46,107,79,0.22); border-top-color: var(--blue);
+  animation: progressiveSpin 0.75s linear infinite;
+}
+@keyframes progressiveSpin { to { transform: rotate(360deg); } }
 .feature-questions {
   list-style: none; margin: 0 0 26px; padding: 22px 26px;
   background: #F5F8F5; border-left: 4px solid var(--blue);
@@ -2019,7 +2031,7 @@ function newsCardHtml(n, i) {
   <div class="news-card" data-news-index="${i}">
     <div class="news-thumb">
       <div class="fallback">${n.icon || '📰'}</div>
-      ${n.img ? `<img src="${n.img}" alt="${title}" decoding="async" onerror="this.style.display='none'">` : ''}
+      ${n.img ? `<img src="${assetThumbUrl(n.img)}" data-full-src="${n.img}" alt="${title}" decoding="async" onerror="handleProgressiveImageHide(this)">` : ''}
     </div>
     <h4 title="${title}">${title}</h4>
     <div class="news-meta">
@@ -2052,7 +2064,7 @@ function renderNewsList(cat) {
     <article class="news-full-item" id="news-item-${idx}" data-news-index="${idx}">
       <div class="news-full-thumb">
         ${n.icon || '📰'}
-        ${n.img ? `<img src="${n.img}" alt="${title}" decoding="async" onerror="this.style.display='none'">` : ''}
+        ${n.img ? `<img src="${assetThumbUrl(n.img)}" data-full-src="${n.img}" alt="${title}" decoding="async" onerror="handleProgressiveImageHide(this)">` : ''}
       </div>
       <div class="news-full-body">
         <div class="news-full-meta">
@@ -2107,7 +2119,7 @@ function openNewsDetail(idx) {
         <h1 class="news-article-title">${title}</h1>
         <div class="news-article-hero">
           ${n.icon || '📰'}
-          ${n.img ? `<img src="${n.img}" alt="${title}" decoding="async" onerror="this.style.display='none'">` : ''}
+          ${n.img ? `<img src="${assetThumbUrl(n.img)}" data-full-src="${n.img}" alt="${title}" decoding="async" onerror="handleProgressiveImageHide(this)">` : ''}
         </div>
         <div class="news-article-body">
           ${content.split(/\n+/).filter(Boolean).map(p => `<p>${p}</p>`).join('') || `<p>${t('（详情内容待补充）', '(Details to be added)')}</p>`}
@@ -2197,7 +2209,7 @@ function renderHighlights() {
   document.getElementById('home-highlights-content').innerHTML = LAB.highlights.map(h => `
   <div class="highlight-card">
     <div class="highlight-thumb">
-      <img src="${h.img}" alt="${h.title}" decoding="async" onerror="this.style.display='none'">
+      <img src="${assetThumbUrl(h.img)}" data-full-src="${h.img}" alt="${h.title}" decoding="async" onerror="handleProgressiveImageHide(this)">
     </div>
     <h4>${t(h.title, h.titleEn)}</h4>
     ${h.source ? `<p class="highlight-source"><a href="${h.sourceUrl}" target="_blank" rel="noopener">${t(h.source, h.sourceEn)} ↗</a></p>` : ''}
@@ -2258,7 +2270,7 @@ function renderGallery() {
   document.getElementById('home-gallery-content').innerHTML = `
   ${LAB.gallery.map((g, i) => `
     <div class="gallery-slide${i === 0 ? ' on' : ''}">
-      ${g.img ? `<img src="${g.img}" alt="${g.caption}" decoding="async" onerror="this.style.display='none'">` : ''}
+      ${g.img ? `<img src="${assetThumbUrl(g.img)}" data-full-src="${g.img}" alt="${g.caption}" decoding="async" onerror="handleProgressiveImageHide(this)">` : ''}
     </div>`).join('')}
   <div class="gallery-caption" id="galleryCaption">${t(LAB.gallery[0].caption, LAB.gallery[0].captionEn)}</div>
   <button class="gallery-nav prev" id="galleryPrev" aria-label="上一张">‹</button>
@@ -2326,7 +2338,7 @@ function renderFeatures() {
     return `
   <div class="feature-card">
     <h4 class="feature-title">${t(f.title, f.titleEn)}</h4>
-    ${f.img ? `<img class="feature-img" src="${f.img}" alt="${f.title}" decoding="async" onerror="this.remove()">` : ''}
+    ${f.img ? `<img class="feature-img" src="${assetThumbUrl(f.img)}" data-full-src="${f.img}" data-avatar="📷" alt="${f.title}" decoding="async" onerror="handleProgressiveImageError(this)">` : ''}
     <p class="feature-brief">${t(f.summary, f.summaryEn)}</p>
     ${findings.length ? `
     <div class="feature-findings">
@@ -2425,6 +2437,7 @@ const groupMap = {
 /* 低清缩略图先显示，原图按队列逐张加载并替换。 */
 const progressiveImageQueue = [];
 const progressiveImagesLoading = new Set();
+const progressiveSpinners = new WeakMap();
 const PROGRESSIVE_IMAGE_CONCURRENCY = 4;
 
 function assetThumbUrl(src) {
@@ -2434,6 +2447,33 @@ function assetThumbUrl(src) {
   const filename = slash >= 0 ? src.slice(slash + 1) : src;
   const stem = filename.replace(/\.[^.]+$/, '');
   return `${directory}thumbs/${stem}.jpg`;
+}
+
+function showProgressiveSpinner(img) {
+  if (!img.isConnected || progressiveSpinners.has(img)) return;
+  const parent = img.parentElement;
+  if (!parent) return;
+  if (getComputedStyle(parent).position === 'static') parent.style.position = 'relative';
+  const imageRect = img.getBoundingClientRect();
+  const parentRect = parent.getBoundingClientRect();
+  const spinner = document.createElement('span');
+  spinner.className = 'progressive-spinner';
+  spinner.setAttribute('aria-hidden', 'true');
+  if (imageRect.width > 0 && imageRect.height > 0) {
+    spinner.style.left = `${imageRect.left - parentRect.left + parent.scrollLeft + imageRect.width / 2}px`;
+    spinner.style.top = `${imageRect.top - parentRect.top + parent.scrollTop + imageRect.height / 2}px`;
+  } else {
+    spinner.style.left = '50%';
+    spinner.style.top = '50%';
+  }
+  parent.appendChild(spinner);
+  progressiveSpinners.set(img, spinner);
+}
+
+function removeProgressiveSpinner(img) {
+  const spinner = progressiveSpinners.get(img);
+  if (spinner) spinner.remove();
+  progressiveSpinners.delete(img);
 }
 
 function handleProgressiveImageError(img) {
@@ -2464,6 +2504,7 @@ function handleProgressiveImageHide(img) {
 function revealProgressiveFullImage(baseImg, loadedImage, fullUrl) {
   const parent = baseImg.parentElement;
   if (!parent || !baseImg.isConnected) return;
+  removeProgressiveSpinner(baseImg);
 
   const parentStyle = getComputedStyle(parent);
   if (parentStyle.position === 'static') parent.style.position = 'relative';
@@ -2527,6 +2568,7 @@ function pumpProgressiveImages() {
       if (replaceWithFull && img.isConnected && fullUrl) {
         revealProgressiveFullImage(img, loader, fullUrl);
       }
+      removeProgressiveSpinner(img);
       img.removeAttribute('data-full-src');
       img.removeAttribute('data-full-queued');
       progressiveImagesLoading.delete(img);
@@ -2543,6 +2585,7 @@ function enqueueProgressiveImages(root = document) {
     if (img.dataset.fullQueued === '1') return;
     img.dataset.fullQueued = '1';
     progressiveImageQueue.push(img);
+    showProgressiveSpinner(img);
   });
   const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
   progressiveImageQueue.sort((a, b) => {

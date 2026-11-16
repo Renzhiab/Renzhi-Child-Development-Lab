@@ -2018,6 +2018,14 @@ function newsDateText(date) {
   );
 }
 
+function newsImageHtml(news, title) {
+  if (!news.img) return '';
+  if (news.img.includes('/01-brand/')) {
+    return `<img src="${news.img}" alt="${title}" decoding="async" onerror="this.style.display='none'">`;
+  }
+  return `<img src="${assetThumbUrl(news.img)}" data-full-src="${news.img}" alt="${title}" decoding="async" onerror="handleProgressiveImageHide(this)">`;
+}
+
 /* ============================================================
    渲染：最新动态（首页卡片：仅图+标题，点击进详情）
    ============================================================ */
@@ -2027,8 +2035,8 @@ function newsCardHtml(n, i) {
   return `
   <div class="news-card" data-news-index="${i}">
     <div class="news-thumb">
-      <div class="fallback">${n.icon || '📰'}</div>
-      ${n.img ? `<img src="${assetThumbUrl(n.img)}" data-full-src="${n.img}" alt="${title}" decoding="async" onerror="handleProgressiveImageHide(this)">` : ''}
+      <div class="fallback">${n.img ? '' : (n.icon || '📰')}</div>
+      ${newsImageHtml(n, title)}
     </div>
     <h4 title="${title}">${title}</h4>
     <div class="news-meta">
@@ -2060,8 +2068,8 @@ function renderNewsList(cat) {
     return `
     <article class="news-full-item" id="news-item-${idx}" data-news-index="${idx}">
       <div class="news-full-thumb">
-        ${n.icon || '📰'}
-        ${n.img ? `<img src="${assetThumbUrl(n.img)}" data-full-src="${n.img}" alt="${title}" decoding="async" onerror="handleProgressiveImageHide(this)">` : ''}
+        ${n.img ? '' : (n.icon || '📰')}
+        ${newsImageHtml(n, title)}
       </div>
       <div class="news-full-body">
         <div class="news-full-meta">
@@ -2115,8 +2123,8 @@ function openNewsDetail(idx) {
         </div>
         <h1 class="news-article-title">${title}</h1>
         <div class="news-article-hero">
-          ${n.icon || '📰'}
-          ${n.img ? `<img src="${assetThumbUrl(n.img)}" data-full-src="${n.img}" alt="${title}" decoding="async" onerror="handleProgressiveImageHide(this)">` : ''}
+          ${n.img ? '' : (n.icon || '📰')}
+          ${newsImageHtml(n, title)}
         </div>
         <div class="news-article-body">
           ${content.split(/\n+/).filter(Boolean).map(p => `<p>${p}</p>`).join('') || `<p>${t('（详情内容待补充）', '(Details to be added)')}</p>`}

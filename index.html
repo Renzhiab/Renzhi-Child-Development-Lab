@@ -520,6 +520,7 @@ body {
 .mosaic-tile .tile-info { position: relative; z-index: 2; padding: 18px 20px; color: white; }
 .mosaic-tile .tile-info b { display: block; font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
 .mosaic-tile .tile-info span { font-size: 0.78rem; opacity: 0.85; }
+.mosaic-tile .progressive-spinner { z-index: 6; }
 .mosaic-tile.tile-blank {
   background: #1D1D1F;
 }
@@ -1483,8 +1484,6 @@ body {
       </div>
     </div>
 
-    <div class="footer-ack" data-ui="ack">致谢：衷心感谢华东师范大学夏聪、何曦木、陈比娴对网站设计的贡献。</div>
-
   </section>
 </div>
 
@@ -1984,8 +1983,6 @@ const UI_MAP = {
   '有意加入实验室、申请研究助理、咨询研究生招生或洽谈学术合作，请直接发送邮件至以下邮箱，我们会在 2–3 个工作日内回复：':
     'To join the lab, apply for a research assistant position, inquire about graduate admissions, or discuss academic collaboration, please email us directly. We usually reply within 2\u20133 working days:',
   '网站本身不收集、保存任何信息': 'This website does not collect or store any personal information.',
-  '致谢：衷心感谢华东师范大学夏聪、何曦木、陈比娴对网站设计的贡献。':
-    'Acknowledgments: Our sincere thanks to Cong Xia, Ximu He, and Bixian Chen of East China Normal University for their contributions to the website design.'
 };
 
 /* 注册静态可翻译文本（只跑一次；品牌标题 h1 / 导航双语名 / svg 不参与） */
@@ -2453,20 +2450,25 @@ function showProgressiveSpinner(img) {
   if (!img.isConnected || progressiveSpinners.has(img)) return;
   const parent = img.parentElement;
   if (!parent) return;
-  if (getComputedStyle(parent).position === 'static') parent.style.position = 'relative';
+  const mosaicTile = img.closest('.mosaic-tile');
+  const spinnerHost = mosaicTile || parent;
+  if (getComputedStyle(spinnerHost).position === 'static') spinnerHost.style.position = 'relative';
   const imageRect = img.getBoundingClientRect();
   const parentRect = parent.getBoundingClientRect();
   const spinner = document.createElement('span');
   spinner.className = 'progressive-spinner';
   spinner.setAttribute('aria-hidden', 'true');
-  if (imageRect.width > 0 && imageRect.height > 0) {
+  if (mosaicTile) {
+    spinner.style.left = '50%';
+    spinner.style.top = '50%';
+  } else if (imageRect.width > 0 && imageRect.height > 0) {
     spinner.style.left = `${imageRect.left - parentRect.left + parent.scrollLeft + imageRect.width / 2}px`;
     spinner.style.top = `${imageRect.top - parentRect.top + parent.scrollTop + imageRect.height / 2}px`;
   } else {
     spinner.style.left = '50%';
     spinner.style.top = '50%';
   }
-  parent.appendChild(spinner);
+  spinnerHost.appendChild(spinner);
   progressiveSpinners.set(img, spinner);
 }
 
